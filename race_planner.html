@@ -115,6 +115,9 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 .supp-col { padding:12px 14px; border-right:1px solid #2d3748; font-size:0.8rem; color:#a0aec0; line-height:1.55; }
 .supp-col:last-child { border-right:none; }
 .supp-col-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:6px; color:#718096; }
+.supp-right { display:flex; align-items:center; gap:8px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+.supp-shop-link { font-size:0.7rem; font-weight:600; color:#63b3ed; text-decoration:none; white-space:nowrap; border:1px solid rgba(99,179,237,0.3); border-radius:8px; padding:3px 9px; transition:background 0.15s; }
+.supp-shop-link:hover { background:rgba(99,179,237,0.12); }
 /* GI segment cards */
 .gi-card { background:#1a1f2e; border:1px solid #2d3748; border-radius:10px; overflow:hidden; margin-bottom:10px; display:flex; }
 .gi-strip { width:5px; flex-shrink:0; }
@@ -278,7 +281,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       🌙 <strong>Midnight start:</strong> You'll be in complete darkness from Miles 0–14 to 23 (depending on pace). Sunrise in Pocatello on June 5 is <strong>5:47 AM MDT</strong>. The first big climb — 2,226 ft in just 4.1 miles to Water Only (Mile 16.9) — will happen in the dark. Carry primary headlamp, backup light, and spare batteries.
     </div>
     <div class="alert alert-alt">
-      ⛰️ <strong>Altitude & GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). See the Altitude & GI tab for a full strategy. Key: use liquid calories at altitude, acclimatize 2–3 days in Pocatello before race day, and have anti-nausea tools on hand.
+      ⛰️ <strong>Altitude & GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving the day before (Fri Jun 5) means no meaningful physiological acclimatization — your GI toolkit and beetroot loading become more important, not less. See the <strong>Supplements tab</strong> for the full strategy.
     </div>
     <div class="section grid-2">
       <div class="card">
@@ -408,9 +411,9 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           <h4>Broth</h4>
           <p>Most reliable food at altitude. Request at every aid station above 6,500 ft. Sodium + liquid calories + easy on the gut.</p>
         </div>
-        <div class="nut-card">
-          <h4>Above 7,000 ft: liquids only</h4>
-          <p>Gels, Tailwind, Coke, sports drink, broth. Avoid solids on steep climbs.<br><span style="color:#fc8181;">Skip: PB, cheese, dairy, high-fiber bars.</span></p>
+        <div class="nut-card" style="border-color:rgba(252,129,129,0.3);">
+          <h4 style="color:#fc8181;">⚠ Altitude Rule: Liquids Only Above 7,000 ft</h4>
+          <p>On steep climbs above 7,000 ft: gels, Maurten, Coke, PH 1000, broth only. No solids.<br><span style="color:#fc8181;">Avoid: PB, cheese, dairy, high-fiber bars — gut shuts down at altitude under effort.</span></p>
         </div>
       </div>
     </div>
@@ -462,6 +465,162 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       </div>
     </div>
 
+    <!-- BUY LIST -->
+    <div class="card section" style="margin-top:24px;">
+      <div class="section-title">Buy List — Exact Products</div>
+      <div style="font-size:0.75rem;color:#718096;margin-bottom:16px;">Specific products. No decisions left to make.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#63b3ed;margin-bottom:10px;">🛒 The Feed <span style="font-weight:400;color:#4a5568;">thefeed.com</span></div>
+          <ul class="checklist">
+            <li><a href="https://thefeed.com/products/maurten-gel-100" target="_blank" rel="noopener" style="color:#63b3ed;">Maurten Gel 100</a> — 2–3 boxes of 12 (non-caf, primary fuel)</li>
+            <li><a href="https://thefeed.com/products/maurten-gel-100-caf-100" target="_blank" rel="noopener" style="color:#63b3ed;">Maurten Gel 100 CAF 100</a> — 1 box of 12 (caffeine doses)</li>
+            <li><a href="https://thefeed.com/products/amacx-beet-shot" target="_blank" rel="noopener" style="color:#63b3ed;">Amacx Beet Shot</a> — 6 shots (500mg nitrate each)</li>
+          </ul>
+        </div>
+
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#f6ad55;margin-bottom:10px;">📦 Amazon</div>
+          <ul class="checklist">
+            <li><strong style="color:#e2e8f0;">Thorne FloraSport 20B</strong> — probiotic, NSF Certified for Sport</li>
+            <li><strong style="color:#e2e8f0;">NOW Foods Magnesium Glycinate 400mg</strong> — 180 caps, ~$18</li>
+            <li><strong style="color:#e2e8f0;">NOW Foods Ultra Omega-3</strong> — fish oil, 500mg EPA/250mg DHA, ~$20</li>
+            <li><strong style="color:#e2e8f0;">Jarrow Formulas Tart Cherry</strong> — 120 caps, ~$15</li>
+            <li><strong style="color:#e2e8f0;">Gin-Gins Double Strength</strong> (The Ginger People) — 3 packs</li>
+            <li><strong style="color:#e2e8f0;">SaltStick Caps Plus</strong> — 1 bottle (race vest electrolytes)</li>
+            <li><strong style="color:#e2e8f0;">Cinch sack drawstring bags ×5</strong> — Amazon 10-pack ~$15, for main stations</li>
+            <li><strong style="color:#e2e8f0;">2-gallon Ziploc bags ×2</strong> — for Cusick Creek &amp; Big Fir (minimal contents)</li>
+            <li><strong style="color:#e2e8f0;">Body Glide Original</strong> — anti-chafe, 1.5oz</li>
+          </ul>
+        </div>
+
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#fc8181;margin-bottom:10px;">🏥 Pharmacy + Doctor</div>
+          <ul class="checklist">
+            <li><strong style="color:#fc8181;">Ondansetron 4mg ODT ×10</strong> — ask doctor, mention altitude ultra</li>
+            <li>Pepto-Bismol chewables — 1 pack</li>
+            <li>Ibuprofen 200mg — generic, 1 bottle</li>
+            <li><strong style="color:#e2e8f0;">Leukotape P</strong> — blister tape (better than moleskin)</li>
+            <li>Alcohol wipe packets ×20</li>
+            <li>Tincture of benzoin swabs (adhesive for Leukotape)</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MASTER PACKING LIST -->
+    <div class="card section" style="margin-top:24px;">
+      <div class="section-title">Master Packing List — Everything You Need to Bring</div>
+      <div style="font-size:0.75rem;color:#718096;margin-bottom:16px;">Organized by category. Drop bag contents are cross-referenced — if an item appears in a drop bag it's noted. Bring all of it from home.</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+
+        <!-- Gear -->
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#7f9cf5;margin-bottom:10px;">⚙️ Gear &amp; Equipment</div>
+          <ul class="checklist">
+            <li>Trail running vest (race-ready, tested)</li>
+            <li>Trekking poles — start + all aid stations</li>
+            <li>GPS watch, charged, GPX loaded</li>
+            <li>Phone, GPX + offline map loaded (Gaia GPS)</li>
+            <li>Backup battery pack (for watch + phone)</li>
+            <li>Headlamp — primary (fully charged at start)</li>
+            <li>Headlamp — backup or handheld</li>
+            <li>Spare batteries for headlamp (2+ sets) → Cusick Creek bag</li>
+            <li>Sunglasses + sunscreen → Elk Meadows bag (Mi 24.7, guaranteed daylight)</li>
+            <li>Drop bags: cinch sack drawstring bags ×5 (Amazon, 10-pack ~$15) + 2-gallon Ziplocs ×2 for Cusick Creek &amp; Big Fir</li>
+            <li>Permanent marker for labeling bags (name + bib + station name)</li>
+          </ul>
+        </div>
+
+        <!-- Race clothing -->
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#68d391;margin-bottom:10px;">👕 Race Clothing</div>
+          <ul class="checklist">
+            <li>Race shorts / tights — worn at start</li>
+            <li>Race shirt — worn at start</li>
+            <li>Spare shirt → Elk Meadows bag (Mi 24.7)</li>
+            <li>Running gloves (light) — worn at start, 42–48°F</li>
+            <li>Extra gloves → Cusick Creek bag (Mi 7.5)</li>
+            <li>Light jacket / wind layer — worn at start</li>
+            <li>Rain/wind shell → West Fork bag (Mi 30.4)</li>
+            <li>Puffy / insulated jacket → Scout Mtn bag (Mi 36.8)</li>
+            <li>Hat or buff → Scout Mtn bag (Mi 36.8)</li>
+            <li>Race socks ×4 pairs (start, Elk Meadows, Big Fir, spare)</li>
+            <li>Gaiters (recommended for trail debris)</li>
+            <li>Race shoes (worn in, tested)</li>
+          </ul>
+        </div>
+
+        <!-- Nutrition totals -->
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#f6ad55;margin-bottom:10px;">🍬 Nutrition — Race Totals</div>
+          <ul class="checklist">
+            <li>Maurten Gel 100 ×30–36 total (non-caf, dist. across all bags)</li>
+            <li>Maurten Gel 100 CAF 100 ×6–8 (first use Mi 28–30, second Mi 47+)</li>
+            <li>Soft flasks ×2 (500ml each) — worn in vest</li>
+            <li>SaltStick Caps Plus — 30–40 caps across all bags + vest</li>
+            <li>Precision Hydration PH 1000 sachets for flasks</li>
+            <li>Broth packets ×4 (for Scout Mtn flask + aid stations)</li>
+            <li>Real food for drop bags: boiled potatoes, PB&amp;J, banana, rice balls — prep night before</li>
+            <li>Coke ×2–3 cans → West Fork + Big Fir bags</li>
+            <li>Pre-race sodium: 500mg SaltStick (take 30 min before midnight start)</li>
+          </ul>
+        </div>
+
+        <!-- Medical / GI -->
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#fc8181;margin-bottom:10px;">💊 Medical &amp; GI Kit</div>
+          <ul class="checklist">
+            <li>Gin-Gins Double Strength Ginger Chews (The Ginger People) ×3 packs — vest + bags</li>
+            <li>Peppermint oil capsules (200mg) — vest front pocket</li>
+            <li>Ondansetron / Zofran 4mg ODT ×10 tabs (prescription — ask doctor) — vest + bags</li>
+            <li>Pepto-Bismol chewables ×1 pack — vest</li>
+            <li>Ibuprofen 200mg ×10 tabs → Elk Meadows bag (not before hr 6)</li>
+            <li>Blister kit: needle, alcohol wipes, Leukotape P, tincture of benzoin</li>
+            <li>Body Glide Original Anti-Chafe Balm ×2 sticks</li>
+            <li>Sunscreen SPF 50+ → Elk Meadows bag (Mi 24.7)</li>
+            <li>Vaseline / lube for long haul</li>
+            <li>Nipple tape / Band-Aids</li>
+            <li>KT tape / pre-wrap if ankles need support</li>
+          </ul>
+        </div>
+
+        <!-- Supplements (pre-race days) -->
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#b794f4;margin-bottom:10px;">🧪 Supplements — Bring for Pocatello Stay</div>
+          <ul class="checklist">
+            <li>Thorne FloraSport 20B probiotic (daily, refrigerate on arrival)</li>
+            <li>NOW Foods Magnesium Glycinate 400mg (nightly until 2 nights before)</li>
+            <li>NOW Foods Ultra Omega-3 (daily with meal, stop day before race)</li>
+            <li>Jarrow Formulas Tart Cherry capsules — 2 caps AM + PM, continue through race week</li>
+            <li>Vitamin D3 + K2 (if taking, based on test results)</li>
+            <li>Amacx Beet Shot ×6 (load days 3, 4, 5 before race — 2 shots/day)</li>
+            <li>Iron supplement (only if ferritin confirmed low)</li>
+          </ul>
+        </div>
+
+        <!-- Travel / Logistics -->
+        <div style="background:#141820;border:1px solid #2d3748;border-radius:8px;padding:14px;">
+          <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#a0aec0;margin-bottom:10px;">🗺️ Travel &amp; Logistics</div>
+          <ul class="checklist">
+            <li>Race registration confirmation / bib pickup info</li>
+            <li>GPX file backed up (watch + phone + cloud)</li>
+            <li>Offline maps downloaded for Pocatello area</li>
+            <li>Drop bag labels printed or written in advance</li>
+            <li>Accommodation booked in Pocatello (arriving Fri Jun 5 — get there as early as possible, Pocatello is 4,464 ft so even a few hours helps)</li>
+            <li>Pre-race food for Pocatello stay: high carb, low fiber, familiar</li>
+            <li>Mandatory gear list verified (check race website)</li>
+            <li>Weather check: Pocatello forecast for Jun 5–6</li>
+            <li>Car access to Gibson Jack Trailhead (midnight start)</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
 
@@ -469,7 +628,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
   <div id="tab-supplements" class="tab-panel">
 
     <div class="alert alert-warn">
-      <strong>Before any supplement:</strong> Get bloodwork first. Ferritin and Vitamin D are the two tests that most often reveal fixable deficiencies in endurance runners — and fixing a real deficiency beats any supplement stack by a factor of 10. A sports medicine panel costs ~$100–200 and is the highest-ROI thing you can do right now with 6 weeks to go.
+      <strong>Labs update (Mar 26, 2026):</strong> CMP, CBC, lipids, TSH, and HbA1c came back clean — liver, kidneys, thyroid, electrolytes all normal. However, <strong>ferritin and Vitamin D were not included in this panel and are still unknown.</strong> Your Hgb (14.4) and Hct (41.9%) are low-normal for a male endurance athlete, which makes ferritin more important to test, not less. HbA1c at 5.6% is one tick below prediabetes threshold — worth watching and relevant to race fueling. Get ferritin + 25-OH Vitamin D added to your next blood draw.
     </div>
 
     <!-- Tier 1 -->
@@ -477,52 +636,52 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <div class="section-title" style="color:#68d391;">Tier 1 — Strong evidence. Take these.</div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Ferritin / Iron</div><div class="supp-sub">Test first — do not guess</div></div><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">⚠️ Get tested this week</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Ferritin / Iron</div><div class="supp-sub">Test first — do not guess</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">⚠️ Get tested this week</span></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">What it does</div>Oxygen transport, altitude adaptation. Low ferritin (&lt;50 ng/mL) is the single most common fixable performance limiter in distance runners. Standard lab "normal" (12 ng/mL) is meaningless for athletes.</div>
           <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>Only supplement if deficiency confirmed. Ferrous bisglycinate 25–50 mg with Vitamin C, away from coffee/tea. Do NOT take if ferritin is normal — iron overload is harmful.</div>
-          <div class="supp-col"><div class="supp-col-label">Your situation</div>Racing at altitude: your body needs more iron to make RBCs. Borderline low ferritin is correctable in 6 weeks. This is the highest-ROI blood test you can get right now.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Your Mar 26 labs show Hgb 14.4 g/dL and Hct 41.9% — technically in range, but low-normal for a male endurance athlete (optimal: Hgb &gt;15, Hct &gt;43%). A normal CBC does <em>not</em> rule out low ferritin — you can have depleted iron stores for months before Hgb drops. These numbers actually increase the urgency to test ferritin specifically.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Vitamin D3 + K2</div><div class="supp-sub">Test first ideally</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Vitamin D3 + K2</div><div class="supp-sub">Test first ideally</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">What it does</div>Injury prevention, immune function, muscle contractility, mood. Deficiency is common even in sunny climates — early-morning runners miss peak UV. K2 directs calcium to bones, not arteries.</div>
           <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>2,000–4,000 IU D3 with fat (breakfast). Add 100 mcg K2 (MK-7). Target: 40–60 ng/mL 25-OH-D. If tested and normal, 1,000 IU maintenance is fine.</div>
-          <div class="supp-col"><div class="supp-col-label">Your situation</div>Peak training = higher stress fracture and injury risk. Deficiency is the silent one. Ventura sun helps but early AM runs mean less UV exposure than you'd think.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Your Mar 26 labs did <em>not</em> include 25-OH Vitamin D — status is still unknown. This is the one test still outstanding. Ventura sun helps but early AM training means less UV than you'd think. Get this added to your next draw.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Magnesium Glycinate</div><div class="supp-sub">Take before bed</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Magnesium Glycinate</div><div class="supp-sub">NOW Foods Magnesium Glycinate 400mg · 30–60 min before bed</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span><a class="supp-shop-link" href="https://www.amazon.com/s?k=NOW+Foods+Magnesium+Glycinate+400mg" target="_blank" rel="noopener">Buy on Amazon →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">What it does</div>Sleep quality, muscle relaxation, energy metabolism. Athletes lose significantly more through sweat. Hard to eat enough when training hard. Glycinate form absorbs well and doesn't cause GI upset.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>300–400 mg magnesium glycinate, 30–60 min before bed. Not with calcium. Avoid oxide form — poorly absorbed and causes diarrhea.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>NOW Foods Magnesium Glycinate 400mg</strong> — 2 capsules (400mg), 30–60 min before bed. Glycinate form absorbs well and is the gentlest on the gut — important given your GI profile. ~$18 for 180 caps (3-month supply).</div>
           <div class="supp-col"><div class="supp-col-label">Your situation</div>Sleep is your #1 recovery tool. Night cramps, waking at 2–3 AM, or restless sleep during heavy training weeks often traces back to mag deficiency.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Omega-3 (EPA + DHA)</div><div class="supp-sub">Takes 4–6 weeks to saturate</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Omega-3 (EPA + DHA)</div><div class="supp-sub">NOW Foods Ultra Omega-3 · Takes 4–6 weeks to saturate</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span><a class="supp-shop-link" href="https://www.amazon.com/s?k=NOW+Foods+Ultra+Omega-3" target="_blank" rel="noopener">Buy on Amazon →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">What it does</div>Reduces exercise-induced inflammation, speeds recovery between hard sessions, supports joint health. Multiple high-quality RCTs confirm benefit in endurance athletes.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>2–3 g combined EPA+DHA daily with a meal. Triglyceride form absorbs better. Fish oil or algae-based are equivalent. Refrigerate after opening.</div>
-          <div class="supp-col"><div class="supp-col-label">Your situation</div>6 weeks of peak training — recovery between sessions is the limiting factor. Needs 4–6 weeks to saturate tissue, so timing matters. Start today.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>NOW Foods Ultra Omega-3</strong> — 2 softgels daily with a meal (500mg EPA + 250mg DHA per serving). Same triglyceride form as premium brands at ~$20 vs $35+. Refrigerate after opening. Stop the day before the race.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Your Mar 26 labs show triglycerides at 134 mg/dL (upper-normal, &lt;150) and HDL of 54. Trig/HDL ratio of 2.48 is a mild insulin resistance signal — omega-3 directly targets this. Plus 6 weeks of peak training means recovery between sessions is the limiting factor. Start today, needs 4–6 weeks to saturate tissue.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Tart Cherry</div><div class="supp-sub">AM + before bed</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Tart Cherry</div><div class="supp-sub">Jarrow Formulas Tart Cherry · AM + before bed</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span><a class="supp-shop-link" href="https://www.amazon.com/s?k=Jarrow+Formulas+Tart+Cherry" target="_blank" rel="noopener">Buy on Amazon →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">What it does</div>Reduces post-exercise muscle damage and soreness via anthocyanins. Improves sleep via melatonin precursors. Meta-analysis confirms meaningful recovery benefit in endurance athletes. Not hype — the RCT data is solid.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>480 mg Montmorency extract twice daily, OR 8–12 oz juice concentrate AM and before bed. Capsules are convenient and equivalent.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>Jarrow Formulas Tart Cherry</strong> — 2 capsules twice daily (AM + before bed). ~$15 for 120 caps (2-month supply). Continue through race week; take the night before and morning of the race to pre-load the anti-inflammatory effect.</div>
           <div class="supp-col"><div class="supp-col-label">Your situation</div>Back-to-back training days: specifically reduces the next-day soreness that limits workout quality. Also supports sleep during high-stress taper weeks.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Caffeine</div><div class="supp-sub">Race day tool — not daily</div></div><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">Cut daily use 5–7 days pre-race</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Caffeine</div><div class="supp-sub">Race day tool — not daily</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">Cut daily use 5–7 days pre-race</span></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">What it does</div>Best-studied ergogenic in sport. Reduces perceived exertion, delays fatigue, improves time-trial performance. Effect holds across hundreds of RCTs. Meaningful for ultra distances.</div>
           <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>3–6 mg/kg, 30–60 min before key use. Race: first dose ~Mile 28–30. Tolerance builds fast — reduce daily intake 5–7 days before race to restore full effect.</div>
@@ -536,37 +695,37 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <div class="section-title" style="color:#f6ad55;">Tier 2 — Useful with caveats. Specifically relevant to you.</div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Probiotics</div><div class="supp-sub">Highly relevant for your GI profile</div></div><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">Start immediately — needs 6 weeks</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Probiotics</div><div class="supp-sub">Highly relevant for your GI profile</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">Start immediately — needs 6 weeks</span><a class="supp-shop-link" href="https://www.amazon.com/s?k=Thorne+FloraSport+20B" target="_blank" rel="noopener">Buy on Amazon →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">Evidence</div>2024 systematic review: probiotics reduce GI symptoms and improve gut permeability in marathon runners. Mechanism: exercise causes gut hypoperfusion — same stress as altitude. Probiotics strengthen the lining against it. Specific strains matter.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>Multi-strain: Lactobacillus acidophilus + Bifidobacterium longum, 10–20 billion CFU daily with food. Refrigerated. Research-backed brands: Seed DS-01, Culturelle Sport, Jarrow EPS.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>Thorne FloraSport 20B</strong> — 1 capsule daily with food. 20B CFU, 4 strains including Lactobacillus paracasei, L. acidophilus, Bifidobacterium lactis, and Bacillus subtilis. NSF Certified for Sport. Refrigerate after opening.</div>
           <div class="supp-col"><div class="supp-col-label">Your situation</div>Your altitude GI issues = gut hypoperfusion + altitude stress. This directly targets the mechanism. 6 weeks is enough to establish meaningful flora. Highest-priority Tier 2 for your profile.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Beetroot / Dietary Nitrate</div><div class="supp-sub">Loading protocol only — don't take daily</div></div><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">3 days before altitude trips</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Beetroot / Dietary Nitrate</div><div class="supp-sub">Loading protocol only — don't take daily</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">3 days before altitude trips</span><a class="supp-shop-link" href="https://thefeed.com/products/amacx-beet-shot" target="_blank" rel="noopener">Shop at The Feed →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">Evidence</div>Nitrates → nitric oxide → vasodilation → more O2 to muscles. Effect is real at sea level and moderate hypoxia. Evidence at 8,000+ ft is mixed. Best data is for sub-maximal pacing — exactly how you'll run this race.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>500 mg nitrate/day (2× 70ml beet shots or ~300g beetroot) for 3 consecutive days before altitude sessions and race. Skip mouthwash — it kills the oral bacteria that convert nitrate. Not worth taking otherwise.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>Amacx Beet Shot</strong> — 2 shots/day (500mg nitrate total) for 3 consecutive days before altitude sessions and race. Skip mouthwash the morning of — it kills the oral bacteria that convert nitrate. Not worth taking on other days.</div>
           <div class="supp-col"><div class="supp-col-label">Your situation</div>Use the loading protocol before your Mt Pinos trips (Weeks 7–8) and 3 days before the race. Cheap, food-based, and the GI effect is neutral — no extra stomach risk.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Ginger</div><div class="supp-sub">GI management tool, not a performance supplement</div></div><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">Carry every altitude session</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Ginger</div><div class="supp-sub">GI management tool, not a performance supplement</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">Carry every altitude session</span><a class="supp-shop-link" href="https://thefeed.com/search?query=ginger+chews" target="_blank" rel="noopener">Shop at The Feed →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">Evidence</div>Multiple RCTs: gingerols/shogaols reduce nausea via 5-HT3 receptors — same mechanism as Ondansetron, weaker. Solid evidence for exercise-induced and altitude-related nausea specifically.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>250–500 mg extract capsule 30–60 min before altitude climbs. OR Gin-Gin chews during race. Combine with 200 mg peppermint oil for synergy. Start with lower dose — some people get heartburn.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>Gin-Gins Double Strength</strong> (The Ginger People) — 2–3 chews 30 min before major climbs or at first sign of nausea. Combine with 200mg peppermint oil capsule for synergistic effect. Keep in top vest pocket, not buried.</div>
           <div class="supp-col"><div class="supp-col-label">Your situation</div>Front vest pocket. Not buried. You'll reach for this above Mile 13 when the first altitude climb hits. Practice using it on training runs first.</div>
         </div>
       </div></div>
 
       <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
-        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Sodium / Electrolytes</div><div class="supp-sub">The unsexy one that matters most</div></div><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">Non-negotiable at race</span></div>
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Sodium / Electrolytes</div><div class="supp-sub">The unsexy one that matters most</div></div><div class="supp-right"><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">Non-negotiable at race</span><a class="supp-shop-link" href="https://thefeed.com/search?query=electrolytes" target="_blank" rel="noopener">Shop at The Feed →</a></div></div>
         <div class="supp-cols">
           <div class="supp-col"><div class="supp-col-label">Evidence</div>Unambiguous: hyponatremia (drinking plain water without sodium) causes late-race nausea, cognitive impairment, and GI distress in long ultras. Sodium drives thirst and maintains plasma volume.</div>
-          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>500–700 mg sodium/hour in heat. Precision Hydration 1000 or LMNT sachets. SaltStick caps. Start at Mile 1 — don't wait until you feel it. Pre-load 500 mg 30 min before the midnight start.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div><strong>SaltStick Caps Plus</strong> — 1–2 caps/hour (215mg sodium each). Start at Mile 1, not when you feel it. Pre-load 2 caps 30 min before the midnight start. Precision Hydration PH 1000 sachets in flasks for additional sodium + carb mix.</div>
           <div class="supp-col"><div class="supp-col-label">Your situation</div>Midnight start in cool air = easy to under-drink early, then over-drink plain water later. That exact pattern causes hyponatremia symptoms that mimic altitude sickness. Don't let it compound.</div>
         </div>
       </div></div>
@@ -613,12 +772,12 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         <tbody>
           <tr style="background:rgba(252,129,129,0.06);">
             <td><strong>This week</strong></td>
-            <td>Get bloodwork: Ferritin, 25-OH Vitamin D, CBC, magnesium. Ask for an athlete-appropriate ferritin threshold (50+ ng/mL, not the standard 12).</td>
-            <td>Bloodwork findings may change everything else on this list. Do this before spending money on anything.</td>
+            <td>Add <strong>Ferritin</strong> and <strong>25-OH Vitamin D</strong> to a follow-up draw — these were missing from the Mar 26 panel. Ask for athlete-appropriate ferritin threshold (50+ ng/mL). CBC looked okay but low-normal Hgb/Hct doesn't rule out depleted stores.</td>
+            <td>Everything else came back clean. These are the two remaining unknowns that could change the supplement plan.</td>
           </tr>
           <tr>
             <td><strong>Start now</strong></td>
-            <td>Probiotics (daily, refrigerated multi-strain) + Magnesium glycinate (bed) + Omega-3 2–3g (meal) + Tart cherry (AM + bed)</td>
+            <td>Thorne FloraSport 20B (daily with food) + NOW Foods Magnesium Glycinate 400mg (bed) + NOW Foods Ultra Omega-3 (meal) + Jarrow Tart Cherry caps (AM + bed)</td>
             <td>All require weeks to take effect. 6 weeks is tight but enough for meaningful adaptation.</td>
           </tr>
           <tr>
@@ -628,7 +787,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           </tr>
           <tr>
             <td><strong>3 days before each altitude trip</strong></td>
-            <td>Beetroot loading: 500 mg nitrate/day (2 beet shots). Continue through altitude day. Skip daily otherwise.</td>
+            <td>Amacx Beet Shot ×2/day (500mg nitrate total). Continue through altitude day. Skip daily otherwise. No mouthwash the morning of.</td>
             <td>Nitrate loading needs 2–3 days to saturate plasma. No benefit from chronic daily use.</td>
           </tr>
           <tr>
@@ -643,12 +802,12 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           </tr>
           <tr>
             <td><strong>Race week</strong></td>
-            <td>Beetroot loading days 3, 4, 5 before race. Continue probiotics, magnesium, omega-3. Pre-load sodium 500 mg before midnight start.</td>
+            <td>Amacx Beet Shot ×2/day on days 3, 4, 5 before race. Continue FloraSport 20B, magnesium, omega-3, tart cherry. Pre-load 2× SaltStick caps 30 min before midnight start.</td>
             <td>Nitrate peaks at race time. Gut protection maintained. Electrolyte buffer before long night start.</td>
           </tr>
           <tr>
             <td><strong>Race vest</strong></td>
-            <td>Ginger chews (front pocket) + peppermint capsules + electrolyte caps (SaltStick or Precision 1000). Anti-nausea meds (see Altitude tab).</td>
+            <td>Gin-Gins Double Strength (front pocket) + peppermint oil capsules (200mg) + SaltStick Caps Plus + Ondansetron 4mg ODT + Pepto chewables. All accessible, nothing buried.</td>
             <td>GI management tools accessible, not buried. You will need these above Mile 13.</td>
           </tr>
         </tbody>
@@ -676,7 +835,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
     <div class="card section">
       <div class="section-title">Altitude Training — Locations Near Ventura (93003)</div>
       <div class="alert alert-warn" style="margin-bottom:12px;">
-        <strong>Honest picture:</strong> Nothing within 45 min of Ventura exceeds ~6,700 ft — about 2,000 ft below the race summit. Your local mountains are great for <strong>vert training and leg strength</strong> but won't fully acclimatize you to 8,000+ ft. For real altitude prep, Mt Pinos (~1h 45m) is the minimum commitment worth making — budget 2–3 targeted trips. Arriving in Pocatello on <strong>Thursday June 4</strong> instead of Friday adds 12+ hours at 4,464 ft baseline and is the easiest free acclimatization win available.
+        <strong>Honest picture:</strong> Nothing within 45 min of Ventura exceeds ~6,700 ft — about 2,000 ft below the race summit. Your local mountains are great for <strong>vert training and leg strength</strong> but won't fully acclimatize you to 8,000+ ft. For real altitude prep, Mt Pinos (~1h 45m) is the minimum commitment worth making — budget 2–3 targeted trips. You're arriving Pocatello on <strong>Friday Jun 5</strong> (day before), so the Mt Pinos sessions are your only true altitude exposure before race day — make them count. Complete your Amacx Beet Shot loading (days 3, 4, 5 before race) and have your full GI toolkit ready; there's no acclimatization buffer to fall back on.
       </div>
 
       <div style="font-size:0.82rem;font-weight:600;color:#b794f4;margin-bottom:10px;letter-spacing:0.3px;">LOCAL — Under 45 min · Up to 6,700 ft · Great for vert, limited altitude effect</div>
@@ -907,8 +1066,10 @@ function buildChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
+          mode: 'index',
+          intersect: false,
           callbacks: {
-            title: ctx => `Mile ${ctx[0].label}`,
+            title: ctx => `Mile ${parseFloat(ctx[0].label).toFixed(1)}`,
             label: ctx => `${Number(ctx.raw).toLocaleString()} ft`
           }
         }
@@ -978,13 +1139,43 @@ function buildChart() {
 
         ctx.restore();
       }
+    }, {
+      id: 'crosshair',
+      afterInit(chart) {
+        chart._crosshairX = null;
+        chart.canvas.addEventListener('mousemove', e => {
+          const rect = chart.canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const { left, right } = chart.chartArea;
+          chart._crosshairX = (x >= left && x <= right) ? x : null;
+          chart.draw();
+        });
+        chart.canvas.addEventListener('mouseleave', () => {
+          chart._crosshairX = null;
+          chart.draw();
+        });
+      },
+      afterDatasetsDraw(chart) {
+        if (chart._crosshairX == null) return;
+        const { ctx, chartArea: { top, bottom } } = chart;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(226,232,240,0.4)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(chart._crosshairX, top);
+        ctx.lineTo(chart._crosshairX, bottom);
+        ctx.stroke();
+        ctx.restore();
+      }
     }]
   });
 }
 
 // === MAP ===
 function buildMap() {
-  const map = L.map('map', { zoomControl: true });
+  window._leafletMap = L.map('map', { zoomControl: true });
+  const map = window._leafletMap;
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap', maxZoom: 16
   }).addTo(map);
@@ -1113,6 +1304,9 @@ function showTab(name) {
   document.querySelectorAll('.tab').forEach(t => {
     if (t.getAttribute('onclick') === `showTab('${name}')`) t.classList.add('active');
   });
+  if (name === 'overview' && window._leafletMap) {
+    setTimeout(() => window._leafletMap.invalidateSize(), 10);
+  }
 }
 
 // === PACE SLIDER ===
@@ -1181,8 +1375,8 @@ const DB_STATIONS = [
     badge: { text: '🌅 Pre-Dawn / Dawn', bg: 'rgba(183,121,31,0.2)', color: '#f6ad55' },
     next: { text: '→ 4.1 mi to Water Only · +2,226 ft in 4 miles · steepest climb on course · GI risk zone begins', danger: true },
     gear: [
-      { text: 'Stash headlamp here (leave in bag)', crit: true },
-      { text: 'Sunscreen + sunglasses (sun coming up)' },
+      { text: 'KEEP headlamp — entire climb to Water Only is in darkness at any realistic pace', crit: true },
+      { text: 'Sunscreen + sunglasses in bag for later (grab at Elk Meadows)' },
     ],
     food: [
       { text: 'EAT A REAL MEAL — potato, PB&J, banana, broth', crit: true },
@@ -1210,8 +1404,10 @@ const DB_STATIONS = [
     badge: { text: '☀️ Daytime · Mile 25', bg: 'rgba(39,103,73,0.2)', color: '#68d391' },
     next: { text: '→ 5.7 mi to West Fork · mostly descending −1,565 ft · dropping to lowest point', danger: false },
     gear: [
+      { text: 'Stash headlamp here — definitely daylight by Mile 25', crit: true },
       { text: 'Change socks', crit: true },
-      { text: 'Reapply anti-chafe (Body Glide / Squirrel\'s Nut Butter)' },
+      { text: 'Sunscreen + sunglasses (now needed)' },
+      { text: 'Reapply anti-chafe (Body Glide)' },
       { text: 'Change shirt if soaked' },
     ],
     food: [
@@ -1370,7 +1566,7 @@ function buildDropBagCards(basePaceMin) {
 
 // === INIT ===
 buildChart();
-buildMap();
+requestAnimationFrame(buildMap);
 buildTempBar();
 updateTable(18);
 buildDropBagCards(18);
