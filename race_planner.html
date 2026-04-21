@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMU 50M Race Planner</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui,-apple-system,sans-serif; background:#0f1117; color:#e2e8f0; min-height:100vh; }
+.header { background:linear-gradient(135deg,#1a1f2e 0%,#0f3460 100%); padding:24px 32px; border-bottom:1px solid #2d3748; }
+.header h1 { font-size:1.8rem; font-weight:700; color:#f6ad55; letter-spacing:-0.5px; }
+.header p { color:#a0aec0; margin-top:4px; font-size:0.9rem; }
+.stats-bar { display:flex; gap:16px; margin-top:16px; flex-wrap:wrap; }
+.stat { background:rgba(255,255,255,0.07); border-radius:8px; padding:10px 16px; }
+.stat-val { font-size:1.2rem; font-weight:700; color:#68d391; }
+.stat-val.orange { color:#f6ad55; }
+.stat-val.red { color:#fc8181; }
+.stat-label { font-size:0.72rem; color:#718096; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+.gain-note { font-size:0.7rem; color:#805ad5; margin-top:2px; }
+.container { max-width:1440px; margin:0 auto; padding:24px 32px; }
+.tabs { display:flex; gap:4px; margin-bottom:24px; border-bottom:1px solid #2d3748; }
+.tab { padding:10px 20px; cursor:pointer; color:#718096; font-size:0.88rem; font-weight:500; border-bottom:2px solid transparent; transition:all 0.15s; }
+.tab.active { color:#f6ad55; border-bottom-color:#f6ad55; }
+.tab:hover:not(.active) { color:#cbd5e0; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+.section { margin-bottom:28px; }
+.section-title { font-size:1rem; font-weight:600; color:#cbd5e0; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #2d3748; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:900px){.grid-2{grid-template-columns:1fr;}}
+.card { background:#1a1f2e; border:1px solid #2d3748; border-radius:12px; padding:20px; }
+#map { height:380px; border-radius:8px; }
+.pace-controls { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; margin-bottom:20px; }
+.pace-control label { font-size:0.78rem; color:#718096; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; }
+.pace-control input[type=range] { width:240px; accent-color:#f6ad55; display:block; }
+.pace-display { font-size:1.5rem; font-weight:700; color:#f6ad55; margin-top:4px; }
+.pace-hint { color:#4a5568; font-size:0.75rem; margin-top:4px; }
+table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+th { background:#141820; color:#718096; text-transform:uppercase; font-size:0.7rem; letter-spacing:0.5px; padding:9px 10px; text-align:left; border-bottom:1px solid #2d3748; white-space:nowrap; }
+td { padding:9px 10px; border-bottom:1px solid #1e2535; vertical-align:middle; }
+tr:hover td { background:rgba(255,255,255,0.025); }
+.badge { display:inline-block; padding:2px 7px; border-radius:10px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+.badge-night { background:#1a1f4e; color:#7f9cf5; }
+.badge-dawn { background:#2d1f1a; color:#f6ad55; }
+.badge-day { background:#1a2e1f; color:#68d391; }
+.badge-summit { background:#2d1a2e; color:#e9d8fd; }
+.station-name { font-weight:600; color:#e2e8f0; white-space:nowrap; }
+.elev-gain { color:#68d391; }
+.elev-loss { color:#fc8181; }
+.time-cell { font-weight:700; color:#f6ad55; font-family:monospace; font-size:0.88rem; }
+.cutoff-warning { color:#fc8181; font-size:0.72rem; font-weight:600; margin-top:2px; }
+.on-track { color:#68d391; font-size:0.72rem; margin-top:2px; }
+.seg-hard { background:rgba(252,129,129,0.05); }
+.tag { display:inline-block; padding:2px 7px; border-radius:6px; font-size:0.7rem; margin:2px 2px 2px 0; white-space:nowrap; }
+.tag-food { background:#1a2e1f; color:#68d391; }
+.tag-gear { background:#1a1f4e; color:#7f9cf5; }
+.tag-med { background:#2d1a1a; color:#fc8181; }
+.tag-strat { background:#2d2040; color:#b794f4; }
+.alert { border-radius:8px; padding:14px 18px; margin-bottom:16px; font-size:0.85rem; line-height:1.6; }
+.alert-night { background:#1a1f4e; border:1px solid #4c51bf; color:#a3bffa; }
+.alert-alt { background:#2d1a2e; border:1px solid #6b46c1; color:#d6bcfa; }
+.alert-info { background:#1a2e1f; border:1px solid #276749; color:#9ae6b4; }
+.alert-warn { background:#2d2010; border:1px solid #b7791f; color:#fbd38d; }
+.alert strong { color:inherit; filter:brightness(1.3); }
+.summary-box { background:#141820; border:1px solid #2d3748; border-radius:8px; padding:14px; }
+.summary-box h4 { color:#f6ad55; margin-bottom:10px; font-size:0.88rem; }
+.summary-row { display:flex; justify-content:space-between; padding:5px 0; font-size:0.82rem; border-bottom:1px solid #1e2535; }
+.summary-row:last-child { border-bottom:none; }
+.summary-row span:first-child { color:#718096; }
+.summary-row span:last-child { font-weight:600; }
+.gi-low { color:#68d391; }
+.gi-mod { color:#f6ad55; }
+.gi-high { color:#fc8181; }
+.legend { display:flex; gap:16px; flex-wrap:wrap; margin-top:8px; font-size:0.75rem; color:#718096; }
+.legend-item { display:flex; align-items:center; gap:6px; }
+.legend-dot { width:10px; height:10px; border-radius:50%; }
+.alt-zone-card { border-radius:8px; padding:14px; margin-bottom:10px; }
+.alt-zone-1 { background:rgba(104,211,145,0.08); border:1px solid rgba(104,211,145,0.2); }
+.alt-zone-2 { background:rgba(246,173,85,0.08); border:1px solid rgba(246,173,85,0.25); }
+.alt-zone-3 { background:rgba(252,129,129,0.08); border:1px solid rgba(252,129,129,0.25); }
+.alt-zone-card h4 { font-size:0.85rem; font-weight:600; margin-bottom:6px; }
+.alt-zone-1 h4 { color:#68d391; }
+.alt-zone-2 h4 { color:#f6ad55; }
+.alt-zone-3 h4 { color:#fc8181; }
+.alt-zone-card p { font-size:0.8rem; color:#a0aec0; line-height:1.55; }
+.checklist { list-style:none; }
+.checklist li { padding:6px 0; font-size:0.83rem; color:#a0aec0; border-bottom:1px solid #1e2535; display:flex; align-items:flex-start; gap:10px; }
+.checklist li:last-child { border-bottom:none; }
+.checklist li::before { content:'□'; color:#4a5568; font-size:1rem; flex-shrink:0; margin-top:-1px; }
+.nut-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
+.nut-card { background:#141820; border:1px solid #2d3748; border-radius:8px; padding:14px; }
+.nut-card h4 { color:#68d391; font-size:0.83rem; margin-bottom:8px; }
+.nut-card p { color:#a0aec0; font-size:0.78rem; line-height:1.55; }
+.nut-card.warning h4 { color:#f6ad55; }
+.nut-card.danger h4 { color:#fc8181; }
+.temp-bar { display:grid; grid-template-columns:repeat(11,1fr); gap:0; border-radius:8px; overflow:hidden; margin:12px 0; font-size:0.7rem; text-align:center; }
+.temp-cell { padding:8px 4px; }
+.key-climb { background:rgba(252,129,129,0.12); border-left:3px solid #fc8181; padding:10px 14px; border-radius:0 6px 6px 0; margin:6px 0; font-size:0.82rem; }
+.key-climb strong { color:#fc8181; }
+.key-descent { background:rgba(104,211,145,0.08); border-left:3px solid #68d391; padding:10px 14px; border-radius:0 6px 6px 0; margin:6px 0; font-size:0.82rem; }
+.key-descent strong { color:#68d391; }
+/* Supplement cards */
+.supp-card { background:#1a1f2e; border:1px solid #2d3748; border-radius:10px; overflow:hidden; margin-bottom:12px; display:flex; }
+.supp-strip { width:5px; flex-shrink:0; }
+.supp-inner { flex:1; }
+.supp-banner { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#141820; gap:12px; flex-wrap:wrap; }
+.supp-name { font-size:1rem; font-weight:700; color:#e2e8f0; }
+.supp-sub { font-size:0.72rem; color:#718096; margin-top:2px; }
+.supp-when { font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:10px; white-space:nowrap; }
+.supp-cols { display:grid; grid-template-columns:1fr 1fr 1fr; border-top:1px solid #2d3748; }
+@media(max-width:700px){.supp-cols{grid-template-columns:1fr;}}
+.supp-col { padding:12px 14px; border-right:1px solid #2d3748; font-size:0.8rem; color:#a0aec0; line-height:1.55; }
+.supp-col:last-child { border-right:none; }
+.supp-col-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:6px; color:#718096; }
+/* GI segment cards */
+.gi-card { background:#1a1f2e; border:1px solid #2d3748; border-radius:10px; overflow:hidden; margin-bottom:10px; display:flex; }
+.gi-strip { width:5px; flex-shrink:0; }
+.gi-inner { flex:1; }
+.gi-banner { display:flex; align-items:center; gap:14px; padding:10px 16px; background:#141820; flex-wrap:wrap; }
+.gi-miles { font-size:1.05rem; font-weight:800; color:#e2e8f0; font-family:monospace; white-space:nowrap; }
+.gi-risk-badge { font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:10px; white-space:nowrap; flex-shrink:0; }
+.gi-elev { font-size:0.75rem; color:#718096; }
+.gi-body { display:grid; grid-template-columns:1.4fr 1fr; border-top:1px solid #2d3748; }
+@media(max-width:600px){.gi-body{grid-template-columns:1fr;}}
+.gi-col { padding:10px 14px; border-right:1px solid #2d3748; font-size:0.8rem; color:#a0aec0; line-height:1.55; }
+.gi-col:last-child { border-right:none; }
+.gi-col-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:5px; color:#718096; }
+/* Fueling phase cards */
+.phase-card { border-radius:10px; overflow:hidden; margin-bottom:10px; display:flex; }
+.phase-strip { width:5px; flex-shrink:0; border-radius:0; }
+.phase-inner { flex:1; background:#1a1f2e; border:1px solid #2d3748; border-left:none; border-radius:0 10px 10px 0; }
+.phase-banner { display:flex; align-items:center; gap:14px; padding:10px 16px; background:#141820; }
+.phase-miles { font-size:1.1rem; font-weight:800; font-family:monospace; }
+.phase-label { font-size:0.8rem; font-weight:600; color:#e2e8f0; }
+.phase-badge { font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:8px; margin-left:auto; }
+.phase-body { padding:10px 16px 12px; font-size:0.8rem; color:#a0aec0; line-height:1.6; border-top:1px solid #2d3748; }
+.phase-body strong { color:#e2e8f0; }
+/* Drop bag cards */
+.db-card { background:#1a1f2e; border:1px solid #2d3748; border-radius:12px; overflow:hidden; margin-bottom:16px; }
+.db-card.critical { border-color:rgba(252,129,129,0.6); }
+.db-card.water-only { border-color:#553c9a; }
+/* Top banner */
+.db-banner { display:flex; align-items:stretch; min-height:72px; }
+.db-strip { width:6px; flex-shrink:0; }
+.db-banner-main { flex:1; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; background:#141820; }
+.db-left { flex:1; min-width:200px; }
+.db-right { text-align:right; flex-shrink:0; }
+.db-name { font-size:1.05rem; font-weight:700; color:#e2e8f0; line-height:1.2; }
+.db-mile-row { display:flex; align-items:center; gap:12px; margin-top:4px; flex-wrap:wrap; }
+.db-mile { font-size:1.2rem; font-weight:800; color:#f6ad55; font-family:monospace; }
+.db-elev { font-size:0.82rem; color:#718096; }
+.db-arrival { font-size:0.88rem; font-weight:700; color:#f6ad55; font-family:monospace; }
+.db-condition { font-size:0.72rem; font-weight:600; padding:3px 10px; border-radius:10px; display:inline-block; margin-top:4px; }
+.db-next-seg { font-size:0.75rem; color:#718096; margin-top:5px; line-height:1.4; }
+.db-next-seg.warn { color:#fc8181; }
+/* Body — three columns */
+.db-body { display:grid; grid-template-columns:1fr 1fr 1fr; border-top:1px solid #2d3748; }
+@media(max-width:700px) { .db-body { grid-template-columns:1fr; } }
+.db-col { padding:14px 16px; border-right:1px solid #2d3748; }
+.db-col:last-child { border-right:none; }
+.db-col-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+.db-col-label.gear { color:#7f9cf5; }
+.db-col-label.food { color:#68d391; }
+.db-col-label.med  { color:#fc8181; }
+.db-col ul { list-style:none; padding:0; margin:0; }
+.db-col ul li { font-size:0.8rem; color:#a0aec0; line-height:1.35; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04); display:flex; gap:7px; }
+.db-col ul li:last-child { border-bottom:none; }
+.db-col ul li .dot { color:#4a5568; flex-shrink:0; font-size:0.7rem; margin-top:2px; }
+.db-col ul li.hi { color:#e2e8f0; font-weight:600; }
+.db-col ul li.hi .dot { color:#f6ad55; }
+/* Decision footer */
+.db-footer { border-top:1px solid #2d3748; padding:10px 18px; background:#141820; display:flex; gap:10px; align-items:baseline; }
+.db-footer-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; color:#f6ad55; flex-shrink:0; }
+.db-footer-text { font-size:0.8rem; color:#fbd38d; line-height:1.5; }
+/* Water-only special */
+.db-water-body { padding:12px 18px 14px; font-size:0.82rem; color:#b794f4; line-height:1.6; border-top:1px solid #2d3748; }
+/* Training tab */
+.week-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+.week-card { background:#1a1f2e; border:1px solid #2d3748; border-radius:10px; overflow:hidden; }
+.week-card.current-week { border-color:#f6ad55; box-shadow:0 0 0 1px rgba(246,173,85,0.3); }
+.week-card.past-week { opacity:0.7; }
+.week-card.race-week { border-color:#68d391; box-shadow:0 0 0 1px rgba(104,211,145,0.3); }
+.week-card.alt-week { border-color:#b794f4; }
+.week-header { padding:12px 14px; display:flex; justify-content:space-between; align-items:center; background:#141820; }
+.week-num { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#718096; }
+.week-range { font-size:0.72rem; color:#4a5568; }
+.week-dates { font-size:0.75rem; color:#718096; margin-top:1px; }
+.week-miles { font-size:1rem; font-weight:700; color:#f6ad55; }
+.week-label { font-size:0.72rem; font-weight:600; padding:2px 8px; border-radius:10px; }
+.label-current { background:rgba(246,173,85,0.2); color:#f6ad55; }
+.label-past { background:rgba(113,128,150,0.2); color:#718096; }
+.label-upcoming { background:rgba(104,211,145,0.15); color:#68d391; }
+.label-race { background:rgba(104,211,145,0.25); color:#68d391; font-weight:700; }
+.label-alt { background:rgba(183,148,244,0.2); color:#b794f4; }
+.week-body { padding:10px 14px 14px; }
+.day-row { display:flex; gap:8px; align-items:flex-start; padding:4px 0; border-bottom:1px solid #1e2535; font-size:0.78rem; }
+.day-row:last-child { border-bottom:none; }
+.day-name { width:34px; font-weight:600; color:#718096; flex-shrink:0; font-size:0.72rem; padding-top:1px; }
+.day-workout { flex:1; color:#a0aec0; line-height:1.4; }
+.day-workout.rest { color:#4a5568; font-style:italic; }
+.day-workout.altitude { color:#b794f4; }
+.day-check { flex-shrink:0; }
+.day-check input[type=checkbox] { accent-color:#68d391; width:14px; height:14px; cursor:pointer; }
+.week-progress { height:3px; background:#1e2535; margin:10px 14px 0; border-radius:2px; overflow:hidden; }
+.week-progress-bar { height:100%; background:#68d391; border-radius:2px; transition:width 0.3s; }
+.alt-callout { background:rgba(183,148,244,0.08); border:1px solid rgba(183,148,244,0.25); border-radius:8px; padding:10px 14px; margin-top:8px; font-size:0.78rem; color:#d6bcfa; line-height:1.5; }
+.alt-callout strong { color:#b794f4; }
+.alt-spot-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; margin-top:4px; }
+.alt-spot { background:#141820; border:1px solid #2d3748; border-radius:8px; padding:14px; }
+.alt-spot h4 { color:#b794f4; font-size:0.85rem; margin-bottom:6px; display:flex; justify-content:space-between; }
+.alt-spot h4 span { color:#718096; font-size:0.72rem; font-weight:400; }
+.alt-spot p { font-size:0.78rem; color:#a0aec0; line-height:1.55; }
+.alt-spot .match { color:#68d391; font-weight:600; font-size:0.75rem; margin-top:4px; }
+.progress-overview { background:#1a1f2e; border:1px solid #2d3748; border-radius:10px; padding:16px 20px; margin-bottom:20px; }
+.progress-overview h3 { font-size:0.95rem; font-weight:600; color:#e2e8f0; margin-bottom:12px; }
+.plan-progress-bar { height:8px; background:#1e2535; border-radius:4px; overflow:hidden; margin:8px 0 4px; }
+.plan-progress-fill { height:100%; background:linear-gradient(90deg,#68d391,#f6ad55); border-radius:4px; }
+.progress-labels { display:flex; justify-content:space-between; font-size:0.72rem; color:#718096; }
+.stats-row { display:flex; gap:20px; flex-wrap:wrap; margin-top:12px; }
+.mini-stat { text-align:center; }
+.mini-stat-val { font-size:1.1rem; font-weight:700; color:#f6ad55; }
+.mini-stat-label { font-size:0.7rem; color:#718096; }
+.week-filter { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.filter-btn { padding:5px 12px; border-radius:16px; font-size:0.78rem; cursor:pointer; border:1px solid #2d3748; background:#141820; color:#718096; transition:all 0.15s; }
+.filter-btn.active, .filter-btn:hover { background:#2d3748; color:#e2e8f0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Scout Mountain Ultras — 50M Race Planner</h1>
+  <p>June 5–6, 2026 · Gibson Jack Trailhead → Mink Creek Group Campground · Pocatello, ID · Midnight Start</p>
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-val">53.9 mi</div>
+      <div class="stat-label">Total Distance</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">~10,800 ft</div>
+      <div class="stat-label">Total Gain (smoothed)</div>
+      <div class="gain-note">Raw GPX reads 14,224 ft due to GPS noise. Smoothed matches CalTopo's stated 10,731 ft.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val orange">4,820–8,694 ft</div>
+      <div class="stat-label">Elevation Range</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">12:00 AM</div>
+      <div class="stat-label">Start (Sat Jun 6)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val red">10:00 PM</div>
+      <div class="stat-label">Cutoff (22 hrs)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">8,694 ft</div>
+      <div class="stat-label">Summit (~Mile 42.9)</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('overview')">Overview</div>
+    <div class="tab" onclick="showTab('pace')">Pace & Splits</div>
+    <div class="tab" onclick="showTab('dropbags')">Race Day</div>
+    <div class="tab" onclick="showTab('supplements')">Supplements</div>
+    <div class="tab" onclick="showTab('training')">Training & Prep</div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div id="tab-overview" class="tab-panel active">
+    <div class="alert alert-night">
+      🌙 <strong>Midnight start:</strong> You'll be in complete darkness from Miles 0–14 to 23 (depending on pace). Sunrise in Pocatello on June 5 is <strong>5:47 AM MDT</strong>. The first big climb — 2,226 ft in just 4.1 miles to Water Only (Mile 16.9) — will happen in the dark. Carry primary headlamp, backup light, and spare batteries.
+    </div>
+    <div class="alert alert-alt">
+      ⛰️ <strong>Altitude & GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). See the Altitude & GI tab for a full strategy. Key: use liquid calories at altitude, acclimatize 2–3 days in Pocatello before race day, and have anti-nausea tools on hand.
+    </div>
+    <div class="section grid-2">
+      <div class="card">
+        <div class="section-title">Elevation Profile</div>
+        <canvas id="elevationChart"></canvas>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night (before sunrise)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate altitude (6,500–7,500 ft)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High altitude (7,500+ ft) — GI risk zone</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Course Map</div>
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title">Course Segments at a Glance</div>
+      <div class="key-climb"><strong>Miles 12.8→16.9 (City Creek → Water Only):</strong> +2,226 ft in 4.1 miles. Happens in the dark. Steepest gain-per-mile on the course (543 ft/mi). Altitude goes from 4,820 → 7,057 ft. Start eating solids before this climb; switch to liquids on it.</div>
+      <div class="key-climb"><strong>Miles 30.4→36.8 (West Fork → Scout Mtn AS):</strong> +1,912 ft in 6.4 miles. You've already run 30 miles. Big climb but manageable — this is your gateway to the summit.</div>
+      <div class="key-climb"><strong>Miles 36.8→47.6 (Scout Mtn AS → Big Fir):</strong> 10.8-mile mega-segment. +2,384 ft to the 8,694 ft summit around Mile 43, then -3,233 ft descent. Longest gap between aid (no crew access). Load up at Scout Mtn AS. Summit zone = peak GI risk.</div>
+      <div class="key-descent"><strong>Miles 24.7→30.4 (Elk Meadows → West Fork):</strong> Mostly downhill (-1,565 ft), recover your legs. Use this to eat, hydrate, and regroup before the push to Scout Mtn.</div>
+      <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
+    </div>
+  </div>
+
+  <!-- PACE TAB -->
+  <div id="tab-pace" class="tab-panel">
+    <div class="card">
+      <div class="section-title">Pace Calculator</div>
+      <div class="pace-controls">
+        <div class="pace-control">
+          <label>Base Flat Pace (min/mile)</label>
+          <input type="range" id="paceSlider" min="12" max="30" step="0.5" value="18">
+          <div class="pace-display" id="paceDisplay">18:00 /mi</div>
+          <div class="pace-hint">Naismith adjustment applied: +1 min per 100 ft of climb per segment</div>
+        </div>
+        <div class="summary-box" style="min-width:280px;">
+          <h4>Finish Estimate</h4>
+          <div class="summary-row"><span>Total time</span><span id="estTime">—</span></div>
+          <div class="summary-row"><span>Finish clock time</span><span id="estFinish">—</span></div>
+          <div class="summary-row"><span>Buffer before 10 PM cutoff</span><span id="estBuffer">—</span></div>
+          <div class="summary-row"><span>Sunrise (5:47 AM) reached at</span><span id="sunriseMile">—</span></div>
+          <div class="summary-row"><span>Miles in darkness</span><span id="darkMiles">—</span></div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+      <table id="stationsTable">
+        <thead>
+          <tr>
+            <th>Station</th>
+            <th>Mile</th>
+            <th>Elev</th>
+            <th>Segment</th>
+            <th>Climb</th>
+            <th>Descent</th>
+            <th>Seg Difficulty</th>
+            <th>GI Risk</th>
+            <th>Light</th>
+            <th>Est. Arrival</th>
+            <th>Cutoff Buffer</th>
+          </tr>
+        </thead>
+        <tbody id="stationsBody"></tbody>
+      </table>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div class="section-title" style="margin-top:8px;">Temperature Expectations (June 5–6)</div>
+        <div class="alert alert-info" style="margin-bottom:10px;">June in Pocatello: typical lows 42–48°F (midnight–5 AM), warming to 68–76°F by early afternoon. Significant temperature swing — dress in removable layers at start.</div>
+        <div class="temp-bar" id="tempBar"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- RACE DAY TAB -->
+  <div id="tab-dropbags" class="tab-panel">
+
+    <!-- Compact targets bar -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:16px;">
+      <div class="card" style="padding:12px 16px;">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#718096;margin-bottom:4px;">Calories</div>
+        <div style="font-size:1rem;font-weight:700;color:#f6ad55;">200–280 cal/hr</div>
+        <div style="font-size:0.75rem;color:#718096;margin-top:2px;">~3,200–5,000 total · at altitude err toward 220</div>
+      </div>
+      <div class="card" style="padding:12px 16px;">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#718096;margin-bottom:4px;">Hydration</div>
+        <div style="font-size:1rem;font-weight:700;color:#f6ad55;">14–26 oz/hr</div>
+        <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Night: 14–18 · Morning: 18–22 · Afternoon: 20–26</div>
+      </div>
+      <div class="card" style="padding:12px 16px;">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#718096;margin-bottom:4px;">Sodium</div>
+        <div style="font-size:1rem;font-weight:700;color:#f6ad55;">300–700 mg/hr</div>
+        <div style="font-size:0.75rem;color:#718096;margin-top:2px;">300 at night · 500–700 in afternoon heat · pre-load 500mg at start</div>
+      </div>
+      <div class="card" style="padding:12px 16px;">
+        <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#718096;margin-bottom:4px;">Caffeine</div>
+        <div style="font-size:1rem;font-weight:700;color:#f6ad55;">First dose Mi 28–30</div>
+        <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Second dose Mi 47–50 · max 400mg total · use after eating solids</div>
+      </div>
+    </div>
+
+    <!-- Anti-nausea toolkit -->
+    <div class="card section" style="margin-bottom:16px;">
+      <div class="section-title">Anti-Nausea Toolkit — Carry These</div>
+      <div class="nut-grid">
+        <div class="nut-card">
+          <h4>Ginger</h4>
+          <p>Ginger chews (Gin-Gins) or capsules. Take 2–3 chews 30 min before major climbs. Proven to reduce nausea. Front vest pocket — not buried.</p>
+        </div>
+        <div class="nut-card">
+          <h4>Peppermint</h4>
+          <p>200 mg peppermint oil capsules. Relaxes GI smooth muscle. Use when nausea hits. Combine with ginger for synergistic effect.</p>
+        </div>
+        <div class="nut-card warning">
+          <h4>Ondansetron (Zofran)</h4>
+          <p>Prescription anti-emetic. Talk to your doctor — many ultra runners carry 4 mg ODT tablets. Dissolves under tongue in 30 sec. Take pre-emptively at West Fork and Scout Mtn AS.</p>
+        </div>
+        <div class="nut-card">
+          <h4>Pepto-Bismol</h4>
+          <p>Chewables. Fast acting for nausea and cramping. Take 2 tabs at first sign of GI distress.</p>
+        </div>
+        <div class="nut-card">
+          <h4>Broth</h4>
+          <p>Most reliable food at altitude. Request at every aid station above 6,500 ft. Sodium + liquid calories + easy on the gut.</p>
+        </div>
+        <div class="nut-card">
+          <h4>Above 7,000 ft: liquids only</h4>
+          <p>Gels, Tailwind, Coke, sports drink, broth. Avoid solids on steep climbs.<br><span style="color:#fc8181;">Skip: PB, cheese, dairy, high-fiber bars.</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop bag station cards -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+      <div class="alert alert-info" style="flex:1;min-width:240px;margin-bottom:0;">
+        ✅ <strong>Drop bags allowed</strong> at all stations except Water Only (Mile 16.9). Mandatory: GPX on device at all times.
+      </div>
+      <div class="alert alert-warn" style="flex:1;min-width:240px;margin-bottom:0;">
+        ⚠️ <strong>Scout Mtn → Big Fir = 10.8 mi unsupported.</strong> Pack for 3–4 hours. No bags, no crew.
+      </div>
+    </div>
+    <div style="font-size:0.78rem;color:#718096;margin-bottom:14px;">Arrival times based on 18:00 min/mi base pace with Naismith adjustment — update in the <span style="color:#f6ad55;cursor:pointer;" onclick="showTab('pace')">Pace tab</span>.</div>
+
+    <div id="dropbag-cards"></div>
+
+    <!-- Finish bag -->
+    <div class="db-card" style="border-color:rgba(104,211,145,0.6);">
+      <div class="db-banner">
+        <div class="db-strip" style="background:#276749;"></div>
+        <div class="db-banner-main">
+          <div class="db-left">
+            <div class="db-name">🏁 Finish — Mink Creek Campground</div>
+            <div class="db-mile-row">
+              <span class="db-mile">Mi 53.9</span>
+              <span class="db-elev">5,154 ft</span>
+              <span style="font-size:0.75rem;color:#68d391;">Leave with crew or at finish area</span>
+            </div>
+          </div>
+          <div class="db-right">
+            <div class="db-condition" style="background:rgba(104,211,145,0.2);color:#68d391;">🏁 You did it</div>
+          </div>
+        </div>
+      </div>
+      <div class="db-body" style="grid-template-columns:1fr;">
+        <div class="db-col" style="border-right:none;">
+          <div class="db-col-label gear">Finish Bag Contents</div>
+          <ul style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;list-style:none;padding:0;margin:0;">
+            <li class="hi"><span class="dot">▶</span><span>Dry clothes — full outfit</span></li>
+            <li class="hi"><span class="dot">▶</span><span>Warm puffy jacket</span></li>
+            <li><span class="dot">·</span><span>Sandals or slides</span></li>
+            <li><span class="dot">·</span><span>Phone charger + battery pack</span></li>
+            <li><span class="dot">·</span><span>Recovery drink / protein shake</span></li>
+            <li><span class="dot">·</span><span>Food you've been craving all race</span></li>
+            <li><span class="dot">·</span><span>Wet wipes / basic hygiene</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- SUPPLEMENTS TAB -->
+  <div id="tab-supplements" class="tab-panel">
+
+    <div class="alert alert-warn">
+      <strong>Before any supplement:</strong> Get bloodwork first. Ferritin and Vitamin D are the two tests that most often reveal fixable deficiencies in endurance runners — and fixing a real deficiency beats any supplement stack by a factor of 10. A sports medicine panel costs ~$100–200 and is the highest-ROI thing you can do right now with 6 weeks to go.
+    </div>
+
+    <!-- Tier 1 -->
+    <div class="card section">
+      <div class="section-title" style="color:#68d391;">Tier 1 — Strong evidence. Take these.</div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Ferritin / Iron</div><div class="supp-sub">Test first — do not guess</div></div><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">⚠️ Get tested this week</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">What it does</div>Oxygen transport, altitude adaptation. Low ferritin (&lt;50 ng/mL) is the single most common fixable performance limiter in distance runners. Standard lab "normal" (12 ng/mL) is meaningless for athletes.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>Only supplement if deficiency confirmed. Ferrous bisglycinate 25–50 mg with Vitamin C, away from coffee/tea. Do NOT take if ferritin is normal — iron overload is harmful.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Racing at altitude: your body needs more iron to make RBCs. Borderline low ferritin is correctable in 6 weeks. This is the highest-ROI blood test you can get right now.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Vitamin D3 + K2</div><div class="supp-sub">Test first ideally</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">What it does</div>Injury prevention, immune function, muscle contractility, mood. Deficiency is common even in sunny climates — early-morning runners miss peak UV. K2 directs calcium to bones, not arteries.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>2,000–4,000 IU D3 with fat (breakfast). Add 100 mcg K2 (MK-7). Target: 40–60 ng/mL 25-OH-D. If tested and normal, 1,000 IU maintenance is fine.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Peak training = higher stress fracture and injury risk. Deficiency is the silent one. Ventura sun helps but early AM runs mean less UV exposure than you'd think.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Magnesium Glycinate</div><div class="supp-sub">Take before bed</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">What it does</div>Sleep quality, muscle relaxation, energy metabolism. Athletes lose significantly more through sweat. Hard to eat enough when training hard. Glycinate form absorbs well and doesn't cause GI upset.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>300–400 mg magnesium glycinate, 30–60 min before bed. Not with calcium. Avoid oxide form — poorly absorbed and causes diarrhea.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Sleep is your #1 recovery tool. Night cramps, waking at 2–3 AM, or restless sleep during heavy training weeks often traces back to mag deficiency.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Omega-3 (EPA + DHA)</div><div class="supp-sub">Takes 4–6 weeks to saturate</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">What it does</div>Reduces exercise-induced inflammation, speeds recovery between hard sessions, supports joint health. Multiple high-quality RCTs confirm benefit in endurance athletes.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>2–3 g combined EPA+DHA daily with a meal. Triglyceride form absorbs better. Fish oil or algae-based are equivalent. Refrigerate after opening.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>6 weeks of peak training — recovery between sessions is the limiting factor. Needs 4–6 weeks to saturate tissue, so timing matters. Start today.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Tart Cherry</div><div class="supp-sub">AM + before bed</div></div><span class="supp-when" style="background:rgba(104,211,145,0.2);color:#68d391;">Start now</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">What it does</div>Reduces post-exercise muscle damage and soreness via anthocyanins. Improves sleep via melatonin precursors. Meta-analysis confirms meaningful recovery benefit in endurance athletes. Not hype — the RCT data is solid.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>480 mg Montmorency extract twice daily, OR 8–12 oz juice concentrate AM and before bed. Capsules are convenient and equivalent.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Back-to-back training days: specifically reduces the next-day soreness that limits workout quality. Also supports sleep during high-stress taper weeks.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#276749;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#68d391;">Caffeine</div><div class="supp-sub">Race day tool — not daily</div></div><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">Cut daily use 5–7 days pre-race</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">What it does</div>Best-studied ergogenic in sport. Reduces perceived exertion, delays fatigue, improves time-trial performance. Effect holds across hundreds of RCTs. Meaningful for ultra distances.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>3–6 mg/kg, 30–60 min before key use. Race: first dose ~Mile 28–30. Tolerance builds fast — reduce daily intake 5–7 days before race to restore full effect.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Midnight start = you'll be running through the night you'd normally sleep. Caffeine at Mile 30 and 47 is part of the race strategy. Don't burn through it in training.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Tier 2 -->
+    <div class="card section">
+      <div class="section-title" style="color:#f6ad55;">Tier 2 — Useful with caveats. Specifically relevant to you.</div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Probiotics</div><div class="supp-sub">Highly relevant for your GI profile</div></div><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">Start immediately — needs 6 weeks</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">Evidence</div>2024 systematic review: probiotics reduce GI symptoms and improve gut permeability in marathon runners. Mechanism: exercise causes gut hypoperfusion — same stress as altitude. Probiotics strengthen the lining against it. Specific strains matter.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>Multi-strain: Lactobacillus acidophilus + Bifidobacterium longum, 10–20 billion CFU daily with food. Refrigerated. Research-backed brands: Seed DS-01, Culturelle Sport, Jarrow EPS.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Your altitude GI issues = gut hypoperfusion + altitude stress. This directly targets the mechanism. 6 weeks is enough to establish meaningful flora. Highest-priority Tier 2 for your profile.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Beetroot / Dietary Nitrate</div><div class="supp-sub">Loading protocol only — don't take daily</div></div><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">3 days before altitude trips</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">Evidence</div>Nitrates → nitric oxide → vasodilation → more O2 to muscles. Effect is real at sea level and moderate hypoxia. Evidence at 8,000+ ft is mixed. Best data is for sub-maximal pacing — exactly how you'll run this race.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>500 mg nitrate/day (2× 70ml beet shots or ~300g beetroot) for 3 consecutive days before altitude sessions and race. Skip mouthwash — it kills the oral bacteria that convert nitrate. Not worth taking otherwise.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Use the loading protocol before your Mt Pinos trips (Weeks 7–8) and 3 days before the race. Cheap, food-based, and the GI effect is neutral — no extra stomach risk.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Ginger</div><div class="supp-sub">GI management tool, not a performance supplement</div></div><span class="supp-when" style="background:rgba(246,173,85,0.2);color:#f6ad55;">Carry every altitude session</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">Evidence</div>Multiple RCTs: gingerols/shogaols reduce nausea via 5-HT3 receptors — same mechanism as Ondansetron, weaker. Solid evidence for exercise-induced and altitude-related nausea specifically.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>250–500 mg extract capsule 30–60 min before altitude climbs. OR Gin-Gin chews during race. Combine with 200 mg peppermint oil for synergy. Start with lower dose — some people get heartburn.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Front vest pocket. Not buried. You'll reach for this above Mile 13 when the first altitude climb hits. Practice using it on training runs first.</div>
+        </div>
+      </div></div>
+
+      <div class="supp-card"><div class="supp-strip" style="background:#b7791f;"></div><div class="supp-inner">
+        <div class="supp-banner"><div><div class="supp-name" style="color:#f6ad55;">Sodium / Electrolytes</div><div class="supp-sub">The unsexy one that matters most</div></div><span class="supp-when" style="background:rgba(252,129,129,0.2);color:#fc8181;">Non-negotiable at race</span></div>
+        <div class="supp-cols">
+          <div class="supp-col"><div class="supp-col-label">Evidence</div>Unambiguous: hyponatremia (drinking plain water without sodium) causes late-race nausea, cognitive impairment, and GI distress in long ultras. Sodium drives thirst and maintains plasma volume.</div>
+          <div class="supp-col"><div class="supp-col-label">Dose & Timing</div>500–700 mg sodium/hour in heat. Precision Hydration 1000 or LMNT sachets. SaltStick caps. Start at Mile 1 — don't wait until you feel it. Pre-load 500 mg 30 min before the midnight start.</div>
+          <div class="supp-col"><div class="supp-col-label">Your situation</div>Midnight start in cool air = easy to under-drink early, then over-drink plain water later. That exact pattern causes hyponatremia symptoms that mimic altitude sickness. Don't let it compound.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Avoid -->
+    <div class="card section">
+      <div class="section-title" style="color:#fc8181;">What to Avoid — Often Recommended, Evidence Doesn't Support It for You</div>
+      <div class="nut-grid">
+        <div class="nut-card danger">
+          <h4>High-Dose Vitamin C / Vitamin E</h4>
+          <p>This is counterintuitive but the research is clear: <strong>high-dose antioxidants (>500 mg Vit C or >400 IU Vit E daily) blunt training adaptations.</strong> Exercise works by creating controlled oxidative stress — your body responds by building mitochondria, increasing VO2max, improving fat oxidation. Flooding your system with antioxidants suppresses this signaling. Multiple RCTs confirm reduced training adaptation with chronic high-dose supplementation. Small amounts from food (fruits, vegetables) are completely fine and beneficial.</p>
+        </div>
+        <div class="nut-card danger">
+          <h4>Rhodiola Rosea for Altitude</h4>
+          <p>Widely marketed for altitude adaptation. The evidence is more negative than positive — several controlled studies found no benefit for altitude performance or AMS symptoms. The studies showing benefit are mostly low-quality. Not worth the cost or the unknown interactions. Skip it.</p>
+        </div>
+        <div class="nut-card danger">
+          <h4>Acetazolamide (Diamox) without a Doctor</h4>
+          <p>Prescription diuretic that forces acclimatization by acidifying blood. Works for preventing AMS but causes significant side effects (tingling, frequent urination, taste disturbance, carbonate drink aversion — which includes sports drinks). At 8,700 ft you're unlikely to get true AMS. Talk to your doctor, but for most runners at SMU altitude it's overkill and the side effects hurt performance.</p>
+        </div>
+        <div class="nut-card danger">
+          <h4>Creatine during Peak Training</h4>
+          <p>Good supplement for many contexts (strength, power, cognitive function), but during peak ultra training it causes ~1–3 kg of water weight retention, which is dead weight over 54 miles. Fine to use in off-season or after the race. Stop 8–10 weeks before a goal race if you currently take it.</p>
+        </div>
+        <div class="nut-card danger">
+          <h4>Iron without Testing</h4>
+          <p>Taking iron supplements when you're not deficient does nothing for performance and can cause GI distress, constipation, and over time actual toxicity. The potential harm from unnecessary iron supplementation is real. <strong>Test, don't guess.</strong></p>
+        </div>
+        <div class="nut-card danger">
+          <h4>Most "Altitude" Branded Products</h4>
+          <p>Acli-Mate, OxyShot, and similar products have minimal controlled trial evidence. They typically contain ginkgo biloba (weak evidence), antioxidants (potentially counterproductive during training), and herbs with no meaningful RCT support. The markup is high, the evidence is thin.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Protocol summary -->
+    <div class="card section">
+      <div class="section-title">Your Personal Protocol — What to Do and When</div>
+      <table style="font-size:0.82rem;">
+        <thead>
+          <tr><th>When</th><th>Action</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(252,129,129,0.06);">
+            <td><strong>This week</strong></td>
+            <td>Get bloodwork: Ferritin, 25-OH Vitamin D, CBC, magnesium. Ask for an athlete-appropriate ferritin threshold (50+ ng/mL, not the standard 12).</td>
+            <td>Bloodwork findings may change everything else on this list. Do this before spending money on anything.</td>
+          </tr>
+          <tr>
+            <td><strong>Start now</strong></td>
+            <td>Probiotics (daily, refrigerated multi-strain) + Magnesium glycinate (bed) + Omega-3 2–3g (meal) + Tart cherry (AM + bed)</td>
+            <td>All require weeks to take effect. 6 weeks is tight but enough for meaningful adaptation.</td>
+          </tr>
+          <tr>
+            <td><strong>Based on results</strong></td>
+            <td>If ferritin &lt;50: add ferrous bisglycinate 25–50 mg. If Vit D &lt;40: add D3 2,000–4,000 IU + K2.</td>
+            <td>Targeted supplementation only if deficient. Don't supplement blind.</td>
+          </tr>
+          <tr>
+            <td><strong>3 days before each altitude trip</strong></td>
+            <td>Beetroot loading: 500 mg nitrate/day (2 beet shots). Continue through altitude day. Skip daily otherwise.</td>
+            <td>Nitrate loading needs 2–3 days to saturate plasma. No benefit from chronic daily use.</td>
+          </tr>
+          <tr>
+            <td><strong>5–7 days before race</strong></td>
+            <td>Reduce daily caffeine to reset sensitivity. Continue all else.</td>
+            <td>Caffeine tolerance resets in 5–7 days — restores full ergogenic effect for race day.</td>
+          </tr>
+          <tr>
+            <td><strong>Stop during taper</strong></td>
+            <td>Stop high-dose antioxidants (if you were taking them). Stop creatine if you use it.</td>
+            <td>Remove adaptation blockers. Reduce water weight from creatine.</td>
+          </tr>
+          <tr>
+            <td><strong>Race week</strong></td>
+            <td>Beetroot loading days 3, 4, 5 before race. Continue probiotics, magnesium, omega-3. Pre-load sodium 500 mg before midnight start.</td>
+            <td>Nitrate peaks at race time. Gut protection maintained. Electrolyte buffer before long night start.</td>
+          </tr>
+          <tr>
+            <td><strong>Race vest</strong></td>
+            <td>Ginger chews (front pocket) + peppermint capsules + electrolyte caps (SaltStick or Precision 1000). Anti-nausea meds (see Altitude tab).</td>
+            <td>GI management tools accessible, not buried. You will need these above Mile 13.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- TRAINING TAB -->
+  <div id="tab-training" class="tab-panel">
+
+    <div class="progress-overview">
+      <h3>SWAP 50M Training Plan — David & Megan Roche, MD &nbsp;·&nbsp; 12 Weeks &nbsp;·&nbsp; Race: June 6, 2026</h3>
+      <div class="plan-progress-bar"><div class="plan-progress-fill" id="planProgressFill" style="width:0%"></div></div>
+      <div class="progress-labels"><span>Week 1 — Mar 16</span><span id="planProgressLabel">—</span><span>Race — Jun 6</span></div>
+      <div class="stats-row">
+        <div class="mini-stat"><div class="mini-stat-val" id="statWeeksLeft">—</div><div class="mini-stat-label">Weeks to Race</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" id="statCurrentWeek">—</div><div class="mini-stat-label">Current Week</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" id="statCompleted">—</div><div class="mini-stat-label">Workouts Logged</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" id="statThisWeek">—</div><div class="mini-stat-label">This Week Done</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" style="color:#b794f4;" id="statAltRuns">—</div><div class="mini-stat-label">Altitude Sessions Left</div></div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title">Altitude Training — Locations Near Ventura (93003)</div>
+      <div class="alert alert-warn" style="margin-bottom:12px;">
+        <strong>Honest picture:</strong> Nothing within 45 min of Ventura exceeds ~6,700 ft — about 2,000 ft below the race summit. Your local mountains are great for <strong>vert training and leg strength</strong> but won't fully acclimatize you to 8,000+ ft. For real altitude prep, Mt Pinos (~1h 45m) is the minimum commitment worth making — budget 2–3 targeted trips. Arriving in Pocatello on <strong>Thursday June 4</strong> instead of Friday adds 12+ hours at 4,464 ft baseline and is the easiest free acclimatization win available.
+      </div>
+
+      <div style="font-size:0.82rem;font-weight:600;color:#b794f4;margin-bottom:10px;letter-spacing:0.3px;">LOCAL — Under 45 min · Up to 6,700 ft · Great for vert, limited altitude effect</div>
+      <div class="alt-spot-grid" style="margin-bottom:20px;">
+        <div class="alt-spot">
+          <h4>Sisar Canyon → Hines Peak <span>~35–40 min</span></h4>
+          <p><strong>Max: 6,716 ft</strong> — highest reachable point near Ventura. Trailhead off Hwy 150 east of Ojai (Sisar Rd). 20+ mi RT to summit or use as out-and-back for whatever distance you need. Excellent vert and trail quality for ultra prep.</p>
+          <p style="margin-top:6px;"><strong>Drive:</strong> US-101 N → CA-150 E through Ojai → Sisar Rd.</p>
+          <div class="match">⚠️ Best local option. Vert training only — not true altitude acclimatization.</div>
+        </div>
+        <div class="alt-spot">
+          <h4>Topa Topa Bluff <span>~35 min</span></h4>
+          <p><strong>Max: 6,381 ft</strong> — iconic ridge visible from Ventura. 15.3 mi, 4,708 ft gain. Long exposed ridge section mimics mountain ultra feel well. Multiple approach options from Ojai area. Good hard day.</p>
+          <p style="margin-top:6px;"><strong>Drive:</strong> US-101 N → CA-150 → Ojai area TH.</p>
+          <div class="match">⚠️ Great terrain sim, limited altitude benefit.</div>
+        </div>
+        <div class="alt-spot">
+          <h4>Horn Canyon → Chief Peak <span>~30 min</span></h4>
+          <p><strong>Max: 5,587 ft</strong> — trailhead just north of Ojai off Grand Ave. 14.5 mi RT, 4,200 ft gain. Rocky singletrack to open ridge — feels like mountain terrain. Good for midweek long runs when you can't commit to a full day trip.</p>
+          <p style="margin-top:6px;"><strong>Drive:</strong> US-101 N → CA-33 → Grand Ave, Ojai.</p>
+          <div class="match">✅ Closest serious vert. Use for midweek or backup weekends.</div>
+        </div>
+        <div class="alt-spot">
+          <h4>Nordhoff Peak / Gridley Trail <span>~25 min</span></h4>
+          <p><strong>Max: 4,485 ft</strong> — closest climb to Ventura. Gridley Trail from Ojai: ~10 mi RT, 3,700 ft gain. Efficient for midweek hill sessions when time is tight. No altitude benefit but great for climbing legs and economy.</p>
+          <p style="margin-top:6px;"><strong>Drive:</strong> US-101 N → CA-33 N → Gridley Rd, Ojai.</p>
+          <div class="match">✅ Closest option — go here often for vert stimulus.</div>
+        </div>
+      </div>
+
+      <div style="font-size:0.82rem;font-weight:600;color:#68d391;margin-bottom:10px;letter-spacing:0.3px;">WORTH THE DRIVE — 1h 45m–2h 30m · 8,000+ ft · Real acclimatization</div>
+      <div class="alt-spot-grid">
+        <div class="alt-spot">
+          <h4>⭐ Mount Pinos <span>~1h 45m</span></h4>
+          <p><strong>Summit: 8,847 ft — trailhead at 8,300 ft.</strong> The entire run is above 8,000 ft. Exceeds the race summit. Worth making this drive 2–3 times in your plan. For the Week 10 overnight, McGill or Chula Vista campground (~8,300 ft) gives you "sleep high" EPO stimulus without leaving Ventura County.</p>
+          <p style="margin-top:6px;"><strong>Drive:</strong> US-101 N → I-5 N → Frazier Park exit → Mt Pinos Rd.</p>
+          <div class="match">✅ Only option matching race altitude. Plan 2–3 targeted trips.</div>
+        </div>
+        <div class="alt-spot">
+          <h4>San Jacinto via Palm Springs Tram <span>~2h 30m</span></h4>
+          <p><strong>8,516 ft at tram top — no approach hike needed.</strong> Aerial tram from 2,643 ft to 8,516 ft in 10 min. Great if you want altitude exposure with less total effort on the legs. Pair with a 10–16 mi run above the tram station for a strong altitude day.</p>
+          <p style="margin-top:6px;"><strong>Drive:</strong> US-101 S → I-10 E → Palm Springs Tram Rd.</p>
+          <div class="match">✅ Efficient altitude hit — legs stay fresher for the actual run.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title">Altitude Acclimatization Schedule (Recommended)</div>
+      <table style="font-size:0.82rem;">
+        <thead>
+          <tr><th>Week</th><th>Dates</th><th>Volume</th><th>Altitude Session</th><th>Why This Week</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#f6ad55;">Week 6</strong> ← NOW</td><td>Apr 20–26</td><td>43–94 mi</td>
+            <td><span class="tag" style="background:rgba(183,148,244,0.2);color:#b794f4;">Sisar Canyon / Topa Topa Sat long run</span></td>
+            <td>Peak volume week. Use local vert (Sisar Canyon or Topa Topa) for your 18–26 mi long run. Build climbing legs. Reserve Mt Pinos for a key upcoming week.</td>
+          </tr>
+          <tr style="background:rgba(183,148,244,0.05);">
+            <td><strong style="color:#b794f4;">Week 7 ⛰️</strong></td><td>Apr 27–May 3</td><td>38–80 mi</td>
+            <td><span class="tag" style="background:rgba(183,148,244,0.3);color:#b794f4;">Mt Pinos Saturday long run (12–16 mi)</span></td>
+            <td><strong>First real altitude session.</strong> Drive up Saturday morning, run above 8,000 ft. Practice your nutrition strategy at race altitude. This is the most important single training day for your GI adaptation.</td>
+          </tr>
+          <tr style="background:rgba(183,148,244,0.07);">
+            <td><strong style="color:#b794f4;">Week 8 ⭐</strong></td><td>May 4–10</td><td>44–53 mi</td>
+            <td><span class="tag" style="background:rgba(183,148,244,0.4);color:#b794f4;">OVERNIGHT at Mt Pinos + race sim (Fri–Sun)</span></td>
+            <td><strong>Best timing for altitude work — 4 weeks out.</strong> Drive Friday evening, camp at Chula Vista/McGill CG (8,300 ft). Do your race simulation Saturday at altitude (20 mi at 8,000+ ft). Drive home Sunday. At 4 weeks out: any acute "dip" resolves before race day, ventilatory adaptations persist, and gut gets trained at race altitude under race effort. This is the highest-ROI altitude weekend.</td>
+          </tr>
+          <tr>
+            <td><strong>Week 9</strong></td><td>May 11–17</td><td>52–101 mi</td>
+            <td><span class="tag" style="background:rgba(183,148,244,0.2);color:#b794f4;">Mt Pinos day trip — 20–25 mi long run</span></td>
+            <td>Big aerobic week. A second altitude long run here (now 3 weeks out) reinforces ventilatory adaptation without the overnight commitment. The acute dip from a day trip is minimal and resolves in 72 hrs.</td>
+          </tr>
+          <tr>
+            <td><strong>Week 10</strong></td><td>May 18–24</td><td>44–84 mi</td>
+            <td><span class="tag" style="background:rgba(113,128,150,0.2);color:#718096;">Local trails — Sisar Canyon or Chief Peak</span></td>
+            <td>2 weeks out — skip Mt Pinos now. Any overnight at altitude this close risks timing the performance dip onto race day. Stay local, protect legs, keep volume honest for taper.</td>
+          </tr>
+          <tr>
+            <td><strong>Week 11</strong></td><td>May 25–31</td><td>28–59 mi</td>
+            <td><span class="tag" style="background:rgba(113,128,150,0.2);color:#718096;">Local easy trails only — taper</span></td>
+            <td>Taper. Nordhoff or short Chief Peak for easy runs near home. No altitude, no long drives, no hard efforts. Trust the work.</td>
+          </tr>
+          <tr>
+            <td><strong>Week 12</strong></td><td>Jun 1–6</td><td>Race week</td>
+            <td><span class="tag tag-food">Arrive Pocatello Thu Jun 4 if possible</span></td>
+            <td><strong>Arriving Thursday night vs Friday</strong> gives you ~36 extra hours at 4,464 ft baseline — meaningful for GI adaptation. If possible, drive 30 min to 6,000+ ft for a 20-min shakeout run Jun 5 before midnight check-in.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Race Prep Checklist -->
+    <div class="card section" style="margin-bottom:20px;">
+      <div class="section-title">Race Prep Checklist</div>
+      <div class="grid-2">
+        <div>
+          <div class="section-title" style="font-size:0.85rem;color:#f6ad55;">4–6 Weeks Out</div>
+          <ul class="checklist">
+            <li>Long run 22–28 mi with significant vert</li>
+            <li>Practice eating gels + real food at effort — train the gut</li>
+            <li>Run in the dark at least twice — test headlamp gear</li>
+            <li>Break in race-day shoes now</li>
+            <li>Practice poles on long downhills</li>
+            <li>Test anti-nausea meds on a training run</li>
+          </ul>
+          <div class="section-title" style="font-size:0.85rem;color:#f6ad55;margin-top:14px;">1–2 Weeks Out</div>
+          <ul class="checklist">
+            <li>Taper — cut volume 40–50%, keep some intensity</li>
+            <li>Pack drop bags (use Race Day tab)</li>
+            <li>GPX loaded on watch AND phone — test it</li>
+            <li>Obtain Zofran prescription if using</li>
+            <li>Cut daily caffeine 5–7 days before race</li>
+          </ul>
+        </div>
+        <div>
+          <div class="section-title" style="font-size:0.85rem;color:#f6ad55;">Arrive Pocatello (aim for Thu Jun 4)</div>
+          <ul class="checklist">
+            <li>Arrive Thu Jun 4 — every hour at 4,464 ft helps</li>
+            <li>Carb load dinner Jun 4 — pasta, rice, bread</li>
+            <li>Drop bags packed and labeled by station</li>
+            <li>Attend race briefing</li>
+            <li>Lay out all race gear the night before</li>
+          </ul>
+          <div class="section-title" style="font-size:0.85rem;color:#f6ad55;margin-top:14px;">Race Night (Jun 5)</div>
+          <ul class="checklist">
+            <li>Wake 10–10:30 PM · snack at 10:30 (banana, toast, gel)</li>
+            <li>Sip electrolytes — not plain water — for 2 hrs before start</li>
+            <li>Headlamp charged and tested</li>
+            <li>Check in at Gibson Jack by 11:30 PM</li>
+            <li>Ginger chews + anti-nausea in vest front pocket</li>
+            <li>Weather check — pack summit layers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:4px;">Weekly Workout Tracker</div>
+    <div class="week-filter">
+      <div class="filter-btn active" onclick="filterWeeks('all',this)">All Weeks</div>
+      <div class="filter-btn" onclick="filterWeeks('remaining',this)">Remaining</div>
+      <div class="filter-btn" onclick="filterWeeks('altitude',this)">Altitude Weeks</div>
+    </div>
+    <div class="week-grid" id="weekGrid"></div>
+
+  </div>
+
+</div><!-- end container -->
+
+<script>
+const STATIONS = [{"name":"00:START GibsonJack","mile":0.0,"elev_ft":5203,"lat":42.793151001677025,"lon":-112.430929094553,"seg_gain_ft":0,"seg_loss_ft":0,"seg_miles":0.0,"cum_gain_ft":0},{"name":"1:CusickCrkAS","mile":7.5,"elev_ft":5692,"lat":42.81982467216316,"lon":-112.46763110160829,"seg_gain_ft":1481,"seg_loss_ft":992,"seg_miles":7.5,"cum_gain_ft":1481},{"name":"2:CityCrkAS","mile":12.8,"elev_ft":4820,"lat":42.84791649695969,"lon":-112.46064662933351,"seg_gain_ft":450,"seg_loss_ft":1318,"seg_miles":5.3,"cum_gain_ft":1931},{"name":"3:WaterOnly","mile":16.9,"elev_ft":7057,"lat":42.804573991094145,"lon":-112.49729394893409,"seg_gain_ft":2226,"seg_loss_ft":41,"seg_miles":4.1,"cum_gain_ft":4157},{"name":"4:ElkMeadowsAS","mile":24.7,"elev_ft":6781,"lat":42.74115006467178,"lon":-112.4715578556061,"seg_gain_ft":1018,"seg_loss_ft":1285,"seg_miles":7.8,"cum_gain_ft":5174},{"name":"5:WestForkAS","mile":30.4,"elev_ft":5213,"lat":42.72247862885166,"lon":-112.4194023013115,"seg_gain_ft":36,"seg_loss_ft":1565,"seg_miles":5.7,"cum_gain_ft":5211},{"name":"6:ScoutMtnAS","mile":36.8,"elev_ft":6621,"lat":42.68898127042611,"lon":-112.3594629764557,"seg_gain_ft":1912,"seg_loss_ft":478,"seg_miles":6.4,"cum_gain_ft":7123},{"name":"7:BigFirAS","mile":47.6,"elev_ft":5797,"lat":42.70696605062863,"lon":-112.36248046159746,"seg_gain_ft":2384,"seg_loss_ft":3233,"seg_miles":10.8,"cum_gain_ft":9507},{"name":"FINISH","mile":53.9,"elev_ft":5154,"lat":42.72822132926143,"lon":-112.4164116382599,"seg_gain_ft":1293,"seg_loss_ft":1936,"seg_miles":6.3,"cum_gain_ft":10800}];
+
+const PROFILE = [[0.0,5203],[0.02,5203],[0.04,5203],[0.06,5213],[0.08,5221],[0.11,5230],[0.12,5233],[0.13,5240],[0.18,5253],[0.22,5266],[0.26,5285],[0.3,5302],[0.34,5318],[0.38,5327],[0.42,5328],[0.46,5335],[0.5,5336],[0.53,5338],[0.56,5345],[0.59,5348],[0.61,5351],[0.63,5352],[0.66,5350],[0.7,5353],[0.74,5367],[0.78,5380],[0.81,5394],[0.84,5404],[0.86,5407],[0.88,5423],[0.92,5437],[0.95,5456],[0.99,5472],[1.03,5492],[1.07,5510],[1.1,5528],[1.13,5539],[1.16,5555],[1.2,5564],[1.24,5578],[1.28,5594],[1.32,5614],[1.35,5627],[1.37,5636],[1.4,5646],[1.42,5656],[1.45,5670],[1.48,5689],[1.52,5705],[1.56,5722],[1.59,5735],[1.62,5755],[1.65,5766],[1.69,5784],[1.73,5804],[1.77,5823],[1.81,5834],[1.84,5846],[1.88,5856],[1.92,5863],[1.96,5869],[2.0,5886],[2.03,5899],[2.05,5896],[2.08,5894],[2.11,5895],[2.13,5892],[2.16,5888],[2.2,5892],[2.23,5904],[2.26,5915],[2.29,5920],[2.32,5920],[2.35,5921],[2.38,5927],[2.41,5922],[2.43,5916],[2.45,5907],[2.49,5914],[2.51,5914],[2.54,5919],[2.57,5932],[2.61,5925],[2.63,5927],[2.66,5919],[2.69,5922],[2.73,5948],[2.76,5968],[2.8,5976],[2.83,5980],[2.84,5991],[2.87,5999],[2.89,5997],[2.91,5985],[2.93,5974],[2.94,5971],[2.97,5968],[2.99,5953],[3.02,5957],[3.05,5978],[3.08,6003],[3.11,6007],[3.14,6013],[3.17,6014],[3.2,6029],[3.22,6033],[3.26,6029],[3.29,6042],[3.32,6038],[3.35,6029],[3.37,6028],[3.4,6042],[3.44,6058],[3.47,6069],[3.5,6064],[3.53,6068],[3.56,6076],[3.59,6074],[3.62,6089],[3.64,6100],[3.67,6100],[3.7,6109],[3.73,6112],[3.77,6122],[3.79,6122],[3.81,6115],[3.83,6127],[3.86,6124],[3.88,6121],[3.92,6126],[3.95,6129],[3.98,6131],[4.02,6138],[4.04,6136],[4.07,6131],[4.1,6134],[4.12,6135],[4.15,6144],[4.18,6150],[4.22,6156],[4.25,6158],[4.28,6159],[4.3,6157],[4.32,6152],[4.35,6151],[4.38,6154],[4.41,6161],[4.43,6165],[4.45,6168],[4.49,6181],[4.52,6188],[4.55,6201],[4.62,6214],[4.65,6224],[4.67,6222],[4.71,6224],[4.74,6231],[4.77,6219],[4.8,6221],[4.83,6217],[4.85,6220],[4.88,6209],[4.9,6200],[4.93,6195],[4.96,6189],[4.98,6181],[5.01,6183],[5.04,6186],[5.07,6193],[5.1,6187],[5.14,6204],[5.17,6207],[5.2,6211],[5.23,6204],[5.26,6206],[5.29,6221],[5.32,6222],[5.35,6214],[5.37,6212],[5.41,6221],[5.44,6219],[5.48,6215],[5.5,6218],[5.53,6211],[5.56,6209],[5.59,6204],[5.61,6202],[5.64,6204],[5.66,6206],[5.69,6213],[5.72,6220],[5.75,6221],[5.77,6210],[5.79,6201],[5.81,6191],[5.83,6177],[5.85,6170],[5.87,6161],[5.91,6160],[5.95,6173],[5.98,6183],[6.02,6186],[6.06,6198],[6.09,6218],[6.12,6209],[6.14,6205],[6.17,6193],[6.19,6186],[6.21,6180],[6.23,6165],[6.26,6161],[6.28,6148],[6.3,6138],[6.33,6129],[6.35,6119],[6.38,6108],[6.4,6101],[6.42,6092],[6.44,6086],[6.46,6076],[6.49,6069],[6.51,6059],[6.53,6053],[6.55,6045],[6.57,6033],[6.59,6024],[6.61,6015],[6.63,6001],[6.65,6000],[6.67,5994],[6.69,6004],[6.71,5997],[6.73,5991],[6.76,5991],[6.78,5981],[6.8,5968],[6.83,5962],[6.85,5950],[6.87,5939],[6.89,5931],[6.91,5926],[6.93,5912],[6.95,5895],[6.98,5894],[7.0,5892],[7.02,5889],[7.04,5882],[7.06,5869],[7.09,5859],[7.1,5844],[7.13,5838],[7.15,5828],[7.17,5818],[7.18,5809],[7.2,5799],[7.22,5788],[7.25,5776],[7.27,5764],[7.29,5758],[7.31,5752],[7.33,5742],[7.35,5729],[7.37,5721],[7.39,5715],[7.41,5699],[7.42,5692],[7.43,5692],[7.44,5696],[7.45,5696],[7.47,5693],[7.51,5701],[7.55,5715],[7.57,5713],[7.59,5707],[7.61,5694],[7.65,5699],[7.69,5711],[7.72,5719],[7.75,5716],[7.79,5721],[7.82,5734],[7.86,5753],[7.89,5778],[7.93,5784],[7.96,5801],[8.0,5810],[8.04,5820],[8.07,5832],[8.11,5837],[8.14,5856],[8.17,5869],[8.21,5876],[8.24,5888],[8.28,5901],[8.31,5915],[8.35,5935],[8.38,5952],[8.42,5951],[8.45,5957],[8.48,5968],[8.51,5979],[8.55,5993],[8.58,6009],[8.62,6027],[8.65,6034],[8.69,6047],[8.72,6053],[8.76,6053],[8.79,6073],[8.83,6093],[8.99,6079],[9.46,5921],[9.83,5800],[10.22,5637],[10.64,5439],[10.72,5405],[10.85,5354],[10.99,5345],[11.12,5316],[11.25,5273],[11.33,5223],[11.43,5187],[11.56,5149],[11.64,5087],[11.74,5036],[11.85,5012],[11.95,4980],[12.03,4954],[12.17,4918],[12.34,4879],[12.58,4852],[12.75,4827],[12.78,4826],[12.84,4856],[12.9,4892],[12.96,4936],[13.03,4980],[13.11,5026],[13.21,5042],[13.33,5043],[13.51,5024],[13.63,5026],[13.67,5036],[13.8,5067],[13.92,5101],[14.0,5131],[14.1,5174],[14.18,5196],[14.29,5227],[14.4,5253],[14.5,5294],[14.62,5333],[14.68,5367],[14.73,5367],[14.83,5394],[14.92,5427],[15.01,5456],[15.27,5571],[15.76,5784],[16.24,6129],[16.72,6625],[17.2,7031],[17.69,7065],[18.18,6969],[18.66,6768],[19.15,6617],[19.64,6450],[20.12,6296],[20.61,6148],[21.09,6154],[21.57,6578],[22.06,6463],[22.51,6509],[22.99,6702],[23.47,6614],[23.96,6586],[24.45,6611],[24.92,6614],[25.4,6555],[25.89,6503],[26.38,6407],[26.73,6243],[26.91,6194],[27.09,6180],[27.28,6175],[27.47,6152],[27.66,6122],[27.85,6074],[28.03,6004],[28.22,5932],[28.4,5843],[28.58,5779],[28.78,5689],[28.97,5607],[29.15,5561],[29.33,5502],[29.52,5455],[29.71,5420],[29.89,5388],[30.07,5305],[30.26,5259],[30.44,5213],[30.84,5340],[31.63,5591],[32.64,5958],[32.97,6097],[33.15,6214],[33.32,6329],[33.49,6457],[33.67,6505],[33.85,6558],[34.02,6654],[34.2,6673],[34.37,6755],[34.55,6827],[34.72,6887],[34.9,6896],[35.08,6867],[35.26,6929],[35.43,6936],[35.61,6991],[35.78,7076],[36.21,6900],[36.7,6686],[37.18,6815],[37.67,6975],[37.93,7162],[38.11,7200],[38.28,7218],[38.46,7228],[38.64,7224],[38.81,7293],[38.99,7356],[39.16,7329],[39.35,7290],[39.52,7283],[39.7,7395],[39.88,7507],[40.05,7628],[40.22,7698],[40.4,7784],[40.67,7945],[40.92,8047],[40.95,8061],[40.97,8077],[41.0,8085],[41.02,8093],[41.05,8100],[41.07,8104],[41.1,8110],[41.12,8117],[41.15,8127],[41.17,8136],[41.2,8140],[41.22,8153],[41.23,8158],[41.24,8159],[41.26,8163],[41.28,8179],[41.31,8186],[41.33,8199],[41.35,8212],[41.37,8225],[41.39,8235],[41.42,8248],[41.44,8264],[41.46,8274],[41.48,8289],[41.5,8304],[41.52,8310],[41.55,8321],[41.57,8330],[41.59,8346],[41.61,8356],[41.63,8365],[41.64,8379],[41.65,8383],[41.67,8393],[41.69,8404],[41.71,8414],[41.73,8423],[41.75,8439],[41.77,8451],[41.79,8462],[41.82,8468],[41.84,8471],[41.85,8483],[41.87,8494],[41.9,8501],[41.93,8510],[41.95,8520],[41.97,8533],[42.0,8524],[42.04,8507],[42.06,8501],[42.09,8493],[42.13,8468],[42.16,8458],[42.2,8449],[42.24,8442],[42.28,8432],[42.31,8432],[42.34,8438],[42.36,8445],[42.39,8455],[42.41,8461],[42.44,8471],[42.46,8481],[42.49,8491],[42.51,8501],[42.54,8510],[42.56,8517],[42.58,8530],[42.61,8540],[42.63,8556],[42.64,8570],[42.66,8586],[42.68,8600],[42.7,8615],[42.73,8625],[42.75,8638],[42.77,8647],[42.79,8658],[42.81,8671],[42.84,8681],[42.86,8694],[42.88,8691],[42.89,8685],[42.9,8672],[42.92,8652],[42.95,8645],[42.99,8627],[43.01,8635],[43.04,8625],[43.07,8622],[43.12,8625],[43.14,8629],[43.18,8612],[43.21,8612],[43.25,8606],[43.27,8619],[43.3,8615],[43.33,8599],[43.36,8567],[43.4,8529],[43.43,8474],[43.46,8428],[43.47,8409],[43.49,8383],[43.52,8352],[43.54,8315],[43.57,8291],[43.6,8267],[43.63,8231],[43.66,8198],[43.68,8176],[43.7,8148],[43.73,8109],[43.75,8071],[43.77,8032],[43.79,7989],[43.82,7962],[43.84,7932],[43.86,7904],[43.89,7868],[43.91,7838],[43.94,7812],[43.97,7779],[43.99,7761],[44.01,7749],[44.02,7730],[44.04,7714],[44.05,7700],[44.07,7680],[44.08,7667],[44.09,7651],[44.11,7641],[44.13,7629],[44.15,7618],[44.17,7608],[44.19,7601],[44.21,7593],[44.23,7582],[44.25,7569],[44.27,7556],[44.29,7539],[44.3,7529],[44.32,7516],[44.34,7502],[44.36,7486],[44.38,7475],[44.39,7465],[44.41,7458],[44.42,7442],[44.45,7428],[44.48,7429],[44.51,7423],[44.53,7419],[44.56,7408],[44.58,7398],[44.6,7386],[44.62,7376],[44.64,7369],[44.66,7357],[44.69,7345],[44.71,7338],[44.73,7329],[44.75,7320],[44.77,7312],[44.8,7301],[44.82,7291],[44.83,7279],[44.85,7274],[44.88,7263],[44.9,7256],[44.93,7247],[44.95,7245],[44.97,7238],[45.0,7225],[45.02,7211],[45.04,7198],[45.06,7188],[45.09,7178],[45.11,7165],[45.13,7158],[45.15,7142],[45.17,7136],[45.19,7127],[45.21,7118],[45.24,7105],[45.26,7091],[45.28,7084],[45.3,7072],[45.32,7059],[45.34,7051],[45.36,7035],[45.38,7027],[45.4,7019],[45.41,7009],[45.43,7001],[45.45,6985],[45.46,6971],[45.48,6955],[45.5,6942],[45.51,6930],[45.52,6916],[45.53,6903],[45.55,6888],[45.57,6875],[45.58,6865],[45.6,6855],[45.62,6837],[45.63,6823],[45.65,6807],[45.67,6795],[45.69,6779],[45.71,6764],[45.73,6746],[45.75,6731],[45.77,6717],[45.8,6703],[45.82,6692],[45.83,6683],[45.85,6674],[45.88,6653],[45.9,6636],[45.92,6629],[45.95,6615],[45.97,6597],[45.99,6589],[46.02,6573],[46.05,6582],[46.07,6575],[46.09,6566],[46.11,6550],[46.13,6533],[46.16,6518],[46.18,6503],[46.21,6492],[46.23,6476],[46.24,6475],[46.25,6458],[46.27,6447],[46.29,6439],[46.31,6428],[46.34,6417],[46.37,6414],[46.39,6407],[46.42,6399],[46.43,6396],[46.46,6391],[46.48,6392],[46.5,6378],[46.52,6374],[46.54,6364],[46.56,6359],[46.58,6348],[46.6,6337],[46.62,6323],[46.64,6312],[46.66,6299],[46.68,6289],[46.7,6279],[46.71,6271],[46.73,6259],[46.74,6253],[46.76,6229],[46.78,6230],[46.8,6233],[46.82,6224],[46.84,6209],[46.86,6209],[46.88,6204],[46.9,6194],[46.92,6188],[46.93,6182],[46.95,6175],[46.97,6165],[46.98,6162],[46.99,6156],[47.01,6152],[47.02,6138],[47.05,6128],[47.07,6119],[47.09,6110],[47.12,6096],[47.14,6086],[47.17,6091],[47.19,6076],[47.21,6063],[47.23,6050],[47.25,6037],[47.28,6024],[47.3,6009],[47.31,6002],[47.34,5984],[47.36,5971],[47.38,5962],[47.41,5946],[47.43,5931],[47.45,5920],[47.47,5904],[47.5,5906],[47.52,5889],[47.54,5872],[47.56,5860],[47.58,5844],[47.6,5820],[47.62,5807],[47.64,5804],[47.67,5797],[47.69,5826],[47.72,5869],[47.75,5906],[47.78,5919],[47.82,5938],[47.85,5960],[47.88,5988],[47.91,6015],[47.94,6038],[47.98,6050],[48.01,6059],[48.05,6072],[48.08,6089],[48.1,6102],[48.13,6132],[48.16,6152],[48.18,6172],[48.2,6193],[48.23,6220],[48.27,6243],[48.3,6273],[48.33,6289],[48.36,6289],[48.39,6288],[48.41,6274],[48.43,6256],[48.44,6237],[48.46,6220],[48.48,6204],[48.51,6191],[48.53,6178],[48.56,6169],[48.59,6166],[48.61,6149],[48.63,6132],[48.65,6115],[48.67,6100],[48.69,6086],[48.72,6073],[48.77,6060],[48.94,5948],[49.12,5783],[49.29,5681],[49.47,5469],[49.65,5328],[49.82,5356],[50.0,5374],[50.17,5446],[50.34,5518],[50.51,5577],[50.69,5636],[50.86,5712],[51.03,5751],[51.21,5868],[51.37,6010],[51.55,6066],[51.73,5968],[51.91,5889],[52.09,5830],[52.27,5748],[52.45,5663],[52.64,5558],[52.82,5479],[53.01,5413],[53.19,5361],[53.37,5298],[53.57,5299],[53.72,5222],[53.86,5167]];
+
+const TRACK = [[42.79314,-112.43097],[42.79288,-112.43142],[42.79289,-112.43224],[42.79295,-112.4328],[42.79311,-112.43411],[42.79273,-112.43545],[42.79177,-112.43644],[42.79088,-112.43745],[42.79012,-112.43847],[42.7894,-112.43914],[42.7889,-112.43983],[42.78831,-112.44071],[42.78877,-112.44058],[42.78965,-112.43994],[42.79013,-112.44008],[42.79031,-112.44053],[42.78985,-112.44185],[42.78983,-112.44329],[42.78989,-112.44432],[42.79073,-112.44357],[42.79172,-112.44425],[42.79186,-112.44519],[42.79147,-112.44596],[42.79097,-112.44697],[42.79045,-112.44815],[42.78985,-112.44907],[42.78973,-112.45034],[42.79029,-112.45152],[42.79142,-112.45141],[42.79251,-112.45107],[42.79354,-112.45142],[42.79428,-112.45146],[42.79503,-112.45112],[42.79577,-112.45094],[42.7967,-112.45093],[42.79763,-112.45059],[42.79852,-112.45047],[42.79924,-112.45065],[42.79978,-112.45131],[42.80031,-112.45075],[42.80117,-112.45012],[42.80189,-112.44994],[42.80277,-112.44948],[42.80377,-112.44912],[42.80451,-112.44871],[42.80509,-112.44849],[42.80565,-112.44832],[42.80616,-112.44837],[42.80672,-112.44864],[42.80734,-112.4496],[42.80804,-112.45031],[42.80856,-112.45102],[42.80869,-112.45018],[42.80858,-112.44895],[42.8086,-112.44813],[42.80959,-112.44846],[42.8102,-112.44918],[42.81073,-112.4502],[42.81102,-112.45119],[42.81147,-112.45206],[42.81206,-112.45297],[42.81267,-112.45371],[42.81311,-112.45337],[42.81331,-112.45226],[42.81354,-112.45099],[42.81374,-112.44978],[42.81367,-112.44872],[42.81374,-112.44784],[42.81367,-112.44647],[42.81358,-112.44529],[42.81335,-112.44437],[42.81337,-112.44342],[42.81352,-112.4425],[42.81435,-112.44281],[42.8151,-112.44339],[42.81578,-112.44499],[42.81584,-112.44612],[42.81614,-112.44718],[42.81586,-112.44834],[42.81571,-112.44933],[42.81574,-112.4503],[42.81579,-112.45127],[42.81519,-112.45212],[42.81518,-112.45339],[42.81559,-112.45461],[42.81528,-112.45553],[42.81527,-112.45666],[42.81536,-112.45787],[42.81463,-112.45803],[42.81378,-112.45851],[42.81334,-112.45946],[42.81271,-112.46002],[42.81209,-112.46058],[42.81179,-112.46135],[42.81243,-112.4619],[42.81303,-112.46215],[42.81345,-112.46216],[42.81386,-112.46296],[42.81327,-112.46414],[42.81275,-112.4654],[42.8129,-112.46595],[42.81352,-112.46567],[42.81413,-112.46539],[42.81471,-112.46546],[42.81524,-112.46528],[42.81518,-112.46584],[42.81507,-112.46637],[42.81556,-112.46587],[42.81617,-112.46572],[42.81679,-112.46561],[42.81735,-112.46578],[42.81794,-112.46568],[42.81745,-112.46601],[42.81692,-112.466],[42.81628,-112.46633],[42.81692,-112.46636],[42.81815,-112.46644],[42.81989,-112.46657],[42.82067,-112.46776],[42.82151,-112.46767],[42.82248,-112.46771],[42.82349,-112.46951],[42.82407,-112.47077],[42.82464,-112.47],[42.82314,-112.47326],[42.82194,-112.47486],[42.82093,-112.47628],[42.82786,-112.47203],[42.82853,-112.47473],[42.83231,-112.47277],[42.83464,-112.46985],[42.83683,-112.46698],[42.83935,-112.46442],[42.84319,-112.46002],[42.84748,-112.4607],[42.84489,-112.46236],[42.84033,-112.46621],[42.8379,-112.46878],[42.83617,-112.47252],[42.83255,-112.4777],[42.82762,-112.48259],[42.82426,-112.48623],[42.81955,-112.49649],[42.80785,-112.49369],[42.80087,-112.50625],[42.79198,-112.51624],[42.77989,-112.50787],[42.76637,-112.50416],[42.7598,-112.49332],[42.74919,-112.47995],[42.74314,-112.4738],[42.74411,-112.46501],[42.75502,-112.45558],[42.74767,-112.44775],[42.74158,-112.44243],[42.73688,-112.43921],[42.72802,-112.43213],[42.72311,-112.42059],[42.71481,-112.4117],[42.69891,-112.39322],[42.69848,-112.38703],[42.69417,-112.37678],[42.69008,-112.37446],[42.68635,-112.37561],[42.68291,-112.37151],[42.67865,-112.36802],[42.67553,-112.36319],[42.68712,-112.36019],[42.67142,-112.36097],[42.66668,-112.35879],[42.65899,-112.35242],[42.65603,-112.34781],[42.65487,-112.34368],[42.65738,-112.33947],[42.66351,-112.33554],[42.66135,-112.34291],[42.66183,-112.3442],[42.66274,-112.34542],[42.66354,-112.34527],[42.66509,-112.34588],[42.6653,-112.34537],[42.66601,-112.34562],[42.66762,-112.34581],[42.6696,-112.34376],[42.67109,-112.34468],[42.67234,-112.34553],[42.673,-112.3459],[42.67485,-112.34588],[42.676,-112.34628],[42.67726,-112.34605],[42.67811,-112.34602],[42.67983,-112.34597],[42.68181,-112.34617],[42.68353,-112.34641],[42.68514,-112.34538],[42.68696,-112.3445],[42.68847,-112.34275],[42.68964,-112.34227],[42.69053,-112.34101],[42.69154,-112.34009],[42.69218,-112.34157],[42.69262,-112.34045],[42.69385,-112.3393],[42.69499,-112.33754],[42.69613,-112.33826],[42.69777,-112.33913],[42.69843,-112.34046],[42.69669,-112.33975],[42.69564,-112.34042],[42.69576,-112.34202],[42.69645,-112.34096],[42.69757,-112.34243],[42.6978,-112.34367],[42.69838,-112.34436],[42.69951,-112.34369],[42.70026,-112.3431],[42.70033,-112.34401],[42.69976,-112.346],[42.69903,-112.34736],[42.69935,-112.34812],[42.69999,-112.35021],[42.69938,-112.35226],[42.69809,-112.3535],[42.6989,-112.35337],[42.70021,-112.35362],[42.70045,-112.35563],[42.70116,-112.35661],[42.70162,-112.35731],[42.70308,-112.35867],[42.70452,-112.35967],[42.70551,-112.36162],[42.70604,-112.36292],[42.70651,-112.36207],[42.70697,-112.36244],[42.70839,-112.36199],[42.71099,-112.36139],[42.71282,-112.36111],[42.71422,-112.36137],[42.71602,-112.36168],[42.71708,-112.36248],[42.71803,-112.36183],[42.71939,-112.36188],[42.72047,-112.36262],[42.72321,-112.37003],[42.72547,-112.37604],[42.71971,-112.37939],[42.71833,-112.38765],[42.71491,-112.39617],[42.71205,-112.40369],[42.71857,-112.41369],[42.72306,-112.41616],[42.72675,-112.41664]];
+
+const SUNRISE_MIN = 347;
+const CUTOFF_MIN = 22 * 60;
+
+function minToTime(mins) {
+  const h = Math.floor(mins / 60) % 24;
+  const m = Math.round(mins % 60);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function formatDuration(mins) {
+  const h = Math.floor(mins / 60);
+  const m = Math.round(mins % 60);
+  return `${h}h ${String(m).padStart(2,'0')}m`;
+}
+
+function segmentTime(seg, basePaceMin) {
+  const flatTime = seg.seg_miles * basePaceMin;
+  const climbBonus = seg.seg_gain_ft / 100;
+  return flatTime + climbBonus;
+}
+
+function giRisk(s) {
+  const elev = s.elev_ft;
+  const gainRate = s.seg_miles > 0 ? s.seg_gain_ft / s.seg_miles : 0;
+  if (elev >= 7500 || gainRate > 400) return '<span class="gi-high">High</span>';
+  if (elev >= 6500 || gainRate > 200) return '<span class="gi-mod">Mod</span>';
+  return '<span class="gi-low">Low</span>';
+}
+
+// === ELEVATION CHART ===
+let chart = null;
+
+function buildChart() {
+  const ctx = document.getElementById('elevationChart').getContext('2d');
+  const miles = PROFILE.map(p => p[0]);
+  const elevs = PROFILE.map(p => p[1]);
+
+  // Night zone background (approx Miles 0–18 shading via a fill dataset trick)
+  // We'll use three colored background strips as area datasets
+  const nightEnd = 18.0; // approximate
+  const modAltLow = 6500;
+  const highAltLow = 7500;
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+  gradient.addColorStop(0, 'rgba(246,173,85,0.45)');
+  gradient.addColorStop(1, 'rgba(246,173,85,0.03)');
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: miles,
+      datasets: [
+        {
+          label: 'Elevation',
+          data: elevs,
+          borderColor: '#f6ad55',
+          borderWidth: 1.8,
+          backgroundColor: gradient,
+          fill: true,
+          pointRadius: 0,
+          tension: 0.25,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => `Mile ${ctx[0].label}`,
+            label: ctx => `${Number(ctx.raw).toLocaleString()} ft`
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: 0,
+          max: 54,
+          title: { display: true, text: 'Miles', color: '#718096', font: { size: 11 } },
+          ticks: { color: '#718096', maxTicksLimit: 14, font: { size: 10 } },
+          grid: { color: '#1e2535' }
+        },
+        y: {
+          min: 4500,
+          title: { display: true, text: 'Elevation (ft)', color: '#718096', font: { size: 11 } },
+          ticks: { color: '#718096', callback: v => v.toLocaleString(), font: { size: 10 } },
+          grid: { color: '#1e2535' }
+        }
+      }
+    },
+    plugins: [{
+      id: 'zones',
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea: { left, right, top, bottom }, scales } = chart;
+        const xScale = scales.x;
+        const yScale = scales.y;
+        ctx.save();
+
+        // Night zone (Miles 0 to ~18) - dark blue overlay
+        const nightX = xScale.getPixelForValue(18);
+        ctx.fillStyle = 'rgba(79,90,180,0.10)';
+        ctx.fillRect(left, top, Math.min(nightX, right) - left, bottom - top);
+
+        // Moderate altitude band (6500–7500 ft)
+        const modY_top = yScale.getPixelForValue(7500);
+        const modY_bot = yScale.getPixelForValue(6500);
+        ctx.fillStyle = 'rgba(246,173,85,0.07)';
+        ctx.fillRect(left, modY_top, right - left, modY_bot - modY_top);
+
+        // High altitude band (7500+ ft)
+        const highY_bot = yScale.getPixelForValue(7500);
+        const highY_top = yScale.getPixelForValue(9000);
+        ctx.fillStyle = 'rgba(252,129,129,0.09)';
+        ctx.fillRect(left, highY_top, right - left, highY_bot - highY_top);
+
+        // Aid station vertical lines
+        STATIONS.forEach((s, i) => {
+          if (i === 0 || s.name.includes('FINISH')) return;
+          const x = xScale.getPixelForValue(s.mile);
+          ctx.strokeStyle = s.name.includes('Water') ? '#553c9a' : 'rgba(246,173,85,0.6)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(x, top);
+          ctx.lineTo(x, bottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        });
+
+        // Summit marker
+        const summitX = xScale.getPixelForValue(42.9);
+        const summitY = yScale.getPixelForValue(8694);
+        ctx.fillStyle = '#e9d8fd';
+        ctx.font = '10px system-ui';
+        ctx.fillText('⛰ 8,694 ft', summitX - 48, summitY - 6);
+
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+// === MAP ===
+function buildMap() {
+  const map = L.map('map', { zoomControl: true });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap', maxZoom: 16
+  }).addTo(map);
+
+  const poly = L.polyline(TRACK, { color: '#f6ad55', weight: 2.5, opacity: 0.85 }).addTo(map);
+  map.fitBounds(poly.getBounds(), { padding: [20, 20] });
+
+  STATIONS.forEach((s, i) => {
+    const isStart = s.name.includes('START');
+    const isFinish = s.name.includes('FINISH');
+    const isWater = s.name.includes('Water');
+    const color = (isStart || isFinish) ? '#68d391' : isWater ? '#7f9cf5' : '#f6ad55';
+    const r = (isStart || isFinish) ? 9 : 6;
+    L.circleMarker([s.lat, s.lon], { radius: r, fillColor: color, color: '#0f1117', weight: 2, fillOpacity: 1 })
+      .addTo(map)
+      .bindPopup(`<b>${s.name.replace(/^\d+:/, '')}</b><br>Mile ${s.mile}<br>${s.elev_ft.toLocaleString()} ft<br>Seg: ${s.seg_miles}mi +${s.seg_gain_ft.toLocaleString()}ft`);
+  });
+}
+
+// === PACE TABLE ===
+function updateTable(basePaceMin) {
+  const tbody = document.getElementById('stationsBody');
+  tbody.innerHTML = '';
+  let cumTime = 0;
+
+  // Find which mile sunrise hits
+  let sunriseMile = null;
+  let prevCum = 0;
+  for (let i = 1; i < STATIONS.length; i++) {
+    const segT = segmentTime(STATIONS[i], basePaceMin);
+    const segStartTime = prevCum;
+    if (sunriseMile === null && prevCum < SUNRISE_MIN && prevCum + segT >= SUNRISE_MIN) {
+      const frac = (SUNRISE_MIN - prevCum) / segT;
+      sunriseMile = STATIONS[i-1].mile + frac * STATIONS[i].seg_miles;
+    }
+    prevCum += segT;
+  }
+  if (sunriseMile === null) sunriseMile = 53.9;
+
+  cumTime = 0;
+  STATIONS.forEach((s, i) => {
+    if (i > 0) cumTime += segmentTime(s, basePaceMin);
+    const arrMin = cumTime;
+    const timeStr = i === 0 ? '12:00 AM' : minToTime(arrMin);
+    const isDark = arrMin < SUNRISE_MIN;
+    const isDawn = !isDark && arrMin < SUNRISE_MIN + 75;
+    const isSummitApproach = s.mile >= 36 && s.mile <= 50;
+    const bufferMin = CUTOFF_MIN - arrMin;
+
+    const conditions = i === 0 ? '<span class="badge badge-night">🌙 Start</span>'
+      : isDark ? '<span class="badge badge-night">🌙 Dark</span>'
+      : isDawn ? '<span class="badge badge-dawn">🌅 Dawn</span>'
+      : isSummitApproach ? '<span class="badge badge-summit">⛰️ Summit zone</span>'
+      : '<span class="badge badge-day">☀️ Day</span>';
+
+    const difficulty = i === 0 ? '—' : (() => {
+      const gainPerMile = s.seg_gain_ft / Math.max(s.seg_miles, 0.1);
+      const segLen = s.seg_miles;
+      if (s.seg_gain_ft > 1800 || segLen > 9) return '<span style="color:#fc8181;font-weight:600;">⬛⬛⬛ Hard</span>';
+      if (s.seg_gain_ft > 900 || segLen > 7) return '<span style="color:#f6ad55;font-weight:600;">⬛⬛ Moderate</span>';
+      return '<span style="color:#68d391;font-weight:600;">⬛ Easy</span>';
+    })();
+
+    const bufferStr = i === 0 ? '' : bufferMin < 0
+      ? `<div class="cutoff-warning">⛔ Over by ${formatDuration(-bufferMin)}</div>`
+      : bufferMin < 90
+      ? `<div class="cutoff-warning">⚠️ ${formatDuration(bufferMin)} left</div>`
+      : `<div class="on-track">+${formatDuration(bufferMin)}</div>`;
+
+    const isHard = i > 0 && (s.seg_gain_ft > 1800 || s.seg_miles > 9);
+    tbody.innerHTML += `
+      <tr class="${isHard ? 'seg-hard' : ''}">
+        <td class="station-name">${s.name.replace(/^\d+:/, '')}</td>
+        <td>${s.mile}</td>
+        <td>${s.elev_ft.toLocaleString()} ft</td>
+        <td>${i === 0 ? '—' : s.seg_miles + ' mi'}</td>
+        <td class="elev-gain">${i === 0 ? '—' : '+' + s.seg_gain_ft.toLocaleString() + ' ft'}</td>
+        <td class="elev-loss">${i === 0 ? '—' : '−' + s.seg_loss_ft.toLocaleString() + ' ft'}</td>
+        <td>${difficulty}</td>
+        <td>${giRisk(s)}</td>
+        <td>${conditions}</td>
+        <td class="time-cell">${timeStr}</td>
+        <td>${bufferStr}</td>
+      </tr>`;
+  });
+
+  // Summary
+  const totalMin = cumTime;
+  document.getElementById('estTime').textContent = formatDuration(totalMin);
+  document.getElementById('estFinish').textContent = minToTime(totalMin);
+  const buf = CUTOFF_MIN - totalMin;
+  const bufEl = document.getElementById('estBuffer');
+  if (buf < 0) {
+    bufEl.textContent = `⛔ Over cutoff by ${formatDuration(-buf)}`;
+    bufEl.style.color = '#fc8181';
+  } else {
+    bufEl.textContent = `+${formatDuration(buf)}`;
+    bufEl.style.color = buf < 120 ? '#f6ad55' : '#68d391';
+  }
+  document.getElementById('sunriseMile').textContent = `Mile ${sunriseMile.toFixed(1)}`;
+  document.getElementById('darkMiles').textContent = `~0 to ${sunriseMile.toFixed(1)} (${sunriseMile.toFixed(0)} miles)`;
+}
+
+// === TEMPERATURE BAR ===
+function buildTempBar() {
+  const times = ['12 AM','1 AM','2 AM','3 AM','4 AM','5 AM','6 AM','9 AM','12 PM','3 PM','6 PM'];
+  const temps = [44, 42, 41, 41, 40, 40, 43, 55, 67, 73, 70];
+  const colors = [
+    '#1a3a5e','#1a3a5e','#1a3a5e','#1a3a5e','#1a3a5e','#1a3a5e',
+    '#2d3a5e','#2d5e3a','#5e4a1a','#6e2a1a','#5e2a1a'
+  ];
+  const bar = document.getElementById('tempBar');
+  bar.innerHTML = times.map((t, i) => `
+    <div class="temp-cell" style="background:${colors[i]};">
+      <div style="color:#a0aec0;margin-bottom:2px;">${t}</div>
+      <div style="color:#e2e8f0;font-weight:700;">${temps[i]}°F</div>
+    </div>
+  `).join('');
+}
+
+// === TABS ===
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick') === `showTab('${name}')`) t.classList.add('active');
+  });
+}
+
+// === PACE SLIDER ===
+const slider = document.getElementById('paceSlider');
+const paceDisplay = document.getElementById('paceDisplay');
+slider.addEventListener('input', () => {
+  const val = parseFloat(slider.value);
+  const mins = Math.floor(val);
+  const secs = Math.round((val - mins) * 60);
+  paceDisplay.textContent = `${mins}:${String(secs).padStart(2,'0')} /mi`;
+  updateTable(val);
+  buildDropBagCards(val);
+});
+
+// === DROP BAG CARDS ===
+const DB_STATIONS = [
+  {
+    name: 'Gibson Jack — Start',
+    mile: 0, elev: 5203, dropBag: false,
+    strip: '#4c51bf',
+    badge: { text: '🌙 Midnight Start', bg: 'rgba(79,90,180,0.25)', color: '#a3bffa' },
+    next: { text: '→ 7.5 mi to Cusick Creek · +1,481 ft · still dark', danger: false },
+    gear: [
+      { text: 'Headlamp (primary, fully charged)', crit: true },
+      { text: 'Backup light (headlamp or handheld)' },
+      { text: 'Trekking poles', crit: true },
+      { text: 'Gloves + light jacket (~42–48°F at midnight)' },
+      { text: 'GPX loaded on watch AND phone', crit: true },
+    ],
+    food: [
+      { text: 'Vest loaded: 4–5 gels + chews', crit: true },
+      { text: '2× 500ml soft flasks filled' },
+      { text: 'Pre-race sodium: 500mg electrolytes 30 min before' },
+    ],
+    medical: [
+      { text: 'Ginger chews in top vest pocket' },
+      { text: 'Pepto tablets accessible' },
+      { text: 'Anti-nausea meds in vest' },
+    ],
+    decision: 'It\'s midnight. Stomach is in sleep mode — eat your first gel within the first mile whether you want to or not.'
+  },
+  {
+    name: 'Cusick Creek AS',
+    mile: 7.5, elev: 5692, dropBag: true,
+    strip: '#4c51bf',
+    badge: { text: '🌙 Still Dark', bg: 'rgba(79,90,180,0.2)', color: '#a3bffa' },
+    next: { text: '→ 5.3 mi to City Creek · mostly descending −1,318 ft · getting near dawn', danger: false },
+    gear: [
+      { text: 'Fresh headlamp batteries / swap unit if dim' },
+      { text: 'Extra gloves if hands are cold' },
+    ],
+    food: [
+      { text: 'Refill gels: 4 more', crit: true },
+      { text: 'Chews ×2 packs' },
+      { text: 'Liquid calories (sports drink) if stomach is off' },
+    ],
+    medical: [
+      { text: 'Ginger chews — replenish' },
+    ],
+    decision: 'Quick stop — under 5 minutes. You\'re ~2 hrs in. Don\'t sit down. Grab, swap batteries if needed, move.'
+  },
+  {
+    name: 'City Creek AS',
+    mile: 12.8, elev: 4820, dropBag: true,
+    strip: '#b7791f',
+    badge: { text: '🌅 Pre-Dawn / Dawn', bg: 'rgba(183,121,31,0.2)', color: '#f6ad55' },
+    next: { text: '→ 4.1 mi to Water Only · +2,226 ft in 4 miles · steepest climb on course · GI risk zone begins', danger: true },
+    gear: [
+      { text: 'Stash headlamp here (leave in bag)', crit: true },
+      { text: 'Sunscreen + sunglasses (sun coming up)' },
+    ],
+    food: [
+      { text: 'EAT A REAL MEAL — potato, PB&J, banana, broth', crit: true },
+      { text: 'Gels ×4 for the climb ahead', crit: true },
+      { text: 'Fill BOTH flasks', crit: true },
+      { text: 'Electrolytes — take a cap now' },
+    ],
+    medical: [
+      { text: 'Take ginger chews NOW before the climb', crit: true },
+    ],
+    decision: 'This is your last real food window before altitude GI risk. The 2,226 ft climb starts immediately after this station. Eat solids now — switch to liquids on the climb.'
+  },
+  {
+    name: 'Water Only 🚰',
+    mile: 16.9, elev: 7057, dropBag: false,
+    strip: '#553c9a',
+    badge: { text: '⛰️ 7,057 ft — GI Risk Zone', bg: 'rgba(85,60,154,0.25)', color: '#b794f4' },
+    next: { text: '→ 7.8 mi to Elk Meadows · rolling high terrain · stay above 6,500 ft', danger: false },
+    isWaterOnly: true,
+  },
+  {
+    name: 'Elk Meadows AS',
+    mile: 24.7, elev: 6781, dropBag: true,
+    strip: '#276749',
+    badge: { text: '☀️ Daytime · Mile 25', bg: 'rgba(39,103,73,0.2)', color: '#68d391' },
+    next: { text: '→ 5.7 mi to West Fork · mostly descending −1,565 ft · dropping to lowest point', danger: false },
+    gear: [
+      { text: 'Change socks', crit: true },
+      { text: 'Reapply anti-chafe (Body Glide / Squirrel\'s Nut Butter)' },
+      { text: 'Change shirt if soaked' },
+    ],
+    food: [
+      { text: 'EAT A FULL MEAL — rice, broth, quesadilla, noodles', crit: true },
+      { text: 'Gels ×5' },
+      { text: 'First caffeine gel if needed (but consider saving for Mile 30)', crit: true },
+    ],
+    medical: [
+      { text: 'Blister check and tape any hot spots' },
+      { text: 'Ibuprofen if needed (not before — wait until hour 6+)' },
+    ],
+    decision: 'Mental halfway point. You\'re descending soon — best food absorption window of miles 17–30. This is your best chance for real food. Sit for 8–10 minutes, eat properly.'
+  },
+  {
+    name: 'West Fork AS',
+    mile: 30.4, elev: 5213, dropBag: true,
+    strip: '#276749',
+    badge: { text: '☀️ Lowest point since start', bg: 'rgba(39,103,73,0.2)', color: '#68d391' },
+    next: { text: '→ 6.4 mi to Scout Mtn AS · +1,912 ft climb · re-entering altitude GI zone', danger: true },
+    gear: [
+      { text: 'Rain/wind shell (afternoon weather risk)', crit: true },
+      { text: 'Confirm poles in hand — need them for the climb' },
+    ],
+    food: [
+      { text: 'Hot food: broth, noodles, boiled potato', crit: true },
+      { text: 'Gels ×4' },
+      { text: 'Coke or caffeine — first use if not done at Elk Meadows', crit: true },
+    ],
+    medical: [
+      { text: 'Take anti-nausea med (Zofran/Pepto) PRE-EMPTIVELY — before you feel sick', crit: true },
+      { text: 'Blister care' },
+    ],
+    decision: 'You\'re at the lowest elevation since mile 3. Take anti-nausea medication NOW before the altitude climb — not after you feel sick. It\'s much harder to recover once GI turns.'
+  },
+  {
+    name: 'Scout Mtn AS ⛰️',
+    mile: 36.8, elev: 6621, dropBag: true, critical: true,
+    strip: '#fc8181',
+    badge: { text: '⛰️ CRITICAL — 10.8 mi to next aid', bg: 'rgba(252,129,129,0.2)', color: '#fc8181' },
+    next: { text: '→ 10.8 mi to Big Fir · summit at Mile 43 (8,694 ft) · +2,384 ft then −3,233 ft · NO crew or bags until Big Fir', danger: true },
+    gear: [
+      { text: 'Wind/puffy jacket — summit is 35–50°F + wind', crit: true },
+      { text: 'Gloves + hat / buff', crit: true },
+      { text: 'Poles confirmed in hand' },
+    ],
+    food: [
+      { text: 'EAT EVERYTHING — biggest meal of the race', crit: true },
+      { text: 'Load vest: 6–8 gels (longest gap of race)', crit: true },
+      { text: 'Fill a soft flask with broth to carry', crit: true },
+      { text: 'Caffeine ×2 — stagger use on summit climb' },
+    ],
+    medical: [
+      { text: 'Anti-nausea accessible in TOP vest pocket', crit: true },
+      { text: 'Confirm: ginger chews + peppermint in front pocket' },
+    ],
+    decision: 'Spend 10 minutes here — it\'s worth it. 10.8 miles with no support and the race summit ahead. You need warm layers, maximal food, and anti-nausea tools within reach. Above 8,000 ft: liquids only. Don\'t leave without your jacket.'
+  },
+  {
+    name: 'Big Fir AS',
+    mile: 47.6, elev: 5797, dropBag: true,
+    strip: '#f6ad55',
+    badge: { text: '☀️ Post-Summit · 6.3 mi left', bg: 'rgba(246,173,85,0.2)', color: '#f6ad55' },
+    next: { text: '→ 6.3 mi to finish · net descending · you\'re almost done', danger: false },
+    gear: [
+      { text: 'Dry socks — change if feet are soaked' },
+      { text: 'Stash summit layers (leave puffy here)' },
+    ],
+    food: [
+      { text: 'Whatever sounds good — Coke, broth, anything' },
+      { text: 'Final caffeine hit if needed' },
+    ],
+    medical: [
+      { text: 'Blister care if needed' },
+      { text: 'Final check of body: hot spots, chafing, any real issues?' },
+    ],
+    decision: 'You survived the summit. Don\'t sit for more than 5 minutes — legs will stiffen. Keep moving. 6.3 miles to Mink Creek.'
+  },
+];
+
+function renderCol(label, cssClass, items) {
+  if (!items?.length) return `<div class="db-col"><div class="db-col-label ${cssClass}">${label}</div><ul><li><span class="dot">·</span><span style="color:#4a5568;font-style:italic;">Nothing extra</span></li></ul></div>`;
+  const lis = items.map(it => `<li class="${it.crit?'hi':''}"><span class="dot">${it.crit?'▶':'·'}</span><span>${it.text}</span></li>`).join('');
+  return `<div class="db-col"><div class="db-col-label ${cssClass}">${label}</div><ul>${lis}</ul></div>`;
+}
+
+function buildDropBagCards(basePaceMin) {
+  const container = document.getElementById('dropbag-cards');
+  if (!container) return;
+  container.innerHTML = '';
+
+  let cumTime = 0;
+  DB_STATIONS.forEach((s, i) => {
+    if (i > 0) {
+      const station = STATIONS.find(st => Math.abs(st.mile - s.mile) < 0.5);
+      if (station) cumTime += station.seg_miles * basePaceMin + station.seg_gain_ft / 100;
+    }
+    const arrivalStr = i === 0 ? '12:00 AM' : minToTime(cumTime);
+
+    if (s.isWaterOnly) {
+      container.innerHTML += `
+        <div class="db-card water-only">
+          <div class="db-banner">
+            <div class="db-strip" style="background:#553c9a;"></div>
+            <div class="db-banner-main">
+              <div class="db-left">
+                <div class="db-name">Water Only 🚰</div>
+                <div class="db-mile-row">
+                  <span class="db-mile">Mi 16.9</span>
+                  <span class="db-elev">7,057 ft</span>
+                </div>
+                <div class="db-next-seg">No drop bag · No crew · Water refill only</div>
+              </div>
+              <div class="db-right">
+                <div class="db-arrival">${arrivalStr}</div>
+                <div class="db-condition" style="background:rgba(85,60,154,0.25);color:#b794f4;">⛰️ Alt. GI risk</div>
+              </div>
+            </div>
+          </div>
+          <div class="db-water-body">
+            Fill both flasks. You just climbed 2,226 ft in 4 miles. Take 60 sec to breathe and check your stomach. If nauseous — take ginger/Pepto <em>now</em>, before continuing. Next aid: Elk Meadows, 7.8 miles ahead.
+          </div>
+        </div>`;
+      return;
+    }
+
+    const nextClass = s.next?.danger ? 'db-next-seg warn' : 'db-next-seg';
+    container.innerHTML += `
+      <div class="db-card${s.critical?' critical':''}">
+        <div class="db-banner">
+          <div class="db-strip" style="background:${s.strip};"></div>
+          <div class="db-banner-main">
+            <div class="db-left">
+              <div class="db-name">${s.name}</div>
+              <div class="db-mile-row">
+                <span class="db-mile">Mi ${s.mile}</span>
+                <span class="db-elev">${s.elev.toLocaleString()} ft</span>
+                <span style="font-size:0.75rem;color:${s.dropBag?'#68d391':'#718096'};">${s.dropBag?'✅ Drop bag':'No bag'}</span>
+              </div>
+              ${s.next ? `<div class="${nextClass}">${s.next.text}</div>` : ''}
+            </div>
+            <div class="db-right">
+              <div class="db-arrival">${arrivalStr}</div>
+              <div class="db-condition" style="background:${s.badge.bg};color:${s.badge.color};">${s.badge.text}</div>
+            </div>
+          </div>
+        </div>
+        <div class="db-body">
+          ${renderCol('🔧 Gear', 'gear', s.gear)}
+          ${renderCol('🍫 Food & Fuel', 'food', s.food)}
+          ${renderCol('💊 Body Check', 'med', s.medical)}
+        </div>
+        ${s.decision ? `<div class="db-footer"><span class="db-footer-label">Do this ▶</span><span class="db-footer-text">${s.decision}</span></div>` : ''}
+      </div>`;
+  });
+}
+
+// === INIT ===
+buildChart();
+buildMap();
+buildTempBar();
+updateTable(18);
+buildDropBagCards(18);
+
+// ============================================================
+// TRAINING PLAN
+// ============================================================
+
+// Race date: June 6, 2026. Week 1 starts March 16, 2026.
+const RACE_DATE = new Date(2026, 5, 6); // June 6
+const PLAN_START = new Date(2026, 2, 16); // March 16
+
+// Days: Mon=0 Tue=1 Wed=2 Thu=3 Fri=4 Sat=5 Sun=6
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+// Altitude-recommended weeks
+const ALT_WEEKS = new Set([6,7,8,9,10]);
+
+const PLAN = [
+  { week:1, miles:'18–57', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'3–10 mi easy. Easy runs: relaxed, fun, mini adventures — roads or trails.' },
+    { day:'Wed', desc:'Mtn Legs + 4–12 mi easy or cross-train 60–90 min (bike, hike, ski). Hiking = ultra potential.' },
+    { day:'Thu', desc:'3–10 mi easy. Mtn Legs.' },
+    { day:'Fri', desc:'Rest or x-train up to 90 min, or 3–6 mi easy.' },
+    { day:'Sat', desc:'8–15 mi easy on trails. Vert helpful but don\'t chase it. Hike with purpose!' },
+    { day:'Sun', desc:'4–10 mi easy. Can add x-train or all-day hike. Mtn Legs.' },
+  ]},
+  { week:2, miles:'28–69', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'4–10 mi easy with 5×30 sec hills. Think powerful & fast on 6–8% grade.' },
+    { day:'Wed', desc:'2–3 mi easy · 6×90 sec hills mod/hard (5k effort) w/ rundown recovery · 4×1 min hills mod/hard · 2–3 mi easy. VO2 hill workout! Optional easy double (20–30 min).' },
+    { day:'Thu', desc:'Mtn Legs + 4–10 mi easy.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'10–16 mi easy/mod on trails. Push downhills, find flow!' },
+    { day:'Sun', desc:'4–12 mi easy with 4×20 sec hills fast. All Sunday runs ideally hilly.' },
+  ]},
+  { week:3, miles:'33–80', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'4–10 mi easy with 6×20 sec hills.' },
+    { day:'Wed', desc:'2–3 mi easy · 5×2 min hills mod/hard (5k) · 5 min easy · 10×1 min fast/1 min easy flat/rolling (5k) · 2–3 mi easy/mod. Optional easy double.' },
+    { day:'Thu', desc:'4–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'12–18 mi easy on trails (after warm-up, do 20 min mod/hard ~1-hour effort). Tempos within long runs make them play longer!' },
+    { day:'Sun', desc:'5–14 mi easy with 5×20 sec hills fast or long hike. Mtn Legs.' },
+  ]},
+  { week:4, miles:'34–78', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy with 4×30 sec hills.' },
+    { day:'Wed', desc:'2–3 mi · 8×2 min fast/1 min easy · 3 min easy · 6×1 min fast/1 min easy · 3 min easy · 4×90 sec hills hard · 2–3 mi easy. Supercompensation intensity! 10k → hard hills. Optional double.' },
+    { day:'Thu', desc:'Mtn Legs + 5–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'10–16 mi easy/mod on trails. Feeling fitness adaptations around now!' },
+    { day:'Sun', desc:'6–12 mi easy with 4×20 sec hills. Flow on downhills. Long hike also great.' },
+  ]},
+  { week:5, miles:'38–71', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy. Aerobic build week!' },
+    { day:'Wed', desc:'6–12 mi easy/mod over hills. Optional easy double.' },
+    { day:'Thu', desc:'5–10 mi easy with 6×20 sec hills.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'14–20 mi easy on trails (in middle, 30 min mod/hard ~1-hour effort).' },
+    { day:'Sun', desc:'8–13 mi easy on trails with 6×20 sec hills. Mtn Legs.' },
+  ]},
+  { week:6, miles:'43–94', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–12 mi easy with 6×20 sec fast/2 min easy. Think 800m–mile effort on strides.' },
+    { day:'Wed', desc:'2–3 mi easy · 15 min mod/hard (10k) · 5 min easy · 6×2 min hills 5k effort w/ rundown · 2–3 mi easy. Optional easy double.' },
+    { day:'Thu', desc:'Mtn Legs + 5–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'18–26 mi easy on trails with strong downs. Aim for terrain adaptations. Strong fueling!', alt:'📍 Local: Sisar Canyon or Topa Topa (6,700 ft max). Save Mt Pinos for Week 7–8.' },
+    { day:'Sun', desc:'10–14 mi easy on trails + 8×30 sec steep hills at end. These hills will be tough!' },
+  ]},
+  { week:7, miles:'38–80', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy with 4×20 sec fast/1 min easy.' },
+    { day:'Wed', desc:'2–3 mi easy · 6/5/4/3/2/1 min fast w/ 1 min easy recovery (10k effort) · 5 min easy · 5×45 sec hills hard · 2–3 mi easy. Optional easy double.' },
+    { day:'Thu', desc:'Mtn Legs + 6–10 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 4–8 mi easy.' },
+    { day:'Sat', desc:'12–16 mi easy/mod on trails (40 min mod/hard in middle ~1-hour effort). Tempo will feel very tough by the end!', alt:'⛰️ MT PINOS (~1h 45m drive) — first real altitude session. Practice nutrition at 8,000+ ft.' },
+    { day:'Sun', desc:'8–14 mi easy on trails with strong downs. Can be long fast hike!' },
+  ]},
+  { week:8, miles:'44–53', note:'Race Simulation Week', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy with 4×20 sec hills. Slight reduction in volume with focus on workouts.' },
+    { day:'Wed', desc:'2–3 mi easy · 5×3 min hills mod/hard w/ rundown · 15 min mod-to-mod/hard on tired legs · 2–3 mi easy. Think smooth — very tough workout overall! Mtn Legs.' },
+    { day:'Thu', desc:'5–8 mi easy.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'RACE OR RACE SIMULATION: 1–2 mi easy warm-up · 20 mi moderate (50-mile effort, option to progress) · 1–2 mi easy cool-down. Or run a marathon or 50k!', alt:'⭐ DO THIS AT MT PINOS. Camp Fri night at 8,300 ft, race sim Saturday. Best altitude session of the plan — 4 weeks out is ideal timing. Acute dip resolves before race day.' },
+    { day:'Sun', desc:'Hike or rest. Main goal is recovery after race sim!' },
+  ]},
+  { week:9, miles:'52–101', note:'Big Aerobic Week', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'6–10 mi easy with 4×20 sec fast/1 min easy. Big aerobic emphasis week! Optional double.' },
+    { day:'Wed', desc:'10–15 mi easy/mod on trails. Optional double (big day, similar to Canova block but aerobic focus). Can progress effort if feeling good!' },
+    { day:'Thu', desc:'6–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 4–8 mi easy.' },
+    { day:'Sat', desc:'20–25 mi easy on trails ideally with vert. Really relax into this, aim to finish feeling great!', alt:'⛰️ Mt Pinos day trip (no overnight needed). Second altitude long run — 3 weeks out. Reinforces ventilatory adaptation. Day trip dip resolves in 72 hrs.' },
+    { day:'Sun', desc:'Long hike or very easy run 16–20 mi on trails. Lots of time on feet, fast hiking too!' },
+  ]},
+  { week:10, miles:'44–84', note:'⭐ Overnight Altitude Weekend', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'6–12 mi easy + 4×20 sec hills. If feeling tired, start taper and back off slightly.' },
+    { day:'Wed', desc:'2–3 mi easy · 10×3 min fast/90 sec easy (1-hour effort) · 2–3 mi mod on tired legs. Cruise intervals for final big threshold stimulus! Optional double.' },
+    { day:'Thu', desc:'Mtn Legs + 6–10 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Drive to Mt Pinos after work. Camp at Chula Vista or McGill CG (~8,300 ft). Sleep at altitude tonight.', alt:'⛰️ DRIVE UP FRIDAY EVENING. Sleep at 8,300 ft triggers EPO production overnight.' },
+    { day:'Sat', desc:'14–20 mi easy/mod on trails with 1 hr moderate in middle (50k effort). Steep downs. Mt Pinos route.', alt:'⛰️ LONG RUN AT ALTITUDE. Second night camping at 8,300 ft after run.' },
+    { day:'Sun', desc:'10–14 mi easy on trails with 4×30 sec hills. Drive home Sunday afternoon. Final altitude stimulus before taper.' },
+  ]},
+  { week:11, miles:'28–59', note:'Taper begins', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'4–8 mi easy with 4×30 sec fast/30 sec easy. Final strides before race — aerobic system and ST-muscle fibers.' },
+    { day:'Wed', desc:'2–3 mi easy · 20–30 min mod (~half marathon effort) on trails · 5 min easy · 4×1 min hills 5k effort · 2–3 mi easy. Final controlled tempo for neuromuscular + aerobic stimulus. Mtn Legs (final leg strength!).' },
+    { day:'Thu', desc:'4–8 mi easy.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'8–15 mi easy to easy/mod on trails. For advanced athletes, solidly long run is a good final aerobic stimulus.' },
+    { day:'Sun', desc:'4–10 mi easy on trails or rest if any fatigue built up.' },
+  ]},
+  { week:12, miles:'Race!', note:'RACE WEEK', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'2–3 mi easy · 15 min mod (marathon effort) · 2–3 mi easy.' },
+    { day:'Wed', desc:'3–6 mi easy.' },
+    { day:'Thu', desc:'Rest. ✈️ Travel to Pocatello if possible (even 36 hrs at 4,464 ft helps!)' },
+    { day:'Fri', desc:'2–4 mi easy AM. Run the day before to keep rhythm. Check in by 11:30 PM at Gibson Jack.' },
+    { day:'Sat', desc:'🏁 50 MILE RACE! Midnight start. YOU ARE AMAZING!' },
+    { day:'Sun', desc:'Recovery. YOU DID IT.' },
+  ]},
+];
+
+// Calculate week start dates
+function weekStartDate(weekNum) {
+  const d = new Date(PLAN_START);
+  d.setDate(d.getDate() + (weekNum - 1) * 7);
+  return d;
+}
+
+function weekEndDate(weekNum) {
+  const d = weekStartDate(weekNum);
+  d.setDate(d.getDate() + 6);
+  return d;
+}
+
+function formatDateShort(d) {
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+function getDayDate(weekNum, dayIdx) {
+  const d = weekStartDate(weekNum);
+  d.setDate(d.getDate() + dayIdx);
+  return d;
+}
+
+function workoutKey(weekNum, dayIdx) {
+  return `smu_w${weekNum}_d${dayIdx}`;
+}
+
+function isWorkoutDone(weekNum, dayIdx) {
+  return localStorage.getItem(workoutKey(weekNum, dayIdx)) === '1';
+}
+
+function toggleWorkout(weekNum, dayIdx) {
+  const key = workoutKey(weekNum, dayIdx);
+  const cur = localStorage.getItem(key) === '1';
+  if (cur) localStorage.removeItem(key);
+  else localStorage.setItem(key, '1');
+  renderStats();
+  updateWeekProgress(weekNum);
+}
+
+function getCompletedCount(weekNum) {
+  return PLAN[weekNum-1].days.filter((d,i) => d.desc !== 'Rest' && isWorkoutDone(weekNum, i)).length;
+}
+
+function getTotalWorkouts(weekNum) {
+  return PLAN[weekNum-1].days.filter(d => d.desc !== 'Rest').length;
+}
+
+function updateWeekProgress(weekNum) {
+  const bar = document.getElementById(`wpb-${weekNum}`);
+  if (!bar) return;
+  const done = getCompletedCount(weekNum);
+  const total = getTotalWorkouts(weekNum);
+  bar.style.width = total > 0 ? `${(done/total)*100}%` : '0%';
+  const lbl = document.getElementById(`wpl-${weekNum}`);
+  if (lbl) lbl.textContent = `${done}/${total}`;
+}
+
+function renderStats() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const msPerWeek = 7*24*60*60*1000;
+  const weekNum = Math.max(1, Math.min(12, Math.floor((today - PLAN_START) / msPerWeek) + 1));
+  const weeksLeft = Math.max(0, Math.ceil((RACE_DATE - today) / msPerWeek));
+
+  const planPct = Math.min(100, ((weekNum-1) / 12) * 100);
+  document.getElementById('planProgressFill').style.width = planPct + '%';
+  document.getElementById('planProgressLabel').textContent = `Week ${weekNum} of 12`;
+  document.getElementById('statWeeksLeft').textContent = weeksLeft;
+  document.getElementById('statCurrentWeek').textContent = weekNum;
+
+  let totalDone = 0;
+  let thisWeekDone = 0;
+  let altLeft = 0;
+
+  for (let w = 1; w <= 12; w++) {
+    const wStart = weekStartDate(w);
+    const isCurrentWeek = w === weekNum;
+    const plan = PLAN[w-1];
+    plan.days.forEach((d,i) => {
+      if (d.desc === 'Rest') return;
+      if (isWorkoutDone(w, i)) {
+        totalDone++;
+        if (isCurrentWeek) thisWeekDone++;
+      }
+    });
+    if (plan.altWeek && wStart >= today) altLeft++;
+  }
+
+  document.getElementById('statCompleted').textContent = totalDone;
+  document.getElementById('statThisWeek').textContent = thisWeekDone;
+  document.getElementById('statAltRuns').textContent = altLeft;
+}
+
+let currentFilter = 'all';
+
+function filterWeeks(mode, btn) {
+  currentFilter = mode;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWeekGrid();
+}
+
+function renderWeekGrid() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const msPerWeek = 7*24*60*60*1000;
+  const currentWeekNum = Math.max(1, Math.min(12, Math.floor((today - PLAN_START) / msPerWeek) + 1));
+
+  const container = document.getElementById('weekGrid');
+  container.innerHTML = '';
+
+  PLAN.forEach(({ week, miles, note, altWeek, days }) => {
+    const wStart = weekStartDate(week);
+    const wEnd = weekEndDate(week);
+    const isPast = wEnd < today;
+    const isCurrent = week === currentWeekNum;
+    const isRaceWeek = week === 12;
+    const isUpcoming = wStart > today;
+
+    if (currentFilter === 'remaining' && isPast) return;
+    if (currentFilter === 'altitude' && !altWeek) return;
+
+    const done = getCompletedCount(week);
+    const total = getTotalWorkouts(week);
+    const pct = total > 0 ? Math.round((done/total)*100) : 0;
+
+    let cardClass = 'week-card';
+    if (isCurrent) cardClass += ' current-week';
+    else if (isPast) cardClass += ' past-week';
+    else if (isRaceWeek) cardClass += ' race-week';
+    else if (altWeek) cardClass += ' alt-week';
+
+    let label = '';
+    if (isCurrent) label = '<span class="week-label label-current">▶ Current</span>';
+    else if (isRaceWeek) label = '<span class="week-label label-race">🏁 Race</span>';
+    else if (altWeek && !isPast) label = '<span class="week-label label-alt">⛰️ Altitude</span>';
+    else if (isPast) label = '<span class="week-label label-past">Done</span>';
+    else label = '<span class="week-label label-upcoming">Upcoming</span>';
+
+    const dateStr = `${formatDateShort(wStart)} – ${formatDateShort(wEnd)}`;
+    const noteStr = note ? `<div style="font-size:0.72rem;color:#b794f4;margin-top:2px;">${note}</div>` : '';
+
+    let daysHTML = days.map((d, i) => {
+      const isRest = d.desc === 'Rest' || d.desc.startsWith('Recovery');
+      const hasAlt = !!d.alt;
+      const checked = isWorkoutDone(week, i);
+      const checkBox = !isRest
+        ? `<div class="day-check"><input type="checkbox" ${checked?'checked':''} onchange="toggleWorkout(${week},${i})" title="Mark complete"></div>`
+        : '';
+      const descClass = isRest ? 'day-workout rest' : hasAlt ? 'day-workout altitude' : 'day-workout';
+      const altNote = d.alt ? `<div style="font-size:0.7rem;color:#b794f4;margin-top:3px;">📍 ${d.alt}</div>` : '';
+      return `<div class="day-row">
+        <div class="day-name">${d.day}</div>
+        <div class="${descClass}">${d.desc}${altNote}</div>
+        ${checkBox}
+      </div>`;
+    }).join('');
+
+    container.innerHTML += `
+      <div class="${cardClass}">
+        <div class="week-header">
+          <div>
+            <div class="week-num">Week ${week} <span class="week-dates">· ${dateStr}</span></div>
+            <div class="week-range">${miles} mi ${noteStr}</div>
+          </div>
+          <div style="text-align:right;">
+            ${label}
+            <div style="font-size:0.7rem;color:#718096;margin-top:4px;" id="wpl-${week}">${done}/${total} done</div>
+          </div>
+        </div>
+        <div class="week-progress"><div class="week-progress-bar" id="wpb-${week}" style="width:${pct}%"></div></div>
+        <div class="week-body">${daysHTML}</div>
+      </div>`;
+  });
+}
+
+function initTraining() {
+  renderStats();
+  renderWeekGrid();
+}
+
+initTraining();
+</script>
+</body>
+</html>
