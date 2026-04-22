@@ -490,7 +490,6 @@ function render() {
 
   // Progress bar — use last check-in if available, else time estimate
   let currentMile = STATIONS[currentIdx].mile;
-  const raceMin = getRaceMin();
   if (raceMin !== null && !checkinTime(STATIONS[currentIdx].id)) {
     // Interpolate within current segment
     const stStart = timeline[currentIdx].min;
