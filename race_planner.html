@@ -419,12 +419,15 @@ tr:hover td { background:rgba(255,255,255,0.025); }
     </div>
 
     <!-- Drop bag station cards -->
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-      <div class="alert alert-info" style="flex:1;min-width:240px;margin-bottom:0;">
-        ✅ <strong>Drop bags allowed</strong> at all stations except Water Only (Mile 16.9). Mandatory: GPX on device at all times.
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:14px;">
+      <div class="alert alert-info" style="margin-bottom:0;">
+        ✅ <strong>50M drop bags ONLY at:</strong> City Creek (Mi 12.8) · West Fork (Mi 30.5) · Big Fir (Mi 47.7). Cusick Creek, Elk Meadows, and Scout Mtn have station food but <strong>no drop bags</strong>.
       </div>
-      <div class="alert alert-warn" style="flex:1;min-width:240px;margin-bottom:0;">
-        ⚠️ <strong>Scout Mtn → Big Fir = 10.8 mi unsupported.</strong> Pack for 3–4 hours. No bags, no crew.
+      <div class="alert alert-warn" style="margin-bottom:0;">
+        ⚠️ <strong>West Fork is your last bag</strong> before the summit. No bag access for 17.2 miles (Mi 30.5 → 47.7). Summit layers, max food, and anti-nausea must leave West Fork on your back.
+      </div>
+      <div class="alert" style="background:#1a2e1f;border:1px solid #276749;color:#9ae6b4;margin-bottom:0;">
+        📋 <strong>Drop bag logistics:</strong> Bags must be ready at Friday 6 PM briefing (Mink Creek CG). Label each: name · bib number · aid station. Use weatherproof bags — they sit outside.
       </div>
     </div>
     <div style="font-size:0.78rem;color:#718096;margin-bottom:14px;">Arrival times based on 18:00 min/mi base pace with Naismith adjustment — update in the <span style="color:#f6ad55;cursor:pointer;" onclick="showTab('pace')">Pace tab</span>.</div>
@@ -946,7 +949,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           <div class="section-title" style="font-size:0.85rem;color:#f6ad55;margin-top:14px;">1–2 Weeks Out</div>
           <ul class="checklist">
             <li>Taper — cut volume 40–50%, keep some intensity</li>
-            <li>Pack drop bags (use Race Day tab)</li>
+            <li>Pack drop bags — must be ready to hand in at Friday 6 PM briefing</li>
             <li>GPX loaded on watch AND phone — test it</li>
             <li>Obtain Zofran prescription if using</li>
             <li>Cut daily caffeine 5–7 days before race</li>
@@ -1328,162 +1331,168 @@ const DB_STATIONS = [
     mile: 0, elev: 5203, dropBag: false,
     strip: '#4c51bf',
     badge: { text: '🌙 Midnight Start', bg: 'rgba(79,90,180,0.25)', color: '#a3bffa' },
-    next: { text: '→ 7.5 mi to Cusick Creek · +1,481 ft · still dark', danger: false },
+    next: { text: '→ 7.5 mi to Cusick Creek · +1,481 ft · still dark · no drop bag there', danger: false },
     gear: [
       { text: 'Headlamp (primary, fully charged)', crit: true },
-      { text: 'Backup light (headlamp or handheld)' },
-      { text: 'Trekking poles', crit: true },
+      { text: 'Backup light (headlamp or handheld)', crit: true },
+      { text: 'Whistle (mandatory)', crit: true },
+      { text: 'Mylar emergency blanket (mandatory)', crit: true },
+      { text: 'Trekking poles' },
       { text: 'Gloves + light jacket (~42–48°F at midnight)' },
-      { text: 'GPX loaded on watch AND phone', crit: true },
+      { text: 'GPX loaded on watch AND phone (mandatory, shown at bib pickup)', crit: true },
     ],
     food: [
       { text: 'Vest loaded: 4–5 gels + chews', crit: true },
       { text: '2× 500ml soft flasks filled' },
-      { text: 'Pre-race sodium: 500mg electrolytes 30 min before' },
+      { text: 'Pre-race sodium: 500 mg electrolytes 30 min before start', crit: true },
     ],
     medical: [
       { text: 'Ginger chews in top vest pocket' },
       { text: 'Pepto tablets accessible' },
-      { text: 'Anti-nausea meds in vest' },
+      { text: 'Anti-nausea meds in vest front pocket' },
     ],
-    decision: 'It\'s midnight. Stomach is in sleep mode — eat your first gel within the first mile whether you want to or not.'
+    decision: 'Midnight. Stomach is in sleep mode — eat your first gel within Mile 1 whether you want to or not. Next bag access is City Creek at Mile 12.8.'
   },
   {
     name: 'Cusick Creek AS',
-    mile: 7.5, elev: 5692, dropBag: true,
+    mile: 7.5, elev: 5692, dropBag: false,
     strip: '#4c51bf',
-    badge: { text: '🌙 Still Dark', bg: 'rgba(79,90,180,0.2)', color: '#a3bffa' },
-    next: { text: '→ 5.3 mi to City Creek · mostly descending −1,318 ft · getting near dawn', danger: false },
+    badge: { text: '🌙 Still Dark · No drop bag', bg: 'rgba(79,90,180,0.2)', color: '#a3bffa' },
+    next: { text: '→ 5.3 mi to City Creek · mostly descending · first drop bag ahead', danger: false },
     gear: [
-      { text: 'Fresh headlamp batteries / swap unit if dim' },
-      { text: 'Extra gloves if hands are cold' },
+      { text: 'Check headlamp brightness — swap batteries if dimming' },
     ],
     food: [
-      { text: 'Refill gels: 4 more', crit: true },
-      { text: 'Chews ×2 packs' },
-      { text: 'Liquid calories (sports drink) if stomach is off' },
+      { text: 'Station food: bananas, broth, chips, mashed potatoes, soup, tortillas', crit: false },
+      { text: 'Eat something light — stomach warming up', crit: true },
+      { text: 'Replenish gels from vest if running low' },
     ],
     medical: [
-      { text: 'Ginger chews — replenish' },
+      { text: 'Quick body check — anything rubbing or hurting early?' },
     ],
-    decision: 'Quick stop — under 5 minutes. You\'re ~2 hrs in. Don\'t sit down. Grab, swap batteries if needed, move.'
+    decision: 'No drop bag here. Grab station food (broth, banana, potato), keep moving. Under 5 minutes. First bag access is City Creek, 5.3 miles ahead.'
   },
   {
     name: 'City Creek AS',
     mile: 12.8, elev: 4820, dropBag: true,
     strip: '#b7791f',
-    badge: { text: '🌅 Pre-Dawn / Dawn', bg: 'rgba(183,121,31,0.2)', color: '#f6ad55' },
-    next: { text: '→ 4.1 mi to Water Only · +2,226 ft in 4 miles · steepest climb on course · GI risk zone begins', danger: true },
+    badge: { text: '🌅 Dawn · Drop Bag #1 of 3', bg: 'rgba(183,121,31,0.2)', color: '#f6ad55' },
+    next: { text: '→ 4.1 mi to Water Cache · +2,226 ft in 4 miles · steepest climb · GI risk begins', danger: true },
     gear: [
-      { text: 'KEEP headlamp — entire climb to Water Only is in darkness at any realistic pace', crit: true },
-      { text: 'Sunscreen + sunglasses in bag for later (grab at Elk Meadows)' },
+      { text: 'Sunscreen + sunglasses (sun rising)', crit: true },
+      { text: 'Keep headlamp — still useful on the dark climb ahead' },
     ],
     food: [
-      { text: 'EAT A REAL MEAL — potato, PB&J, banana, broth', crit: true },
-      { text: 'Gels ×4 for the climb ahead', crit: true },
-      { text: 'Fill BOTH flasks', crit: true },
-      { text: 'Electrolytes — take a cap now' },
+      { text: 'EAT A REAL MEAL — this is your last solid food window before altitude GI risk', crit: true },
+      { text: 'Station has: hash browns, mashed potatoes, PBJ, cinnamon rolls, soup, broth', crit: false },
+      { text: 'Load gels ×4–5 for the climb', crit: true },
+      { text: 'Fill BOTH flasks before leaving', crit: true },
+      { text: 'Electrolyte cap now' },
     ],
     medical: [
-      { text: 'Take ginger chews NOW before the climb', crit: true },
+      { text: 'Take ginger chews NOW — before the climb starts', crit: true },
     ],
-    decision: 'This is your last real food window before altitude GI risk. The 2,226 ft climb starts immediately after this station. Eat solids now — switch to liquids on the climb.'
+    decision: 'The 2,226 ft climb starts right after this station. Eat solid food here — you\'ll switch to liquids on the climb. Next bag access: West Fork at Mile 30.5 (17.7 miles away).'
   },
   {
-    name: 'Water Only 🚰',
+    name: 'Water Cache 🚰',
     mile: 16.9, elev: 7057, dropBag: false,
     strip: '#553c9a',
-    badge: { text: '⛰️ 7,057 ft — GI Risk Zone', bg: 'rgba(85,60,154,0.25)', color: '#b794f4' },
-    next: { text: '→ 7.8 mi to Elk Meadows · rolling high terrain · stay above 6,500 ft', danger: false },
+    badge: { text: '⛰️ 7,057 ft — Water only', bg: 'rgba(85,60,154,0.25)', color: '#b794f4' },
+    next: { text: '→ 7.8 mi to Elk Meadows · rolling high terrain · no drop bag at Elk Meadows', danger: false },
     isWaterOnly: true,
   },
   {
     name: 'Elk Meadows AS',
-    mile: 24.7, elev: 6781, dropBag: true,
+    mile: 24.7, elev: 6781, dropBag: false,
     strip: '#276749',
-    badge: { text: '☀️ Daytime · Mile 25', bg: 'rgba(39,103,73,0.2)', color: '#68d391' },
-    next: { text: '→ 5.7 mi to West Fork · mostly descending −1,565 ft · dropping to lowest point', danger: false },
+    badge: { text: '☀️ Mile 25 · No drop bag', bg: 'rgba(39,103,73,0.2)', color: '#68d391' },
+    next: { text: '→ 5.7 mi to West Fork · mostly descending · LAST DROP BAG coming up at Mi 30.5', danger: false },
     gear: [
-      { text: 'Stash headlamp here — definitely daylight by Mile 25', crit: true },
-      { text: 'Change socks', crit: true },
-      { text: 'Sunscreen + sunglasses (now needed)' },
-      { text: 'Reapply anti-chafe (Body Glide)' },
-      { text: 'Change shirt if soaked' },
+      { text: 'No bag here — carry-forward only' },
+      { text: 'Check: are your summit layers in your vest or West Fork bag?' },
     ],
     food: [
-      { text: 'EAT A FULL MEAL — rice, broth, quesadilla, noodles', crit: true },
-      { text: 'Gels ×5' },
-      { text: 'First caffeine gel if needed (but consider saving for Mile 30)', crit: true },
+      { text: 'EAT A FULL MEAL from station food', crit: true },
+      { text: 'Station has: wraps (turkey/bacon/avocado/beans), mashed potatoes, PBJ, soup, broth, coffee', crit: false },
+      { text: 'First caffeine gel if needed', crit: true },
+      { text: 'Restock gels if running low — carry enough to West Fork' },
     ],
     medical: [
-      { text: 'Blister check and tape any hot spots' },
-      { text: 'Ibuprofen if needed (not before — wait until hour 6+)' },
+      { text: 'Blister check — tape hot spots now, before they worsen' },
+      { text: 'Ibuprofen if needed (not before mile 20+)' },
     ],
-    decision: 'Mental halfway point. You\'re descending soon — best food absorption window of miles 17–30. This is your best chance for real food. Sit for 8–10 minutes, eat properly.'
+    decision: 'No drop bag here — but excellent station food. Eat a full meal; this is your best GI window of miles 17–30. West Fork (5.7 mi) is your LAST bag access before the summit. Plan accordingly.'
   },
   {
     name: 'West Fork AS',
-    mile: 30.4, elev: 5213, dropBag: true,
-    strip: '#276749',
-    badge: { text: '☀️ Lowest point since start', bg: 'rgba(39,103,73,0.2)', color: '#68d391' },
-    next: { text: '→ 6.4 mi to Scout Mtn AS · +1,912 ft climb · re-entering altitude GI zone', danger: true },
+    mile: 30.5, elev: 5213, dropBag: true, critical: true,
+    strip: '#fc8181',
+    badge: { text: '⚠️ LAST DROP BAG — Mi 30.5', bg: 'rgba(252,129,129,0.2)', color: '#fc8181' },
+    next: { text: '→ 6.4 mi to Scout Mtn AS (no bag) · then 10.8 mi to Big Fir · summit at Mi 43 · NO bag access for 17.2 miles', danger: true },
     gear: [
-      { text: 'Rain/wind shell (afternoon weather risk)', crit: true },
-      { text: 'Confirm poles in hand — need them for the climb' },
+      { text: 'Wind/puffy jacket — MUST leave here (no bag at Scout Mtn)', crit: true },
+      { text: 'Gloves + hat / buff', crit: true },
+      { text: 'Poles confirmed in hand' },
+      { text: 'Change socks', crit: true },
+      { text: 'Reapply anti-chafe' },
     ],
     food: [
-      { text: 'Hot food: broth, noodles, boiled potato', crit: true },
-      { text: 'Gels ×4' },
-      { text: 'Coke or caffeine — first use if not done at Elk Meadows', crit: true },
+      { text: 'EAT A FULL MEAL — last bag stop before the summit', crit: true },
+      { text: 'Station has: bacon, quesadillas, potatoes, PBJ, soup, broth, tortilla wraps, soda', crit: false },
+      { text: 'Load vest: 6–8 gels (no bag for 17.2 miles)', crit: true },
+      { text: 'Fill broth flask to carry', crit: true },
+      { text: 'Caffeine — first or second dose here', crit: true },
     ],
     medical: [
-      { text: 'Take anti-nausea med (Zofran/Pepto) PRE-EMPTIVELY — before you feel sick', crit: true },
-      { text: 'Blister care' },
+      { text: 'Take anti-nausea (Zofran/Pepto) PRE-EMPTIVELY right now', crit: true },
+      { text: 'Blister care — last chance with your kit for 17 miles' },
     ],
-    decision: 'You\'re at the lowest elevation since mile 3. Take anti-nausea medication NOW before the altitude climb — not after you feel sick. It\'s much harder to recover once GI turns.'
+    decision: 'This is the most important stop of your race. NO bag at Scout Mtn or between here and Big Fir (17.2 miles). Summit layers go IN YOUR PACK NOW. Load maximum food. Take anti-nausea before you need it. Spend 10–12 minutes here — it\'s worth every second.'
   },
   {
     name: 'Scout Mtn AS ⛰️',
-    mile: 36.8, elev: 6621, dropBag: true, critical: true,
+    mile: 36.8, elev: 6621, dropBag: false,
     strip: '#fc8181',
-    badge: { text: '⛰️ CRITICAL — 10.8 mi to next aid', bg: 'rgba(252,129,129,0.2)', color: '#fc8181' },
-    next: { text: '→ 10.8 mi to Big Fir · summit at Mile 43 (8,694 ft) · +2,384 ft then −3,233 ft · NO crew or bags until Big Fir', danger: true },
+    badge: { text: '⛰️ No drop bag · Mi 43 summit ahead', bg: 'rgba(252,129,129,0.15)', color: '#fc8181' },
+    next: { text: '→ 10.8 mi to Big Fir · summit 8,694 ft at Mi 43 · +2,384 ft then −3,233 ft · you should already have your layers', danger: true },
     gear: [
-      { text: 'Wind/puffy jacket — summit is 35–50°F + wind', crit: true },
-      { text: 'Gloves + hat / buff', crit: true },
-      { text: 'Poles confirmed in hand' },
+      { text: 'You should already be wearing/carrying summit layers from West Fork', crit: true },
+      { text: 'Confirm: jacket, gloves, hat on body or top of pack' },
     ],
     food: [
-      { text: 'EAT EVERYTHING — biggest meal of the race', crit: true },
-      { text: 'Load vest: 6–8 gels (longest gap of race)', crit: true },
-      { text: 'Fill a soft flask with broth to carry', crit: true },
-      { text: 'Caffeine ×2 — stagger use on summit climb' },
+      { text: 'EAT EVERYTHING from station food', crit: true },
+      { text: 'Station has: quesadillas, bacon, avocado, mashed potatoes, tortilla wraps, broth, coffee, soda', crit: false },
+      { text: 'Fill broth flask if empty', crit: true },
+      { text: 'Confirm: 6–8 gels in vest for the summit block', crit: true },
+      { text: 'Caffeine dose if not used at West Fork' },
     ],
     medical: [
-      { text: 'Anti-nausea accessible in TOP vest pocket', crit: true },
-      { text: 'Confirm: ginger chews + peppermint in front pocket' },
+      { text: 'Anti-nausea in TOP vest pocket — accessible without stopping', crit: true },
+      { text: 'Ginger chews + peppermint: confirm front pocket' },
     ],
-    decision: 'Spend 10 minutes here — it\'s worth it. 10.8 miles with no support and the race summit ahead. You need warm layers, maximal food, and anti-nausea tools within reach. Above 8,000 ft: liquids only. Don\'t leave without your jacket.'
+    decision: 'No bag here — you\'re running on what you carried from West Fork. Load up on station food (summit is 6 miles away). Above 8,000 ft: liquids only. The summit at Mile 43 is the hardest part of the race — you\'re 37 miles in.'
   },
   {
     name: 'Big Fir AS',
-    mile: 47.6, elev: 5797, dropBag: true,
+    mile: 47.7, elev: 5797, dropBag: true,
     strip: '#f6ad55',
-    badge: { text: '☀️ Post-Summit · 6.3 mi left', bg: 'rgba(246,173,85,0.2)', color: '#f6ad55' },
-    next: { text: '→ 6.3 mi to finish · net descending · you\'re almost done', danger: false },
+    badge: { text: '☀️ Drop Bag #3 · 6.2 mi left', bg: 'rgba(246,173,85,0.2)', color: '#f6ad55' },
+    next: { text: '→ 6.2 mi to finish · net descending · you\'re almost done', danger: false },
     gear: [
-      { text: 'Dry socks — change if feet are soaked' },
-      { text: 'Stash summit layers (leave puffy here)' },
+      { text: 'Dry socks — change if feet are wet from summit', crit: true },
+      { text: 'Stash summit layers here — lighter to the finish' },
     ],
     food: [
-      { text: 'Whatever sounds good — Coke, broth, anything' },
-      { text: 'Final caffeine hit if needed' },
+      { text: 'Whatever sounds good', crit: true },
+      { text: 'Station has: pierogies, potatoes, PBJ, broth, soda, pickles, fruit', crit: false },
+      { text: 'Final caffeine if available' },
     ],
     medical: [
-      { text: 'Blister care if needed' },
-      { text: 'Final check of body: hot spots, chafing, any real issues?' },
+      { text: 'Quick blister check' },
+      { text: 'Final body scan — anything that needs attention before the finish?' },
     ],
-    decision: 'You survived the summit. Don\'t sit for more than 5 minutes — legs will stiffen. Keep moving. 6.3 miles to Mink Creek.'
+    decision: 'You survived the summit. 6.2 miles to Mink Creek. Don\'t sit more than 5 minutes — legs will lock up. Note: Big Fir bags return to finish area when aid station closes, not immediately — plan to pick up Sunday if needed.'
   },
 ];
 
@@ -1527,7 +1536,7 @@ function buildDropBagCards(basePaceMin) {
             </div>
           </div>
           <div class="db-water-body">
-            Fill both flasks. You just climbed 2,226 ft in 4 miles. Take 60 sec to breathe and check your stomach. If nauseous — take ginger/Pepto <em>now</em>, before continuing. Next aid: Elk Meadows, 7.8 miles ahead.
+            Unmanned water cache — water refill only, no crew or volunteers. Fill both flasks. You just climbed 2,226 ft. Take 60 sec to breathe and check your stomach. If nauseous — take ginger/Pepto <em>now</em>, before continuing. Next stop: Elk Meadows (no bag, but station food), 7.8 miles ahead.
           </div>
         </div>`;
       return;
