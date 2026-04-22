@@ -429,7 +429,8 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         ⚠️ <strong>West Fork is your last bag</strong> before the summit. No bag access for 17.2 miles (Mi 30.5 → 47.7). Summit layers, max food, and anti-nausea must leave West Fork on your back.
       </div>
       <div class="alert" style="background:#1a2e1f;border:1px solid #276749;color:#9ae6b4;margin-bottom:0;">
-        📋 <strong>Drop bag logistics:</strong> Bags must be ready at Friday 6 PM briefing (Mink Creek CG). Label each: name · bib number · aid station. Use weatherproof bags — they sit outside.
+        📋 <strong>Drop bag logistics:</strong> Ready at Friday 6 PM briefing (Mink Creek CG). Label: name · bib · station. Weatherproof bags required.<br>
+        👥 <strong>Crew:</strong> West Fork only. Crew must take shuttle from Century High School and carry the pass given to you at check-in.
       </div>
     </div>
     <div style="font-size:0.78rem;color:#718096;margin-bottom:14px;">Arrival times based on 18:00 min/mi base pace with Naismith adjustment — update in the <span style="color:#f6ad55;cursor:pointer;" onclick="showTab('pace')">Pace tab</span>.</div>
@@ -1475,13 +1476,13 @@ const DB_STATIONS = [
     name: 'West Fork AS',
     mile: 30.5, elev: 5213, dropBag: true, critical: true,
     strip: '#fc8181',
-    badge: { text: '⚠️ LAST DROP BAG — Mi 30.5', bg: 'rgba(252,129,129,0.2)', color: '#fc8181' },
-    next: { text: '→ 6.4 mi to Scout Mtn AS (no bag) · then 10.8 mi to Big Fir · summit at Mi 43 · NO bag access for 17.2 miles', danger: true },
+    badge: { text: '⚠️ LAST DROP BAG + ONLY CREW ACCESS', bg: 'rgba(252,129,129,0.2)', color: '#fc8181' },
+    next: { text: '→ 6.4 mi to Scout Mtn AS (no bag, no crew) · then 10.8 mi to Big Fir · summit at Mi 43 · NO bag or crew for 17.2 miles', danger: true },
     gear: [
-      { text: 'Wind/puffy jacket — MUST leave here (no bag at Scout Mtn)', crit: true },
+      { text: 'Wind/puffy jacket — MUST be in pack when you leave (no bag at Scout Mtn)', crit: true },
       { text: 'Gloves + hat / buff', crit: true },
       { text: 'Poles confirmed in hand' },
-      { text: 'Change socks', crit: true },
+      { text: 'Change socks — last chance before Big Fir', crit: true },
       { text: 'Reapply anti-chafe' },
     ],
     food: [
@@ -1495,7 +1496,7 @@ const DB_STATIONS = [
       { text: 'Take anti-nausea (Zofran/Pepto) PRE-EMPTIVELY right now', crit: true },
       { text: 'Blister care — last chance with your kit for 17 miles' },
     ],
-    decision: 'This is the most important stop of your race. NO bag at Scout Mtn or between here and Big Fir (17.2 miles). Summit layers go IN YOUR PACK NOW. Load maximum food. Take anti-nausea before you need it. Spend 10–12 minutes here — it\'s worth every second.'
+    decision: 'Most important stop of your race. Only crew access point in the 50M — if you have a crew, they must arrive by shuttle with the pass from check-in. NO bag at Scout Mtn or between here and Big Fir (17.2 miles). Summit layers go IN YOUR PACK NOW. Load maximum food. Take anti-nausea before you need it. Spend 10–12 minutes here.'
   },
   {
     name: 'Scout Mtn AS ⛰️',
