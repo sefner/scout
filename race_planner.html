@@ -325,7 +325,8 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           <h4>Finish Estimate</h4>
           <div class="summary-row"><span>Total time</span><span id="estTime">—</span></div>
           <div class="summary-row"><span>Finish clock time</span><span id="estFinish">—</span></div>
-          <div class="summary-row"><span>Buffer before 10 PM cutoff</span><span id="estBuffer">—</span></div>
+          <div class="summary-row"><span>Finish / cutoff status</span><span id="estBuffer">—</span></div>
+          <div class="summary-row"><span>Tightest cutoff</span><span id="tightestCutoff">—</span></div>
           <div class="summary-row"><span>Sunrise (5:47 AM) reached at</span><span id="sunriseMile">—</span></div>
           <div class="summary-row"><span>Miles in darkness</span><span id="darkMiles">—</span></div>
         </div>
@@ -340,11 +341,12 @@ tr:hover td { background:rgba(255,255,255,0.025); }
             <th>Segment</th>
             <th>Climb</th>
             <th>Descent</th>
-            <th>Seg Difficulty</th>
+            <th>Difficulty</th>
             <th>GI Risk</th>
             <th>Light</th>
             <th>Est. Arrival</th>
-            <th>Cutoff Buffer</th>
+            <th>Official Cutoff</th>
+            <th>Buffer</th>
           </tr>
         </thead>
         <tbody id="stationsBody"></tbody>
@@ -999,6 +1001,15 @@ const TRACK = [[42.79314,-112.43097],[42.79288,-112.43142],[42.79289,-112.43224]
 const SUNRISE_MIN = 347;
 const CUTOFF_MIN = 22 * 60;
 
+// Official cutoffs from race pacing chart (minutes from midnight start)
+const OFFICIAL_CUTOFFS = {
+  '2:CityCrkAS':    5 * 60 + 45,   // 5:45 AM
+  '5:WestForkAS':  12 * 60 + 45,  // 12:45 PM
+  '6:ScoutMtnAS':  15 * 60 + 30,  // 3:30 PM
+  '7:BigFirAS':    20 * 60,        // 8:00 PM
+  'FINISH':        22 * 60,        // 10:00 PM
+};
+
 function minToTime(mins) {
   const h = Math.floor(mins / 60) % 24;
   const m = Math.round(mins % 60);
@@ -1219,6 +1230,7 @@ function updateTable(basePaceMin) {
   if (sunriseMile === null) sunriseMile = 53.9;
 
   cumTime = 0;
+  let missedCutoff = null;
   STATIONS.forEach((s, i) => {
     if (i > 0) cumTime += segmentTime(s, basePaceMin);
     const arrMin = cumTime;
@@ -1226,7 +1238,11 @@ function updateTable(basePaceMin) {
     const isDark = arrMin < SUNRISE_MIN;
     const isDawn = !isDark && arrMin < SUNRISE_MIN + 75;
     const isSummitApproach = s.mile >= 36 && s.mile <= 50;
-    const bufferMin = CUTOFF_MIN - arrMin;
+
+    // Use official per-station cutoff where available, else finish cutoff
+    const stationCutoff = OFFICIAL_CUTOFFS[s.name] || (s.name.includes('FINISH') ? CUTOFF_MIN : null);
+    const bufferMin = stationCutoff !== null ? stationCutoff - arrMin : null;
+    if (bufferMin !== null && bufferMin < 0 && !missedCutoff) missedCutoff = s.name;
 
     const conditions = i === 0 ? '<span class="badge badge-night">🌙 Start</span>'
       : isDark ? '<span class="badge badge-night">🌙 Dark</span>'
@@ -1235,22 +1251,26 @@ function updateTable(basePaceMin) {
       : '<span class="badge badge-day">☀️ Day</span>';
 
     const difficulty = i === 0 ? '—' : (() => {
-      const gainPerMile = s.seg_gain_ft / Math.max(s.seg_miles, 0.1);
-      const segLen = s.seg_miles;
-      if (s.seg_gain_ft > 1800 || segLen > 9) return '<span style="color:#fc8181;font-weight:600;">⬛⬛⬛ Hard</span>';
-      if (s.seg_gain_ft > 900 || segLen > 7) return '<span style="color:#f6ad55;font-weight:600;">⬛⬛ Moderate</span>';
+      if (s.seg_gain_ft > 1800 || s.seg_miles > 9) return '<span style="color:#fc8181;font-weight:600;">⬛⬛⬛ Hard</span>';
+      if (s.seg_gain_ft > 900 || s.seg_miles > 7) return '<span style="color:#f6ad55;font-weight:600;">⬛⬛ Moderate</span>';
       return '<span style="color:#68d391;font-weight:600;">⬛ Easy</span>';
     })();
 
-    const bufferStr = i === 0 ? '' : bufferMin < 0
-      ? `<div class="cutoff-warning">⛔ Over by ${formatDuration(-bufferMin)}</div>`
-      : bufferMin < 90
-      ? `<div class="cutoff-warning">⚠️ ${formatDuration(bufferMin)} left</div>`
-      : `<div class="on-track">+${formatDuration(bufferMin)}</div>`;
+    const cutoffCell = stationCutoff !== null
+      ? `<span style="font-family:monospace;font-size:0.82rem;color:#718096;">${minToTime(stationCutoff)}</span>`
+      : '<span style="color:#4a5568;">—</span>';
+
+    const bufferStr = bufferMin === null ? '—'
+      : bufferMin < 0
+        ? `<span class="cutoff-warning">⛔ DNF +${formatDuration(-bufferMin)}</span>`
+        : bufferMin < 60
+          ? `<span class="cutoff-warning">⚠️ ${formatDuration(bufferMin)}</span>`
+          : `<span class="on-track">+${formatDuration(bufferMin)}</span>`;
 
     const isHard = i > 0 && (s.seg_gain_ft > 1800 || s.seg_miles > 9);
+    const isMissed = bufferMin !== null && bufferMin < 0;
     tbody.innerHTML += `
-      <tr class="${isHard ? 'seg-hard' : ''}">
+      <tr class="${isHard || isMissed ? 'seg-hard' : ''}">
         <td class="station-name">${s.name.replace(/^\d+:/, '')}</td>
         <td>${s.mile}</td>
         <td>${s.elev_ft.toLocaleString()} ft</td>
@@ -1261,6 +1281,7 @@ function updateTable(basePaceMin) {
         <td>${giRisk(s)}</td>
         <td>${conditions}</td>
         <td class="time-cell">${timeStr}</td>
+        <td>${cutoffCell}</td>
         <td>${bufferStr}</td>
       </tr>`;
   });
@@ -1271,15 +1292,41 @@ function updateTable(basePaceMin) {
   document.getElementById('estFinish').textContent = minToTime(totalMin);
   const buf = CUTOFF_MIN - totalMin;
   const bufEl = document.getElementById('estBuffer');
-  if (buf < 0) {
-    bufEl.textContent = `⛔ Over cutoff by ${formatDuration(-buf)}`;
+  if (missedCutoff) {
+    bufEl.textContent = `⛔ DNF at ${missedCutoff.replace(/^\d+:/, '')}`;
+    bufEl.style.color = '#fc8181';
+  } else if (buf < 0) {
+    bufEl.textContent = `⛔ Over finish cutoff by ${formatDuration(-buf)}`;
     bufEl.style.color = '#fc8181';
   } else {
-    bufEl.textContent = `+${formatDuration(buf)}`;
+    bufEl.textContent = `+${formatDuration(buf)} at finish`;
     bufEl.style.color = buf < 120 ? '#f6ad55' : '#68d391';
   }
   document.getElementById('sunriseMile').textContent = `Mile ${sunriseMile.toFixed(1)}`;
   document.getElementById('darkMiles').textContent = `~0 to ${sunriseMile.toFixed(1)} (${sunriseMile.toFixed(0)} miles)`;
+
+  // Find tightest cutoff margin
+  let tightestBuf = Infinity, tightestName = '';
+  let cum2 = 0;
+  STATIONS.forEach((s, i) => {
+    if (i > 0) cum2 += segmentTime(s, basePaceMin);
+    const co = OFFICIAL_CUTOFFS[s.name];
+    if (co !== undefined) {
+      const buf2 = co - cum2;
+      if (buf2 < tightestBuf) { tightestBuf = buf2; tightestName = s.name.replace(/^\d+:/, ''); }
+    }
+  });
+  const tcEl = document.getElementById('tightestCutoff');
+  if (tightestBuf < 0) {
+    tcEl.textContent = `⛔ Miss ${tightestName}`;
+    tcEl.style.color = '#fc8181';
+  } else if (tightestBuf < 60) {
+    tcEl.textContent = `⚠️ ${tightestName} (+${formatDuration(tightestBuf)})`;
+    tcEl.style.color = '#f6ad55';
+  } else {
+    tcEl.textContent = `${tightestName} (+${formatDuration(tightestBuf)})`;
+    tcEl.style.color = '#68d391';
+  }
 }
 
 // === TEMPERATURE BAR ===
