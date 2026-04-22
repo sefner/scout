@@ -530,8 +530,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
             <li><strong style="color:#e2e8f0;">Jarrow Formulas Tart Cherry</strong> — 120 caps, ~$15</li>
             <li><strong style="color:#e2e8f0;">Gin-Gins Double Strength</strong> (The Ginger People) — 3 packs</li>
             <li><strong style="color:#e2e8f0;">SaltStick Caps Plus</strong> — 1 bottle (race vest electrolytes)</li>
-            <li><strong style="color:#e2e8f0;">Cinch sack drawstring bags ×5</strong> — Amazon 10-pack ~$15, for main stations</li>
-            <li><strong style="color:#e2e8f0;">2-gallon Ziploc bags ×2</strong> — for Cusick Creek &amp; Big Fir (minimal contents)</li>
+            <li><strong style="color:#e2e8f0;">Cinch sack drawstring bags ×3</strong> — one each for City Creek, West Fork, Big Fir (only drop bag stations in the 50M)</li>
             <li><strong style="color:#e2e8f0;">Body Glide Original</strong> — anti-chafe, 1.5oz</li>
           </ul>
         </div>
@@ -569,9 +568,9 @@ tr:hover td { background:rgba(255,255,255,0.025); }
             <li>Backup battery pack (for watch + phone)</li>
             <li>Headlamp — primary (fully charged at start)</li>
             <li>Headlamp — backup or handheld</li>
-            <li>Spare batteries for headlamp (2+ sets) → Cusick Creek bag</li>
-            <li>Sunglasses + sunscreen → Elk Meadows bag (Mi 24.7, guaranteed daylight)</li>
-            <li>Drop bags: cinch sack drawstring bags ×5 (Amazon, 10-pack ~$15) + 2-gallon Ziplocs ×2 for Cusick Creek &amp; Big Fir</li>
+            <li>Spare headlamp batteries (2+ sets) — carry in vest from start (no bag at Cusick Creek)</li>
+            <li>Sunglasses + sunscreen → City Creek bag (Mi 12.8, Drop Bag #1)</li>
+            <li>Drop bags: ×3 cinch sacks (City Creek Mi 12.8, West Fork Mi 30.5, Big Fir Mi 47.7) — only drop bag stations in the 50M</li>
             <li>Permanent marker for labeling bags (name + bib + station name)</li>
           </ul>
         </div>
@@ -582,14 +581,14 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           <ul class="checklist">
             <li>Race shorts / tights — worn at start</li>
             <li>Race shirt — worn at start</li>
-            <li>Spare shirt → Elk Meadows bag (Mi 24.7)</li>
+            <li>Spare shirt → West Fork bag (Mi 30.5)</li>
             <li>Running gloves (light) — worn at start, 42–48°F</li>
-            <li>Extra gloves → Cusick Creek bag (Mi 7.5)</li>
+            <li>Extra gloves → West Fork bag (Mi 30.5, for summit)</li>
             <li>Light jacket / wind layer — worn at start</li>
-            <li>Rain/wind shell → West Fork bag (Mi 30.4)</li>
-            <li>Puffy / insulated jacket → Scout Mtn bag (Mi 36.8)</li>
-            <li>Hat or buff → Scout Mtn bag (Mi 36.8)</li>
-            <li>Race socks ×4 pairs (start, Elk Meadows, Big Fir, spare)</li>
+            <li>Rain/wind shell → West Fork bag (Mi 30.5)</li>
+            <li>Puffy / insulated jacket → West Fork bag (Mi 30.5, carry to summit, stash at Big Fir)</li>
+            <li>Hat or buff → West Fork bag (Mi 30.5, for summit)</li>
+            <li>Race socks ×4 pairs — worn at start + City Creek bag + West Fork bag + Big Fir bag</li>
             <li>Gaiters (recommended for trail debris)</li>
             <li>Race shoes (worn in, tested)</li>
           </ul>
@@ -604,7 +603,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
             <li>Soft flasks ×2 (500ml each) — worn in vest</li>
             <li>SaltStick Caps Plus — 30–40 caps across all bags + vest</li>
             <li>Precision Hydration PH 1000 sachets for flasks</li>
-            <li>Broth packets ×4 (for Scout Mtn flask + aid stations)</li>
+            <li>Broth packets ×4 — load into West Fork bag (carry flask to summit; Scout Mtn and other stations provide broth too)</li>
             <li>Real food for drop bags: boiled potatoes, PB&amp;J, banana, rice balls — prep night before</li>
             <li>Coke ×2–3 cans → West Fork + Big Fir bags</li>
             <li>Pre-race sodium: 500mg SaltStick (take 30 min before midnight start)</li>
@@ -619,10 +618,10 @@ tr:hover td { background:rgba(255,255,255,0.025); }
             <li>Peppermint oil capsules (200mg) — vest front pocket</li>
             <li>Ondansetron / Zofran 4mg ODT ×10 tabs (prescription — ask doctor) — vest + bags</li>
             <li>Pepto-Bismol chewables ×1 pack — vest</li>
-            <li>Ibuprofen 200mg ×10 tabs → Elk Meadows bag (not before hr 6)</li>
+            <li>Ibuprofen 200mg ×10 tabs — carry in vest (no bag at Elk Meadows; take only after Mile 20+)</li>
             <li>Blister kit: needle, alcohol wipes, Leukotape P, tincture of benzoin</li>
             <li>Body Glide Original Anti-Chafe Balm ×2 sticks</li>
-            <li>Sunscreen SPF 50+ → Elk Meadows bag (Mi 24.7)</li>
+            <li>Sunscreen SPF 50+ → City Creek bag (Mi 12.8, Drop Bag #1)</li>
             <li>Vaseline / lube for long haul</li>
             <li>Nipple tape / Band-Aids</li>
             <li>KT tape / pre-wrap if ankles need support</li>
@@ -1463,7 +1462,7 @@ const DB_STATIONS = [
     next: { text: '→ 4.1 mi to Water Cache · +2,226 ft in 4 miles · steepest climb · GI risk begins', danger: true },
     gear: [
       { text: 'Sunscreen + sunglasses (sun rising)', crit: true },
-      { text: 'Keep headlamp — still useful on the dark climb ahead' },
+      { text: 'Keep headlamp — the 2,226 ft climb to Water Cache is still in darkness', crit: true },
     ],
     food: [
       { text: 'EAT A REAL MEAL — this is your last solid food window before altitude GI risk', crit: true },
@@ -1516,6 +1515,7 @@ const DB_STATIONS = [
     gear: [
       { text: 'Wind/puffy jacket — MUST be in pack when you leave (no bag at Scout Mtn)', crit: true },
       { text: 'Gloves + hat / buff', crit: true },
+      { text: 'Stash headlamp here — it\'s been daylight for hours, free up vest space' },
       { text: 'Poles confirmed in hand' },
       { text: 'Change socks — last chance before Big Fir', crit: true },
       { text: 'Reapply anti-chafe' },
