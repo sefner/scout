@@ -132,6 +132,17 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .su-list li.lo .dot{color:#4a5568;}
 .su-decision{margin-top:6px;border-left:2px solid #f6ad55;padding:5px 9px;background:#141820;border-radius:0 6px 6px 0;font-size:0.76rem;color:#fbd38d;line-height:1.5;}
 
+/* ── Route panel ── */
+.route-panel{display:none;position:fixed;bottom:52px;left:0;right:0;background:#1a1f2e;border-top:2px solid #f6ad55;padding:14px;max-height:62vh;overflow-y:auto;z-index:98;}
+.route-panel.show{display:block;}
+.route-panel h3{font-size:0.83rem;font-weight:700;color:#f6ad55;margin-bottom:10px;}
+.seg-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #2d3748;gap:6px;}
+.seg-row:last-of-type{border-bottom:none;}
+.seg-name{font-size:0.82rem;font-weight:700;color:#e2e8f0;flex:1;}
+.seg-mi{font-size:0.75rem;color:#718096;font-family:monospace;white-space:nowrap;}
+.seg-gain{font-size:0.75rem;color:#68d391;font-family:monospace;white-space:nowrap;}
+.seg-diff{font-size:0.7rem;white-space:nowrap;}
+
 /* ── Actual vs est pace diff ── */
 .pace-diff{font-size:0.65rem;margin-top:2px;}
 .pace-diff.fast{color:#68d391;} .pace-diff.slow{color:#fc8181;}
@@ -240,6 +251,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   </button>
 </div>
 
+<!-- Route panel -->
+<div class="route-panel" id="routePanel"></div>
+
 <!-- GI panel -->
 <div class="quick-panel" id="giPanel">
   <button class="panel-close" onclick="closePanel('giPanel')">✕</button>
@@ -283,9 +297,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
     Now
   </button>
-  <button class="nav-btn" onclick="confirmReset()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-    Reset
+  <button class="nav-btn" onclick="openRoutePanel()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg>
+    Route
   </button>
 </div>
 
@@ -860,11 +874,81 @@ function toggleUpcoming(id) {
 function togglePanel(id) {
   const el = document.getElementById(id);
   const open = el.classList.contains('show');
-  closePanel('giPanel'); closePanel('nutPanel');
+  closePanel('giPanel'); closePanel('nutPanel'); closePanel('routePanel');
   if (!open) el.classList.add('show');
 }
 
 function closePanel(id) { document.getElementById(id).classList.remove('show'); }
+
+function openRoutePanel() {
+  const open = document.getElementById('routePanel').classList.contains('show');
+  closePanel('giPanel'); closePanel('nutPanel'); closePanel('routePanel');
+  if (!open) { buildRoutePanel(); document.getElementById('routePanel').classList.add('show'); }
+}
+
+function buildRoutePanel() {
+  const timeline = buildTimeline();
+  const currentIdx = getCurrentStationIdx(timeline);
+  const upcoming = STATIONS.slice(currentIdx + 1);
+  const panel = document.getElementById('routePanel');
+
+  if (upcoming.length === 0) {
+    panel.innerHTML = '<button class="panel-close" onclick="closePanel(\'routePanel\')">✕</button><h3>⛰️ Route Ahead</h3><div style="color:#68d391;text-align:center;padding:20px 0;font-size:0.85rem;">You\'ve finished! 🏁</div>';
+    return;
+  }
+
+  // Build SVG sparkline
+  const startElev = STATIONS[currentIdx].elev;
+  let cx = 0;
+  const pts = [{ x: 0, e: startElev }];
+  upcoming.forEach(s => { cx += s.segMiles; pts.push({ x: cx, e: s.elev }); });
+
+  const W = 300, H = 60, P = 8;
+  const totalMi = Math.max(cx, 1);
+  const eMin = Math.min(...pts.map(p => p.e)) - 400;
+  const eMax = Math.max(...pts.map(p => p.e)) + 400;
+  const eRange = Math.max(eMax - eMin, 1);
+  const tx = m => (P + (m / totalMi) * (W - P * 2)).toFixed(1);
+  const ty = e => (H - P - ((e - eMin) / eRange) * (H - P * 2)).toFixed(1);
+
+  const linePath = pts.map((p, i) => `${i ? 'L' : 'M'}${tx(p.x)},${ty(p.e)}`).join(' ');
+  const areaPath = `${linePath} L${tx(totalMi)},${H} L${tx(0)},${H} Z`;
+  const dotColor = s => s.isFinish || s.dropBag ? '#68d391' : s.isWater ? '#b794f4' : '#f6ad55';
+  const svgDots = upcoming.map((s, i) =>
+    `<circle cx="${tx(pts[i+1].x)}" cy="${ty(pts[i+1].e)}" r="3.5" fill="${dotColor(s)}" stroke="#1a1f2e" stroke-width="1.5"/>`
+  ).join('');
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none" style="display:block;border-radius:6px;margin-bottom:12px;">
+    <rect width="${W}" height="${H}" fill="#141820" rx="4"/>
+    <path d="${areaPath}" fill="rgba(246,173,85,0.07)"/>
+    <path d="${linePath}" fill="none" stroke="#f6ad55" stroke-width="1.5"/>
+    ${svgDots}
+  </svg>`;
+
+  // Segment rows
+  const rows = upcoming.map(s => {
+    const diff = s.segGain > 1800 || s.segMiles > 9 ? ['⬛⬛⬛', '#fc8181']
+               : s.segGain > 900  || s.segMiles > 7 ? ['⬛⬛',    '#f6ad55']
+               :                                       ['⬛',      '#68d391'];
+    const badge = s.dropBag ? ' <span style="font-size:0.62rem;color:#4a7c5e;">✅</span>'
+                : s.isWater ? ' <span style="font-size:0.62rem;">🚰</span>'
+                : s.isFinish ? ' <span style="font-size:0.62rem;">🏁</span>' : '';
+    return `<div class="seg-row">
+      <span class="seg-name">${s.name}${badge}</span>
+      <span class="seg-mi">${s.segMiles} mi</span>
+      ${s.segGain > 0 ? `<span class="seg-gain">+${s.segGain.toLocaleString()} ft</span>` : '<span class="seg-mi">—</span>'}
+      <span class="seg-diff" style="color:${diff[1]};">${diff[0]}</span>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <button class="panel-close" onclick="closePanel('routePanel')">✕</button>
+    <h3>⛰️ Route Ahead</h3>
+    ${svg}${rows}
+    <div style="text-align:center;margin-top:14px;">
+      <button onclick="confirmReset()" style="font-size:0.68rem;color:#4a5568;background:none;border:none;cursor:pointer;text-decoration:underline;">reset all check-ins</button>
+    </div>`;
+}
 
 function scrollToCurrent() {
   const cur = document.querySelector('.station.current') || document.querySelector('.station.checked:last-of-type');
