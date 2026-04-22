@@ -6,113 +6,136 @@
 <title>SMU 50M — Race Day</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;padding-bottom:80px;}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;padding-bottom:136px;}
 
-/* Header */
-.header{background:#141820;border-bottom:2px solid #2d3748;padding:12px 16px;position:sticky;top:0;z-index:100;}
+/* ── Header ── */
+.header{background:#141820;border-bottom:2px solid #2d3748;padding:10px 14px;position:sticky;top:0;z-index:100;}
 .header-row{display:flex;justify-content:space-between;align-items:center;}
-.race-title{font-size:0.85rem;font-weight:700;color:#f6ad55;}
-.clock{font-size:1.1rem;font-weight:800;color:#68d391;font-family:monospace;letter-spacing:1px;}
-.pace-row{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;}
-.pace-label{font-size:0.68rem;color:#718096;text-transform:uppercase;letter-spacing:0.5px;}
-.pace-val{font-size:0.82rem;font-weight:700;color:#e2e8f0;font-family:monospace;}
-.pace-btn{background:#2d3748;border:none;color:#f6ad55;font-size:1rem;padding:2px 10px;border-radius:6px;cursor:pointer;font-weight:700;}
-.pace-input-row{display:none;margin-top:8px;gap:8px;align-items:center;}
+.race-title{font-size:0.8rem;font-weight:700;color:#f6ad55;}
+.clock{font-size:1.05rem;font-weight:800;color:#68d391;font-family:monospace;letter-spacing:1px;}
+.pace-row{display:flex;gap:6px;align-items:center;margin-top:7px;flex-wrap:wrap;}
+.pace-label{font-size:0.65rem;color:#718096;text-transform:uppercase;letter-spacing:0.5px;}
+.pace-val{font-size:0.8rem;font-weight:700;font-family:monospace;}
+.pace-actual{color:#68d391;}
+.pace-base{color:#a0aec0;}
+.pace-btn{background:#2d3748;border:none;color:#f6ad55;font-size:0.85rem;padding:2px 9px;border-radius:6px;cursor:pointer;font-weight:700;}
+.pace-input-row{display:none;margin-top:7px;gap:8px;align-items:center;}
 .pace-input-row.show{display:flex;}
-.pace-input-row input{width:80px;background:#1a1f2e;border:1px solid #4a5568;color:#e2e8f0;padding:4px 8px;border-radius:6px;font-size:0.9rem;font-family:monospace;}
-.pace-input-row button{background:#f6ad55;border:none;color:#0f1117;padding:4px 12px;border-radius:6px;font-weight:700;cursor:pointer;}
+.pace-input-row input{width:72px;background:#1a1f2e;border:1px solid #4a5568;color:#e2e8f0;padding:4px 8px;border-radius:6px;font-size:0.88rem;font-family:monospace;}
+.pace-input-row button{background:#f6ad55;border:none;color:#0f1117;padding:4px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.85rem;}
 
-/* Progress bar */
-.progress-wrap{background:#1a1f2e;padding:10px 16px;}
-.progress-bar{height:4px;background:#2d3748;border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,#68d391,#f6ad55);border-radius:2px;transition:width 0.3s;}
-.progress-labels{display:flex;justify-content:space-between;font-size:0.65rem;color:#4a5568;margin-top:4px;}
+/* ── Progress ── */
+.progress-wrap{background:#1a1f2e;padding:8px 14px;}
+.progress-bar{height:5px;background:#2d3748;border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#68d391,#f6ad55);border-radius:3px;transition:width 0.4s;}
+.progress-labels{display:flex;justify-content:space-between;font-size:0.62rem;color:#4a5568;margin-top:3px;}
+.progress-mi{color:#a0aec0;font-weight:600;}
 
-/* Station cards */
-.stations{padding:12px 12px 0;}
-.station{border-radius:12px;overflow:hidden;margin-bottom:12px;border:1px solid #2d3748;background:#1a1f2e;transition:all 0.2s;}
-.station.current{border-color:#f6ad55;box-shadow:0 0 0 1px rgba(246,173,85,0.3);}
-.station.passed{opacity:0.45;}
-.station.upcoming{}
+/* ── CHECK-IN BUTTON (sticky above bottom nav) ── */
+.checkin-bar{position:fixed;bottom:52px;left:0;right:0;z-index:99;padding:8px 12px;background:#0f1117;border-top:1px solid #2d3748;}
+.checkin-btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;letter-spacing:0.3px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.checkin-btn.ready{background:#f6ad55;color:#0f1117;}
+.checkin-btn.ready:active{transform:scale(0.97);background:#e09c3a;}
+.checkin-btn.done{background:rgba(104,211,145,0.15);border:1px solid #276749;color:#68d391;font-size:0.85rem;}
+.checkin-btn.finished{background:rgba(104,211,145,0.2);border:1px solid #68d391;color:#68d391;}
+.checkin-sub{font-size:0.65rem;font-weight:400;opacity:0.7;display:block;margin-top:2px;}
 
-/* Station banner */
+/* ── Station cards ── */
+.stations{padding:10px 10px 0;}
+.station{border-radius:12px;overflow:hidden;margin-bottom:10px;border:1px solid #2d3748;background:#1a1f2e;}
+.station.current{border-color:#f6ad55;box-shadow:0 0 0 1px rgba(246,173,85,0.25);}
+.station.passed{opacity:0.5;}
+.station.checked{border-color:rgba(104,211,145,0.4);}
+
 .s-banner{display:flex;align-items:stretch;}
 .s-strip{width:5px;flex-shrink:0;}
-.s-banner-inner{flex:1;padding:10px 12px;background:#141820;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
-.s-left{}
-.s-name{font-size:1rem;font-weight:700;color:#e2e8f0;line-height:1.2;}
-.s-meta{display:flex;gap:10px;align-items:center;margin-top:4px;flex-wrap:wrap;}
-.s-mile{font-size:1.1rem;font-weight:800;color:#f6ad55;font-family:monospace;}
-.s-elev{font-size:0.75rem;color:#718096;}
-.s-dropbag{font-size:0.7rem;font-weight:700;padding:2px 7px;border-radius:8px;}
-.s-right{text-align:right;flex-shrink:0;}
-.s-time{font-size:1rem;font-weight:800;color:#f6ad55;font-family:monospace;}
-.s-cutoff{font-size:0.68rem;color:#718096;margin-top:2px;}
-.s-buffer{font-size:0.72rem;font-weight:700;margin-top:2px;}
-.buf-ok{color:#68d391;}
-.buf-warn{color:#f6ad55;}
-.buf-dnf{color:#fc8181;}
-.current-badge{font-size:0.65rem;font-weight:800;background:rgba(246,173,85,0.2);color:#f6ad55;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.s-banner-inner{flex:1;padding:9px 12px;background:#141820;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.s-left{flex:1;}
+.s-name{font-size:0.95rem;font-weight:700;color:#e2e8f0;line-height:1.2;}
+.s-meta{display:flex;gap:8px;align-items:center;margin-top:3px;flex-wrap:wrap;}
+.s-mile{font-size:1rem;font-weight:800;color:#f6ad55;font-family:monospace;}
+.s-elev{font-size:0.72rem;color:#718096;}
+.s-bag{font-size:0.67rem;font-weight:700;padding:2px 6px;border-radius:7px;}
+.s-right{text-align:right;flex-shrink:0;min-width:80px;}
+.s-time{font-size:0.9rem;font-weight:800;font-family:monospace;}
+.s-time.est{color:#a0aec0;}
+.s-time.actual{color:#68d391;}
+.s-cutoff{font-size:0.65rem;color:#718096;margin-top:1px;}
+.s-buffer{font-size:0.7rem;font-weight:700;margin-top:2px;}
+.buf-ok{color:#68d391;} .buf-warn{color:#f6ad55;} .buf-dnf{color:#fc8181;}
+.current-badge{font-size:0.62rem;font-weight:800;background:rgba(246,173,85,0.2);color:#f6ad55;padding:1px 6px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:3px;}
+.checked-badge{font-size:0.62rem;font-weight:700;color:#68d391;margin-bottom:2px;display:inline-block;}
 
-/* Station body */
-.s-body{padding:10px 12px 12px 17px;}
-.s-next{font-size:0.78rem;color:#718096;margin-bottom:8px;padding:6px 8px;background:#141820;border-radius:6px;line-height:1.45;}
-.s-next.danger{color:#fc8181;background:rgba(252,129,129,0.06);}
+/* ── Actual vs est pace diff ── */
+.pace-diff{font-size:0.65rem;margin-top:2px;}
+.pace-diff.fast{color:#68d391;} .pace-diff.slow{color:#fc8181;} .pace-diff.ok{color:#718096;}
+
+/* ── Station body ── */
+.s-body{padding:9px 12px 10px 17px;}
+.s-next{font-size:0.76rem;color:#718096;margin-bottom:7px;padding:5px 8px;background:#141820;border-radius:6px;line-height:1.4;}
+.s-next.danger{color:#fc8181;background:rgba(252,129,129,0.05);}
 .s-sections{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .s-sections.full{grid-template-columns:1fr;}
-.s-col-label{font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:5px;}
-.s-col-label.gear{color:#7f9cf5;}
-.s-col-label.food{color:#68d391;}
-.s-col-label.med{color:#fc8181;}
-.s-col-label.info{color:#b794f4;}
+.s-col-label{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;}
+.s-col-label.gear{color:#7f9cf5;} .s-col-label.food{color:#68d391;} .s-col-label.med{color:#fc8181;}
 .s-list{list-style:none;padding:0;}
-.s-list li{font-size:0.78rem;color:#a0aec0;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:6px;line-height:1.35;}
+.s-list li{font-size:0.76rem;color:#a0aec0;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:5px;line-height:1.3;}
 .s-list li:last-child{border-bottom:none;}
-.s-list li .dot{color:#4a5568;flex-shrink:0;font-size:0.68rem;margin-top:2px;}
+.s-list li .dot{color:#4a5568;flex-shrink:0;font-size:0.65rem;margin-top:2px;}
 .s-list li.hi{color:#e2e8f0;font-weight:600;}
 .s-list li.hi .dot{color:#f6ad55;}
-.s-decision{margin-top:8px;border-left:3px solid #f6ad55;padding:6px 10px;background:#141820;border-radius:0 6px 6px 0;font-size:0.78rem;color:#fbd38d;line-height:1.5;}
+.s-decision{margin-top:7px;border-left:3px solid #f6ad55;padding:6px 9px;background:#141820;border-radius:0 6px 6px 0;font-size:0.76rem;color:#fbd38d;line-height:1.5;}
+.collapse-btn{background:none;border:none;color:#4a5568;font-size:0.65rem;width:100%;padding:4px;cursor:pointer;display:block;text-align:center;}
 
-/* Water cache */
-.water-note{padding:10px 12px 12px 17px;font-size:0.78rem;color:#b794f4;line-height:1.5;}
+/* ── Checked-in summary ── */
+.checkin-summary{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:7px 10px;background:rgba(104,211,145,0.07);border:1px solid rgba(104,211,145,0.2);border-radius:8px;}
+.checkin-summary-text{font-size:0.76rem;color:#68d391;}
+.checkin-summary-text span{font-weight:700;}
+.undo-btn{font-size:0.7rem;color:#718096;background:none;border:1px solid #2d3748;border-radius:6px;padding:3px 8px;cursor:pointer;}
 
-/* Finish card */
-.finish-banner{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(39,103,73,0.3),rgba(104,211,145,0.1));}
-.finish-title{font-size:1.4rem;font-weight:800;color:#68d391;}
-.finish-sub{font-size:0.82rem;color:#a0aec0;margin-top:4px;}
+/* ── Retroactive entry ── */
+.retro-btn{font-size:0.7rem;color:#4a5568;background:none;border:none;padding:2px 4px;cursor:pointer;text-decoration:underline;display:block;margin-top:4px;}
+.retro-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:flex-end;padding:12px;}
+.retro-modal.show{display:flex;}
+.retro-box{background:#1a1f2e;border:1px solid #4a5568;border-radius:16px;padding:18px 16px;width:100%;max-width:480px;margin:0 auto;}
+.retro-title{font-size:0.9rem;font-weight:700;color:#e2e8f0;margin-bottom:12px;}
+.retro-subtitle{font-size:0.75rem;color:#718096;margin-bottom:14px;}
+.offset-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.offset-btn{padding:12px;background:#141820;border:1px solid #2d3748;border-radius:10px;color:#e2e8f0;font-size:0.82rem;font-weight:600;cursor:pointer;text-align:center;}
+.offset-btn:active{background:#2d3748;}
+.retro-custom{display:flex;gap:8px;align-items:center;margin-top:4px;}
+.retro-custom input{flex:1;background:#141820;border:1px solid #4a5568;color:#e2e8f0;padding:8px 10px;border-radius:8px;font-size:0.88rem;font-family:monospace;}
+.retro-custom button{background:#f6ad55;border:none;color:#0f1117;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;}
+.retro-cancel{display:block;text-align:center;margin-top:12px;color:#718096;font-size:0.78rem;cursor:pointer;padding:6px;}
 
-/* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#141820;border-top:1px solid #2d3748;display:flex;z-index:100;}
-.nav-btn{flex:1;padding:10px 4px;text-align:center;cursor:pointer;border:none;background:none;color:#718096;font-size:0.65rem;display:flex;flex-direction:column;align-items:center;gap:2px;}
+/* ── Water / Finish ── */
+.water-note{padding:9px 12px 10px 17px;font-size:0.76rem;color:#b794f4;line-height:1.5;}
+.finish-banner{text-align:center;padding:18px;background:linear-gradient(135deg,rgba(39,103,73,0.3),rgba(104,211,145,0.1));}
+.finish-title{font-size:1.3rem;font-weight:800;color:#68d391;}
+.finish-sub{font-size:0.78rem;color:#a0aec0;margin-top:4px;}
+.finish-time{font-size:1rem;font-weight:700;color:#f6ad55;font-family:monospace;margin-top:8px;}
+
+/* ── Bottom nav ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#141820;border-top:1px solid #2d3748;display:flex;z-index:100;height:52px;}
+.nav-btn{flex:1;padding:8px 4px;text-align:center;cursor:pointer;border:none;background:none;color:#718096;font-size:0.6rem;display:flex;flex-direction:column;align-items:center;gap:2px;}
 .nav-btn.active{color:#f6ad55;}
-.nav-btn svg{width:20px;height:20px;}
+.nav-btn svg{width:18px;height:18px;}
 
-/* GI reminder strip */
-.gi-strip{background:rgba(85,60,154,0.15);border-top:1px solid rgba(85,60,154,0.3);padding:6px 12px 6px 17px;font-size:0.72rem;color:#b794f4;display:flex;align-items:center;gap:6px;}
-.gi-strip.show-gi{display:flex;}
-
-/* Collapsed state */
-.station.passed .s-body{display:none;}
-.station.current .s-body,.station.upcoming .s-body{display:block;}
-.station .collapse-btn{background:none;border:none;color:#4a5568;font-size:0.68rem;text-align:center;width:100%;padding:4px;cursor:pointer;display:block;}
-
-/* Anti-nausea quick card */
-.quick-panel{display:none;position:fixed;bottom:52px;left:0;right:0;background:#1a1f2e;border-top:2px solid #553c9a;padding:14px 16px;max-height:60vh;overflow-y:auto;z-index:99;}
+/* ── Panels ── */
+.quick-panel{display:none;position:fixed;bottom:52px;left:0;right:0;background:#1a1f2e;border-top:2px solid #553c9a;padding:14px 14px;max-height:55vh;overflow-y:auto;z-index:98;}
 .quick-panel.show{display:block;}
-.quick-panel h3{font-size:0.85rem;font-weight:700;color:#b794f4;margin-bottom:10px;}
-.q-item{padding:8px 0;border-bottom:1px solid #2d3748;font-size:0.8rem;color:#a0aec0;line-height:1.5;}
-.q-item:last-child{border-bottom:none;}
-.q-item strong{color:#e2e8f0;display:block;margin-bottom:2px;}
-
-/* Nutrition quick card */
-.nut-panel{display:none;position:fixed;bottom:52px;left:0;right:0;background:#1a1f2e;border-top:2px solid #276749;padding:14px 16px;max-height:60vh;overflow-y:auto;z-index:99;}
+.quick-panel h3{font-size:0.83rem;font-weight:700;color:#b794f4;margin-bottom:10px;}
+.nut-panel{display:none;position:fixed;bottom:52px;left:0;right:0;background:#1a1f2e;border-top:2px solid #276749;padding:14px 14px;max-height:55vh;overflow-y:auto;z-index:98;}
 .nut-panel.show{display:block;}
-.nut-panel h3{font-size:0.85rem;font-weight:700;color:#68d391;margin-bottom:10px;}
-.nut-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #2d3748;font-size:0.8rem;}
+.nut-panel h3{font-size:0.83rem;font-weight:700;color:#68d391;margin-bottom:10px;}
+.q-item{padding:7px 0;border-bottom:1px solid #2d3748;font-size:0.78rem;color:#a0aec0;line-height:1.45;}
+.q-item:last-child{border-bottom:none;}
+.q-item strong{color:#e2e8f0;display:block;margin-bottom:1px;}
+.nut-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:0.78rem;}
 .nut-row:last-child{border-bottom:none;}
 .nut-row span:first-child{color:#718096;}
 .nut-row span:last-child{color:#e2e8f0;font-weight:600;font-family:monospace;}
-.panel-close{float:right;background:none;border:none;color:#718096;font-size:1.2rem;cursor:pointer;margin-top:-2px;}
+.panel-close{float:right;background:none;border:none;color:#718096;font-size:1.1rem;cursor:pointer;margin-top:-2px;}
 </style>
 </head>
 <body>
@@ -123,12 +146,11 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
     <div class="clock" id="liveClock">--:--:--</div>
   </div>
   <div class="pace-row">
-    <span class="pace-label">Base pace</span>
-    <span class="pace-val" id="paceDisplay">18:00</span>
-    <span class="pace-label">min/mi</span>
+    <span class="pace-label">Pace</span>
+    <span class="pace-val" id="paceDisplay" class="pace-base">18:00/mi</span>
     <button class="pace-btn" onclick="togglePaceInput()">±</button>
-    <span class="pace-label" style="margin-left:4px;">Est. finish:</span>
-    <span class="pace-val" id="estFinish">—</span>
+    <span class="pace-label" style="margin-left:6px;">Finish</span>
+    <span class="pace-val" id="estFinish" style="color:#f6ad55;">—</span>
   </div>
   <div class="pace-input-row" id="paceInputRow">
     <input type="text" id="paceInput" placeholder="18:00" inputmode="decimal">
@@ -138,25 +160,56 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 
 <div class="progress-wrap">
   <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-  <div class="progress-labels"><span>Start</span><span id="progressLabel">Mi 0</span><span>54 mi</span></div>
+  <div class="progress-labels">
+    <span>Start</span>
+    <span id="progressLabel" class="progress-mi">Mi 0</span>
+    <span>54 mi</span>
+  </div>
 </div>
 
 <div class="stations" id="stationsList"></div>
 
-<!-- Anti-nausea quick panel -->
-<div class="quick-panel" id="giPanel">
-  <button class="panel-close" onclick="closePanel('giPanel')">✕</button>
-  <h3>⛰️ Anti-Nausea Toolkit</h3>
-  <div class="q-item"><strong>Ginger chews (Gin-Gins)</strong>2–3 chews before major climbs or at onset of nausea. Front pocket.</div>
-  <div class="q-item"><strong>Peppermint capsules (200mg)</strong>At onset of nausea. Combine with ginger for synergy.</div>
-  <div class="q-item"><strong>Zofran (Ondansetron 4mg ODT)</strong>Under tongue — dissolves in 30 sec. Pre-emptively at West Fork. Most effective tool.</div>
-  <div class="q-item"><strong>Pepto-Bismol chewables</strong>2 tabs at first sign of cramping or nausea.</div>
-  <div class="q-item"><strong>Broth</strong>Most reliable food above 6,500 ft. Request at every station.</div>
-  <div class="q-item"><strong>Above 8,000 ft: liquids ONLY</strong>Gels, broth, Coke, sports drink. No solids on steep climbs.</div>
-  <div class="q-item" style="color:#fc8181;font-size:0.75rem;padding-top:10px;">Avoid above 7,000 ft: PB, cheese, dairy, high-fiber bars</div>
+<!-- Retroactive check-in modal -->
+<div class="retro-modal" id="retroModal">
+  <div class="retro-box">
+    <div class="retro-title" id="retroTitle">When did you arrive?</div>
+    <div class="retro-subtitle">Current time: <span id="retroCurrentTime"></span></div>
+    <div class="offset-btns">
+      <div class="offset-btn" onclick="setRetroOffset(5)">5 min ago</div>
+      <div class="offset-btn" onclick="setRetroOffset(15)">15 min ago</div>
+      <div class="offset-btn" onclick="setRetroOffset(30)">30 min ago</div>
+      <div class="offset-btn" onclick="setRetroOffset(45)">45 min ago</div>
+      <div class="offset-btn" onclick="setRetroOffset(60)">1 hr ago</div>
+      <div class="offset-btn" onclick="setRetroOffset(90)">1.5 hr ago</div>
+    </div>
+    <div class="retro-custom">
+      <input type="text" id="retroCustomInput" placeholder="HH:MM AM/PM">
+      <button onclick="setRetroCustom()">Set</button>
+    </div>
+    <div class="retro-cancel" onclick="closeRetro()">Cancel</div>
+  </div>
 </div>
 
-<!-- Nutrition quick panel -->
+<!-- Sticky check-in bar -->
+<div class="checkin-bar" id="checkinBar">
+  <button class="checkin-btn ready" id="checkinBtn" onclick="checkInCurrent()">
+    <span id="checkinBtnText">● Check in</span>
+  </button>
+</div>
+
+<!-- GI panel -->
+<div class="quick-panel" id="giPanel">
+  <button class="panel-close" onclick="closePanel('giPanel')">✕</button>
+  <h3>⛰️ Anti-Nausea</h3>
+  <div class="q-item"><strong>Ginger chews</strong>2–3 before climbs or at first sign of nausea. Front pocket.</div>
+  <div class="q-item"><strong>Peppermint (200mg)</strong>At onset. Combine with ginger.</div>
+  <div class="q-item"><strong>Zofran 4mg ODT</strong>Under tongue, 30 sec. Take pre-emptively at West Fork. Best tool.</div>
+  <div class="q-item"><strong>Pepto chewables</strong>2 tabs at first sign of cramping.</div>
+  <div class="q-item"><strong>Broth</strong>Most reliable food above 6,500 ft.</div>
+  <div class="q-item" style="color:#fc8181;font-size:0.72rem;padding-top:8px;"><strong style="color:#fc8181;">Above 8,000 ft: liquids only</strong>Gels, broth, Coke, sports drink. No solids on steep climbs.<br>Avoid: PB, cheese, dairy, high-fiber bars.</div>
+</div>
+
+<!-- Nutrition panel -->
 <div class="nut-panel" id="nutPanel">
   <button class="panel-close" onclick="closePanel('nutPanel')">✕</button>
   <h3>🍫 Targets</h3>
@@ -164,261 +217,215 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <div class="nut-row"><span>Hydration (night)</span><span>14–18 oz/hr</span></div>
   <div class="nut-row"><span>Hydration (day)</span><span>18–26 oz/hr</span></div>
   <div class="nut-row"><span>Sodium</span><span>300–700 mg/hr</span></div>
+  <div class="nut-row"><span>Electrolyte cap</span><span>every 45 min</span></div>
   <div class="nut-row"><span>Caffeine #1</span><span>Mi 28–30</span></div>
   <div class="nut-row"><span>Caffeine #2</span><span>Mi 47–50</span></div>
-  <div class="nut-row"><span>Gel frequency</span><span>every 30–35 min</span></div>
-  <div class="nut-row"><span>Electrolyte cap</span><span>every 45 min</span></div>
 </div>
 
 <!-- Bottom nav -->
 <div class="bottom-nav">
-  <button class="nav-btn active" onclick="showView('stations')" id="btn-stations">
+  <button class="nav-btn active" id="btn-stations">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v9h5v-5h4v5h5v-9"/></svg>
     Stations
   </button>
-  <button class="nav-btn" onclick="togglePanel('nutPanel')" id="btn-nut">
+  <button class="nav-btn" onclick="togglePanel('nutPanel')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     Fuel
   </button>
-  <button class="nav-btn" onclick="togglePanel('giPanel')" id="btn-gi">
+  <button class="nav-btn" onclick="togglePanel('giPanel')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
     GI Help
   </button>
-  <button class="nav-btn" onclick="scrollToCurrent()" id="btn-now">
+  <button class="nav-btn" onclick="scrollToCurrent()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
     Now
   </button>
 </div>
 
 <script>
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// ─── STATION DATA ─────────────────────────────────────────────────────────────
 const STATIONS = [
-  {
-    id: 'start',
-    name: 'Gibson Jack',
-    label: 'Start',
-    mile: 0, elev: 5203,
-    dropBag: false,
-    cutoffMin: null,
-    strip: '#4c51bf',
-    isWater: false,
-    isFinish: false,
-    next: { text: '7.5 mi → Cusick Creek · +1,481 ft · dark', danger: false },
-    gear: [
-      { text: 'Headlamp + backup light', hi: true },
-      { text: 'Whistle + mylar blanket (mandatory)', hi: true },
-      { text: 'GPX on watch + phone (mandatory)', hi: true },
-      { text: 'Poles · gloves · light jacket' },
-    ],
-    food: [
-      { text: '4–5 gels + chews in vest', hi: true },
-      { text: '2× flasks filled' },
-      { text: '500mg sodium 30 min before start', hi: true },
-    ],
-    med: [
-      { text: 'Ginger chews — front pocket', hi: true },
-      { text: 'Anti-nausea + Pepto in vest' },
-    ],
-    decision: 'Midnight. Eat first gel at Mile 1 — stomach is asleep. Next bag: City Creek (Mi 12.8).',
-    segGain: 0, segMiles: 0,
-  },
-  {
-    id: 'cusick',
-    name: 'Cusick Creek',
-    label: 'AS',
-    mile: 7.5, elev: 5692,
-    dropBag: false,
-    cutoffMin: null,
-    strip: '#4c51bf',
-    isWater: false, isFinish: false,
-    next: { text: '5.3 mi → City Creek · descending · getting near dawn', danger: false },
-    gear: [
-      { text: 'Check headlamp — swap batteries if dim' },
-    ],
-    food: [
-      { text: 'Station food: bananas, broth, potatoes, tortillas' },
-      { text: 'Eat something light', hi: true },
-      { text: 'Replenish gels if low' },
-    ],
-    med: [{ text: 'Quick body check — anything rubbing?' }],
-    decision: 'No bag here. Quick stop — grab food, keep moving. Bag #1 is City Creek, 5.3 mi ahead.',
-    segGain: 1481, segMiles: 7.5,
-  },
-  {
-    id: 'citycreek',
-    name: 'City Creek',
-    label: 'Drop Bag #1',
-    mile: 12.8, elev: 4820,
-    dropBag: true,
-    cutoffMin: 5*60+45,
-    strip: '#b7791f',
-    isWater: false, isFinish: false,
-    next: { text: '4.1 mi → Water Cache · +2,226 ft · steepest climb · GI risk starts', danger: true },
-    gear: [
-      { text: 'Sunscreen + sunglasses', hi: true },
-    ],
-    food: [
-      { text: 'EAT A REAL MEAL — last solid food window', hi: true },
-      { text: 'Station: hash browns, mashed potato, PBJ, cinnamon roll, soup' },
-      { text: 'Load 4–5 gels for the climb', hi: true },
-      { text: 'Fill BOTH flasks', hi: true },
-      { text: 'Electrolyte cap now' },
-    ],
-    med: [
-      { text: 'Ginger chews NOW — before climb', hi: true },
-    ],
-    decision: 'The 2,226 ft climb starts immediately after. Eat solids here — switch to liquids on the climb. Next bag: West Fork (Mi 30.5), 17.7 mi away.',
-    segGain: 450, segMiles: 5.3,
-  },
-  {
-    id: 'water',
-    name: 'Water Cache',
-    label: 'Water only',
-    mile: 16.9, elev: 7057,
-    dropBag: false,
-    cutoffMin: null,
-    strip: '#553c9a',
-    isWater: true, isFinish: false,
-    next: { text: '7.8 mi → Elk Meadows · rolling high terrain', danger: false },
-    waterNote: 'Unmanned cache. Fill both flasks. You just climbed 2,226 ft. Check stomach — if nauseous, take ginger/Pepto NOW before continuing.',
-    segGain: 2226, segMiles: 4.1,
-  },
-  {
-    id: 'elkmeadows',
-    name: 'Elk Meadows',
-    label: 'AS — no bag',
-    mile: 24.7, elev: 6781,
-    dropBag: false,
-    cutoffMin: null,
-    strip: '#276749',
-    isWater: false, isFinish: false,
-    next: { text: '5.7 mi → West Fork · mostly descending · LAST BAG at Mi 30.5', danger: false },
-    gear: [
-      { text: 'No bag — carry-forward only' },
-      { text: 'Confirm summit layers are in West Fork bag' },
-    ],
-    food: [
-      { text: 'EAT A FULL MEAL from station food', hi: true },
-      { text: 'Station: wraps (turkey/bacon/avocado/beans), potato, PBJ, soup' },
-      { text: 'First caffeine gel if needed', hi: true },
-      { text: 'Restock gels to reach West Fork' },
-    ],
-    med: [
-      { text: 'Blister check — tape hot spots now' },
-    ],
-    decision: 'No bag but great food. Eat a full meal — best GI window of miles 17–30. West Fork is 5.7 mi and is your LAST bag before the summit.',
-    segGain: 1018, segMiles: 7.8,
-  },
-  {
-    id: 'westfork',
-    name: 'West Fork',
-    label: 'Drop Bag #2 — LAST BAG',
-    mile: 30.5, elev: 5213,
-    dropBag: true,
-    cutoffMin: 12*60+45,
-    strip: '#fc8181',
-    isWater: false, isFinish: false,
-    next: { text: '6.4 mi → Scout Mtn (no bag) · +1,912 ft · then 10.8 mi to Big Fir · NO bag for 17.2 mi', danger: true },
-    gear: [
-      { text: 'Puffy/wind jacket IN PACK NOW — no bag at Scout Mtn', hi: true },
-      { text: 'Gloves + hat/buff', hi: true },
-      { text: 'Change socks', hi: true },
-      { text: 'Reapply anti-chafe' },
-    ],
-    food: [
-      { text: 'EAT A FULL MEAL', hi: true },
-      { text: 'Station: bacon, quesadillas, wraps, potato, PBJ, broth, soda' },
-      { text: 'Load 6–8 gels — no bag for 17.2 miles', hi: true },
-      { text: 'Fill broth flask to carry', hi: true },
-      { text: 'Caffeine dose', hi: true },
-    ],
-    med: [
-      { text: 'Anti-nausea (Zofran/Pepto) PRE-EMPTIVELY NOW', hi: true },
-      { text: 'Blister care — last kit access for 17 mi' },
-    ],
-    decision: 'Most important stop. Summit layers IN YOUR PACK before you leave. 17.2 mi to next bag. Spend 10–12 min here.',
-    segGain: 36, segMiles: 5.7,
-  },
-  {
-    id: 'scoutmtn',
-    name: 'Scout Mtn',
-    label: 'AS — no bag',
-    mile: 36.8, elev: 6621,
-    dropBag: false,
-    cutoffMin: 15*60+30,
-    strip: '#fc8181',
-    isWater: false, isFinish: false,
-    next: { text: '10.8 mi → Big Fir · summit 8,694 ft at Mi 43 · +2,384 ft then −3,233 ft', danger: true },
-    gear: [
-      { text: 'Confirm: jacket + gloves on body or top of pack', hi: true },
-    ],
-    food: [
-      { text: 'EAT EVERYTHING from station food', hi: true },
-      { text: 'Station: quesadillas, bacon, avocado wraps, potato, broth, soda' },
-      { text: 'Fill broth flask if empty', hi: true },
-      { text: 'Confirm: 6–8 gels still in vest', hi: true },
-      { text: 'Caffeine if not used at West Fork' },
-    ],
-    med: [
-      { text: 'Anti-nausea in TOP pocket — accessible', hi: true },
-      { text: 'Ginger + peppermint: confirm front pocket' },
-    ],
-    decision: 'No bag — you\'re running on West Fork supplies. Summit is 6 mi ahead. Above 8,000 ft: liquids only. You\'re 37 miles in — this is the hard part.',
-    segGain: 1912, segMiles: 6.4,
-  },
-  {
-    id: 'bigfir',
-    name: 'Big Fir',
-    label: 'Drop Bag #3',
-    mile: 47.7, elev: 5797,
-    dropBag: true,
-    cutoffMin: 20*60,
-    strip: '#f6ad55',
-    isWater: false, isFinish: false,
-    next: { text: '6.2 mi → Finish · net descending · almost done', danger: false },
-    gear: [
-      { text: 'Dry socks — change if wet from summit', hi: true },
-      { text: 'Stash summit layers here' },
-    ],
-    food: [
-      { text: 'Eat whatever sounds good', hi: true },
-      { text: 'Station: pierogies, potato, PBJ, broth, soda, fruit' },
-      { text: 'Final caffeine if available' },
-    ],
-    med: [{ text: 'Quick blister check' }],
-    decision: 'You survived the summit. 6.2 miles to Mink Creek. Don\'t sit more than 5 min — legs will lock up.',
-    segGain: 2384, segMiles: 10.8,
-  },
-  {
-    id: 'finish',
-    name: 'Finish',
-    label: 'Mink Creek CG',
-    mile: 53.9, elev: 5154,
-    dropBag: false,
-    cutoffMin: 22*60,
-    strip: '#276749',
-    isWater: false, isFinish: true,
-    next: { text: '', danger: false },
-    segGain: 1293, segMiles: 6.2,
-  },
+  { id:'start', name:'Gibson Jack', label:'Start', mile:0, elev:5203, dropBag:false, cutoffMin:null, strip:'#4c51bf', isWater:false, isFinish:false,
+    next:{text:'7.5 mi → Cusick Creek · +1,481 ft · dark',danger:false},
+    gear:[{text:'Headlamp + backup light',hi:true},{text:'Whistle + mylar blanket (mandatory)',hi:true},{text:'GPX on watch + phone (mandatory)',hi:true},{text:'Poles · gloves · light jacket'}],
+    food:[{text:'4–5 gels + chews in vest',hi:true},{text:'2× flasks filled'},{text:'500mg sodium 30 min before start',hi:true}],
+    med:[{text:'Ginger chews — front pocket',hi:true},{text:'Anti-nausea + Pepto in vest'}],
+    decision:'Midnight. Eat first gel at Mile 1 — stomach is asleep. Next bag: City Creek (Mi 12.8).',
+    segGain:0, segMiles:0 },
+
+  { id:'cusick', name:'Cusick Creek', label:'AS · no bag', mile:7.5, elev:5692, dropBag:false, cutoffMin:null, strip:'#4c51bf', isWater:false, isFinish:false,
+    next:{text:'5.3 mi → City Creek · descending · dawn approaching',danger:false},
+    gear:[{text:'Check headlamp — swap batteries if dim'}],
+    food:[{text:'Station: bananas, broth, potatoes, tortillas'},{text:'Eat something, keep moving',hi:true}],
+    med:[{text:'Quick body check — anything rubbing?'}],
+    decision:'No bag here. Quick stop. Bag #1 is City Creek, 5.3 mi ahead.',
+    segGain:1481, segMiles:7.5 },
+
+  { id:'citycreek', name:'City Creek', label:'Drop Bag #1', mile:12.8, elev:4820, dropBag:true, cutoffMin:5*60+45, strip:'#b7791f', isWater:false, isFinish:false,
+    next:{text:'4.1 mi → Water Cache · +2,226 ft · steepest climb · GI risk starts here',danger:true},
+    gear:[{text:'Sunscreen + sunglasses',hi:true}],
+    food:[{text:'EAT A REAL MEAL — last solid food window',hi:true},{text:'Station: hash browns, mashed potato, PBJ, cinnamon roll, soup'},{text:'Load 4–5 gels for the climb',hi:true},{text:'Fill BOTH flasks',hi:true},{text:'Electrolyte cap now'}],
+    med:[{text:'Ginger chews NOW — before climb',hi:true}],
+    decision:'Climb starts immediately after. Eat solids here — liquids only on the climb. Next bag: West Fork Mi 30.5, 17.7 mi away.',
+    segGain:450, segMiles:5.3 },
+
+  { id:'water', name:'Water Cache', label:'Water only', mile:16.9, elev:7057, dropBag:false, cutoffMin:null, strip:'#553c9a', isWater:true, isFinish:false,
+    waterNote:'Unmanned cache. Fill both flasks. Check stomach — if nauseous take ginger/Pepto NOW. Next: Elk Meadows 7.8 mi.',
+    next:{text:'7.8 mi → Elk Meadows',danger:false},
+    segGain:2226, segMiles:4.1 },
+
+  { id:'elkmeadows', name:'Elk Meadows', label:'AS · no bag', mile:24.7, elev:6781, dropBag:false, cutoffMin:null, strip:'#276749', isWater:false, isFinish:false,
+    next:{text:'5.7 mi → West Fork · mostly descending · LAST BAG ahead at Mi 30.5',danger:false},
+    gear:[{text:'Confirm summit layers in West Fork bag'}],
+    food:[{text:'EAT A FULL MEAL',hi:true},{text:'Station: wraps (turkey/bacon/avocado), potato, PBJ, soup'},{text:'First caffeine gel if needed',hi:true},{text:'Top up gels for West Fork'}],
+    med:[{text:'Blister check — tape hot spots now'}],
+    decision:'No bag but great food. Best GI window of miles 17–30. West Fork is your LAST bag before the summit.',
+    segGain:1018, segMiles:7.8 },
+
+  { id:'westfork', name:'West Fork', label:'Drop Bag #2 — LAST BAG', mile:30.5, elev:5213, dropBag:true, cutoffMin:12*60+45, strip:'#fc8181', isWater:false, isFinish:false,
+    next:{text:'6.4 mi → Scout Mtn (no bag) · then 10.8 mi to Big Fir · NO bag for 17.2 miles',danger:true},
+    gear:[{text:'Puffy/wind jacket IN PACK NOW',hi:true},{text:'Gloves + hat/buff',hi:true},{text:'Change socks',hi:true},{text:'Reapply anti-chafe'}],
+    food:[{text:'EAT A FULL MEAL',hi:true},{text:'Station: bacon, quesadillas, wraps, potato, broth, soda'},{text:'Load 6–8 gels — no bag for 17.2 miles',hi:true},{text:'Fill broth flask',hi:true},{text:'Caffeine dose',hi:true}],
+    med:[{text:'Anti-nausea PRE-EMPTIVELY right now',hi:true},{text:'Blister care — last kit for 17 miles'}],
+    decision:'Most important stop. Summit layers IN YOUR PACK. 17.2 mi to next bag. Spend 10–12 min here.',
+    segGain:36, segMiles:5.7 },
+
+  { id:'scoutmtn', name:'Scout Mtn', label:'AS · no bag', mile:36.8, elev:6621, dropBag:false, cutoffMin:15*60+30, strip:'#fc8181', isWater:false, isFinish:false,
+    next:{text:'10.8 mi → Big Fir · summit 8,694 ft at Mi 43 · NO bag until Big Fir',danger:true},
+    gear:[{text:'Confirm jacket + gloves on body or top of pack',hi:true}],
+    food:[{text:'EAT EVERYTHING from station food',hi:true},{text:'Station: quesadillas, bacon, avocado wraps, potato, broth, soda'},{text:'Fill broth flask if empty',hi:true},{text:'Confirm 6–8 gels still in vest',hi:true},{text:'Caffeine if not used at West Fork'}],
+    med:[{text:'Anti-nausea in TOP pocket',hi:true},{text:'Ginger + peppermint: confirm front pocket'}],
+    decision:'No bag — running on West Fork supplies. Summit 6 mi ahead. Above 8,000 ft: liquids only. You\'re 37 mi in.',
+    segGain:1912, segMiles:6.4 },
+
+  { id:'bigfir', name:'Big Fir', label:'Drop Bag #3', mile:47.7, elev:5797, dropBag:true, cutoffMin:20*60, strip:'#f6ad55', isWater:false, isFinish:false,
+    next:{text:'6.2 mi → Finish · net descending · almost done',danger:false},
+    gear:[{text:'Dry socks — change if wet from summit',hi:true},{text:'Stash summit layers here'}],
+    food:[{text:'Eat whatever sounds good',hi:true},{text:'Station: pierogies, potato, PBJ, broth, soda, fruit'},{text:'Final caffeine if available'}],
+    med:[{text:'Quick blister check'}],
+    decision:'You survived the summit. 6.2 miles to Mink Creek. Don\'t sit more than 5 min.',
+    segGain:2384, segMiles:10.8 },
+
+  { id:'finish', name:'Finish', label:'Mink Creek CG', mile:53.9, elev:5154, dropBag:false, cutoffMin:22*60, strip:'#276749', isWater:false, isFinish:true,
+    next:{text:'',danger:false}, segGain:1293, segMiles:6.2 },
 ];
 
-const CUTOFF_MIN = 22 * 60;
+// ─── CHECK-IN STATE (localStorage) ───────────────────────────────────────────
+// checkins[id] = { time: Date ISO string }
+const LS_KEY = 'smu50m_checkins_2026';
+let checkins = {};
 
-// ─── PACE ────────────────────────────────────────────────────────────────────
-let basePaceMin = 18.0;
-
-function segTime(s) {
-  return s.segMiles * basePaceMin + s.segGain / 100;
+function loadCheckins() {
+  try { checkins = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) { checkins = {}; }
 }
 
-function cumTimeAt(idx) {
-  let t = 0;
-  for (let i = 1; i <= idx; i++) t += segTime(STATIONS[i]);
-  return t;
+function saveCheckins() {
+  localStorage.setItem(LS_KEY, JSON.stringify(checkins));
+}
+
+function setCheckin(id, isoTime) {
+  checkins[id] = { time: isoTime };
+  saveCheckins();
+  render();
+}
+
+function removeCheckin(id) {
+  delete checkins[id];
+  saveCheckins();
+  render();
+}
+
+function checkinTime(id) {
+  return checkins[id] ? new Date(checkins[id].time) : null;
+}
+
+// ─── PACE ─────────────────────────────────────────────────────────────────────
+let manualPaceMin = 18.0;
+const RACE_START = new Date('2026-06-06T00:00:00');
+
+function getRaceMs() {
+  const now = new Date();
+  const ms = now - RACE_START;
+  return (ms >= 0 && ms < 26 * 3600000) ? ms : null;
+}
+
+function getRaceMin() {
+  const ms = getRaceMs();
+  return ms !== null ? ms / 60000 : null;
+}
+
+// Build cumulative time array using check-ins where available, pace estimates elsewhere
+function buildTimeline() {
+  // Returns array of {min, actual} for each station index
+  const result = [{ min: 0, actual: true }];
+
+  for (let i = 1; i < STATIONS.length; i++) {
+    const s = STATIONS[i];
+    const ct = checkinTime(s.id);
+    if (ct) {
+      result.push({ min: (ct - RACE_START) / 60000, actual: true });
+    } else {
+      // Estimate from last actual point using effective pace
+      const lastActualIdx = findLastActual(result);
+      const effPace = getEffectivePace(lastActualIdx);
+      const prevMin = result[result.length - 1].min;
+      const estMin = prevMin + s.segMiles * effPace + s.segGain / 100;
+      result.push({ min: estMin, actual: false });
+    }
+  }
+  return result;
+}
+
+function findLastActual(result) {
+  for (let i = result.length - 1; i >= 0; i--) {
+    if (result[i].actual) return i;
+  }
+  return 0;
+}
+
+// Calculate effective pace from most recent actual segment(s)
+function getEffectivePace(upToIdx) {
+  // Find pairs of consecutive actual check-ins and compute pace
+  const paces = [];
+  let prevActualIdx = -1;
+  let prevActualMin = 0;
+
+  for (let i = 0; i <= upToIdx && i < STATIONS.length; i++) {
+    const ct = i === 0 ? RACE_START : checkinTime(STATIONS[i].id);
+    if (ct || i === 0) {
+      const min = i === 0 ? 0 : (ct - RACE_START) / 60000;
+      if (prevActualIdx >= 0) {
+        // Compute pace over this span
+        let totalMiles = 0, totalGain = 0;
+        for (let j = prevActualIdx + 1; j <= i; j++) {
+          totalMiles += STATIONS[j].segMiles;
+          totalGain += STATIONS[j].segGain;
+        }
+        const elapsed = min - prevActualMin;
+        const naismith = totalGain / 100;
+        const movingTime = Math.max(0, elapsed - naismith);
+        if (totalMiles > 0) paces.push(movingTime / totalMiles);
+      }
+      prevActualIdx = i;
+      prevActualMin = min;
+    }
+  }
+
+  if (paces.length === 0) return manualPaceMin;
+  // Weight recent paces more heavily
+  if (paces.length === 1) return paces[0];
+  const w = paces.length;
+  let weightedSum = 0, weightSum = 0;
+  paces.forEach((p, i) => {
+    const weight = i + 1;
+    weightedSum += p * weight;
+    weightSum += weight;
+  });
+  return weightedSum / weightSum;
 }
 
 function minToTime(m) {
+  if (m === null || isNaN(m)) return '—';
   const h = Math.floor(m / 60) % 24;
   const min = Math.round(m % 60);
   const ampm = h >= 12 ? 'PM' : 'AM';
@@ -426,100 +433,239 @@ function minToTime(m) {
 }
 
 function formatDur(m) {
+  if (m < 0) m = -m;
   const h = Math.floor(m/60), mn = Math.round(m%60);
   return `${h}h${String(mn).padStart(2,'0')}m`;
 }
 
+function formatPace(p) {
+  const m = Math.floor(p), s = Math.round((p-m)*60);
+  return `${m}:${String(s).padStart(2,'0')}/mi`;
+}
+
+// ─── CURRENT STATION ──────────────────────────────────────────────────────────
+function getCurrentStationIdx(timeline) {
+  const raceMin = getRaceMin();
+  if (raceMin === null) return 0;
+  // Last station we've passed (either checked in or estimated time has passed)
+  let current = 0;
+  for (let i = 0; i < STATIONS.length - 1; i++) {
+    const ct = checkinTime(STATIONS[i].id);
+    if (ct) { current = i; continue; }
+    if (timeline[i].min <= raceMin) current = i;
+    else break;
+  }
+  return current;
+}
+
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-function renderStations() {
+let _retroTargetId = null;
+
+function render() {
+  const timeline = buildTimeline();
+  const raceMin = getRaceMin();
+  const currentIdx = getCurrentStationIdx(timeline);
+  const effPace = getEffectivePace(currentIdx);
+
+  // Update header pace display
+  const hasActual = STATIONS.slice(1).some(s => checkinTime(s.id));
+  const paceEl = document.getElementById('paceDisplay');
+  if (hasActual) {
+    paceEl.textContent = `${formatPace(effPace)} actual`;
+    paceEl.style.color = effPace < manualPaceMin ? '#68d391' : effPace > manualPaceMin * 1.1 ? '#f6ad55' : '#a0aec0';
+  } else {
+    const m = Math.floor(manualPaceMin), s = Math.round((manualPaceMin-m)*60);
+    paceEl.textContent = `${m}:${String(s).padStart(2,'0')}/mi target`;
+    paceEl.style.color = '#a0aec0';
+  }
+
+  // Update estimated finish
+  document.getElementById('estFinish').textContent = minToTime(timeline[timeline.length-1].min);
+
+  // Progress bar
+  let currentMile = 0;
+  if (raceMin !== null) {
+    const ct = checkinTime(STATIONS[currentIdx].id);
+    const stStart = currentIdx === 0 ? 0 : (ct ? (ct - RACE_START)/60000 : timeline[currentIdx].min);
+    const nextMin = timeline[Math.min(currentIdx+1, STATIONS.length-1)].min;
+    const segT = nextMin - stStart;
+    const nextS = STATIONS[Math.min(currentIdx+1, STATIONS.length-1)];
+    const frac = segT > 0 ? Math.min(1, (raceMin - stStart) / segT) : 0;
+    currentMile = STATIONS[currentIdx].mile + frac * nextS.segMiles;
+  }
+  const pct = Math.min(100, (currentMile / 53.9) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent =
+    raceMin !== null ? `Mi ${currentMile.toFixed(1)}` : 'Pre-race';
+
+  // Check-in bar
+  const curS = STATIONS[currentIdx];
+  const nextS2 = STATIONS[Math.min(currentIdx+1, STATIONS.length-1)];
+  const checkinBtn = document.getElementById('checkinBtn');
+  const checkinBar = document.getElementById('checkinBar');
+
+  if (STATIONS[currentIdx].isFinish || currentIdx === STATIONS.length-1) {
+    checkinBtn.className = 'checkin-btn finished';
+    document.getElementById('checkinBtnText').innerHTML = '🏁 FINISH — YOU DID IT';
+  } else {
+    // Is next station checked in?
+    const nextChecked = checkinTime(nextS2.id);
+    if (nextChecked) {
+      checkinBtn.className = 'checkin-btn done';
+      document.getElementById('checkinBtnText').innerHTML =
+        `✓ ${nextS2.name} checked in · Mi ${nextS2.mile}`;
+    } else {
+      checkinBtn.className = 'checkin-btn ready';
+      document.getElementById('checkinBtnText').innerHTML =
+        `● I'M AT ${nextS2.name.toUpperCase()}<span class="checkin-sub">Mi ${nextS2.mile} · tap to check in</span>`;
+    }
+  }
+
+  // Render station list
   const list = document.getElementById('stationsList');
   list.innerHTML = '';
 
-  const nowMin = getRaceMinutes();
-
   STATIONS.forEach((s, i) => {
-    const cum = cumTimeAt(i);
-    const arrMin = cum;
-    const estTime = i === 0 ? '12:00 AM' : minToTime(arrMin);
-    const isPassed = nowMin !== null && nowMin > arrMin + 5;
-    const isCurrent = nowMin !== null && !isPassed &&
-      (i === STATIONS.length - 1 || nowMin <= cumTimeAt(i+1));
-    const state = isPassed ? 'passed' : isCurrent ? 'current' : 'upcoming';
+    const { min: arrMin, actual } = timeline[i];
+    const isChecked = !!checkinTime(s.id);
+    const isPassed = i < currentIdx || (i === currentIdx && isChecked);
+    const isCurrent = i === currentIdx && !isChecked;
 
-    // Buffer vs official cutoff
+    let stateClass = '';
+    if (isChecked) stateClass = 'checked';
+    else if (isPassed) stateClass = 'passed';
+    else if (isCurrent) stateClass = 'current';
+
+    // Buffer
     const cut = s.cutoffMin;
     let bufStr = '', bufClass = '';
     if (cut !== null) {
       const buf = cut - arrMin;
-      if (buf < 0) { bufStr = `⛔ MISS by ${formatDur(-buf)}`; bufClass = 'buf-dnf'; }
+      if (buf < 0) { bufStr = `⛔ ${formatDur(-buf)} late`; bufClass = 'buf-dnf'; }
       else if (buf < 60) { bufStr = `⚠️ +${formatDur(buf)}`; bufClass = 'buf-warn'; }
       else { bufStr = `+${formatDur(buf)}`; bufClass = 'buf-ok'; }
     }
 
-    const dbBadge = s.dropBag
-      ? `<span class="s-dropbag" style="background:rgba(104,211,145,0.15);color:#68d391;">✅ Drop bag</span>`
-      : s.isWater ? `<span class="s-dropbag" style="background:rgba(85,60,154,0.15);color:#b794f4;">🚰 Water only</span>`
-      : s.isFinish ? ''
-      : `<span class="s-dropbag" style="background:rgba(113,128,150,0.1);color:#4a5568;">No bag</span>`;
+    // Time display
+    const ct = checkinTime(s.id);
+    const timeStr = ct ? minToTime((ct - RACE_START)/60000) : (i === 0 ? '12:00 AM' : minToTime(arrMin));
+    const timeClass = ct ? 'actual' : 'est';
+    const timePrefix = ct ? '' : '~';
 
-    const li = document.createElement('div');
-    li.className = `station ${state}`;
-    li.id = `station-${s.id}`;
+    // Pace diff (for checked-in stations)
+    let paceDiffStr = '';
+    if (isChecked && i > 0) {
+      const prevCheckedIdx = (() => {
+        for (let j = i-1; j >= 0; j--) if (checkinTime(STATIONS[j].id) || j===0) return j;
+        return 0;
+      })();
+      let spanMiles = 0, spanGain = 0;
+      for (let j = prevCheckedIdx+1; j <= i; j++) { spanMiles += STATIONS[j].segMiles; spanGain += STATIONS[j].segGain; }
+      const prevTime = prevCheckedIdx === 0 ? RACE_START : checkinTime(STATIONS[prevCheckedIdx].id);
+      const elapsed = (ct - prevTime) / 60000;
+      const movingTime = Math.max(1, elapsed - spanGain/100);
+      const segPace = spanMiles > 0 ? movingTime / spanMiles : manualPaceMin;
+      const diff = segPace - manualPaceMin;
+      if (Math.abs(diff) > 0.5) {
+        const sign = diff < 0 ? '↑' : '↓';
+        const cls = diff < 0 ? 'fast' : 'slow';
+        paceDiffStr = `<div class="pace-diff ${cls}">${sign} ${formatPace(segPace)} this segment</div>`;
+      }
+    }
+
+    const dbBadge = s.dropBag
+      ? `<span class="s-bag" style="background:rgba(104,211,145,0.15);color:#68d391;">✅ Drop bag</span>`
+      : s.isWater ? `<span class="s-bag" style="background:rgba(85,60,154,0.15);color:#b794f4;">🚰 Water</span>`
+      : s.isFinish ? '' : `<span class="s-bag" style="background:rgba(113,128,150,0.08);color:#4a5568;">No bag</span>`;
+
+    const topBadge = isCurrent
+      ? `<div class="current-badge">▶ You are here</div>`
+      : isChecked ? `<div class="checked-badge">✓ Checked in</div>` : '';
+
+    const el = document.createElement('div');
+    el.className = `station ${stateClass}`;
+    el.id = `station-${s.id}`;
 
     if (s.isFinish) {
-      li.innerHTML = `
+      const finishCt = checkinTime(s.id);
+      el.innerHTML = `
         <div class="s-banner">
           <div class="s-strip" style="background:#276749;"></div>
           <div class="s-banner-inner">
             <div class="s-left">
+              ${topBadge}
               <div class="s-name">🏁 Finish — Mink Creek CG</div>
               <div class="s-meta"><span class="s-mile">Mi 53.9</span><span class="s-elev">5,154 ft</span></div>
             </div>
             <div class="s-right">
-              <div class="s-time">${estTime}</div>
+              <div class="s-time ${timeClass}">${timePrefix}${timeStr}</div>
               <div class="s-cutoff">Cutoff: 10:00 PM</div>
               ${bufStr ? `<div class="s-buffer ${bufClass}">${bufStr}</div>` : ''}
             </div>
           </div>
         </div>
-        <div class="finish-banner">
-          <div class="finish-title">YOU ARE AMAZING 🏁</div>
-          <div class="finish-sub">Dry clothes · sandals · baked potato dinner included</div>
-        </div>`;
-      list.appendChild(li);
+        ${finishCt ? `<div class="finish-banner"><div class="finish-title">YOU ARE AMAZING 🏁</div><div class="finish-sub">Baked potato dinner included · You did it</div><div class="finish-time">Finish time: ${minToTime((finishCt-RACE_START)/60000)}</div></div>`
+          : `<div class="finish-banner"><div class="finish-title" style="font-size:1rem;color:#68d391;">Almost there</div><div class="finish-sub">Dry clothes · sandals · baked potato dinner included</div></div>`}`;
+      list.appendChild(el);
       return;
     }
 
     if (s.isWater) {
-      li.innerHTML = `
+      el.innerHTML = `
         <div class="s-banner">
           <div class="s-strip" style="background:#553c9a;"></div>
           <div class="s-banner-inner">
             <div class="s-left">
-              <div class="s-name">${s.name} <span style="font-size:0.75rem;color:#553c9a;">● ${s.label}</span></div>
+              ${topBadge}
+              <div class="s-name">${s.name}</div>
               <div class="s-meta"><span class="s-mile">Mi ${s.mile}</span><span class="s-elev">${s.elev.toLocaleString()} ft</span>${dbBadge}</div>
             </div>
-            <div class="s-right"><div class="s-time">${estTime}</div></div>
+            <div class="s-right">
+              <div class="s-time ${timeClass}">${timePrefix}${timeStr}</div>
+            </div>
           </div>
         </div>
-        <div class="water-note">${s.waterNote}</div>`;
-      list.appendChild(li);
+        <div class="water-note">${s.waterNote}</div>
+        ${isChecked
+          ? `<div class="s-body"><div class="checkin-summary"><span class="checkin-summary-text">✓ Passed <span>${timeStr}</span>${paceDiffStr}</span><button class="undo-btn" onclick="undoCheckin('${s.id}')">undo</button></div></div>`
+          : `<div class="s-body"><button class="retro-btn" onclick="openRetro('${s.id}')">⏱ Set actual time</button></div>`}`;
+      list.appendChild(el);
       return;
     }
 
-    const gear = s.gear?.map(it => `<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('') || '';
-    const food = s.food?.map(it => `<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('') || '';
-    const med  = s.med?.map(it  => `<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('') || '';
-
+    // Normal station
+    const gear = s.gear?.map(it=>`<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('')||'';
+    const food = s.food?.map(it=>`<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('')||'';
+    const med  = s.med?.map(it =>`<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('')||'';
     const nextClass = s.next.danger ? 'danger' : '';
-    const hasBothCols = gear && food;
+    const hasBoth = gear && food;
 
-    li.innerHTML = `
+    const checkedSummary = isChecked ? `
+      <div class="checkin-summary">
+        <span class="checkin-summary-text">✓ Arrived <span>${timeStr}</span>${paceDiffStr}</span>
+        <button class="undo-btn" onclick="undoCheckin('${s.id}')">undo</button>
+      </div>` : '';
+
+    const retroLink = !isChecked && isPassed
+      ? `<button class="retro-btn" onclick="openRetro('${s.id}')">⏱ Forgot to check in? Set actual time</button>` : '';
+
+    const bodyContent = isPassed && !isChecked
+      ? `${retroLink}`
+      : `${s.next.text ? `<div class="s-next ${nextClass}">→ ${s.next.text}</div>` : ''}
+         <div class="s-sections ${hasBoth?'':'full'}">
+           ${gear ? `<div><div class="s-col-label gear">Gear</div><ul class="s-list">${gear}</ul></div>` : ''}
+           ${food ? `<div><div class="s-col-label food">Food & Fuel</div><ul class="s-list">${food}</ul></div>` : ''}
+         </div>
+         ${med ? `<div style="margin-top:7px;"><div class="s-col-label med">Body Check</div><ul class="s-list">${med}</ul></div>` : ''}
+         ${s.decision ? `<div class="s-decision">${s.decision}</div>` : ''}
+         ${checkedSummary}`;
+
+    el.innerHTML = `
       <div class="s-banner">
         <div class="s-strip" style="background:${s.strip};"></div>
         <div class="s-banner-inner">
           <div class="s-left">
-            ${isCurrent ? '<span class="current-badge">▶ You are here</span>' : ''}
+            ${topBadge}
             <div class="s-name">${s.name}</div>
             <div class="s-meta">
               <span class="s-mile">Mi ${s.mile}</span>
@@ -528,93 +674,112 @@ function renderStations() {
             </div>
           </div>
           <div class="s-right">
-            <div class="s-time">${estTime}</div>
+            <div class="s-time ${timeClass}">${timePrefix}${timeStr}</div>
             ${cut ? `<div class="s-cutoff">Cutoff: ${minToTime(cut)}</div>` : ''}
             ${bufStr ? `<div class="s-buffer ${bufClass}">${bufStr}</div>` : ''}
           </div>
         </div>
       </div>
-      <div class="s-body">
-        ${s.next.text ? `<div class="s-next ${nextClass}">→ ${s.next.text}</div>` : ''}
-        <div class="s-sections ${hasBothCols ? '' : 'full'}">
-          ${gear ? `<div><div class="s-col-label gear">Gear</div><ul class="s-list">${gear}</ul></div>` : ''}
-          ${food ? `<div><div class="s-col-label food">Food & Fuel</div><ul class="s-list">${food}</ul></div>` : ''}
-        </div>
-        ${med ? `<div style="margin-top:8px;"><div class="s-col-label med">Body Check</div><ul class="s-list">${med}</ul></div>` : ''}
-        ${s.decision ? `<div class="s-decision">${s.decision}</div>` : ''}
-      </div>
-      <button class="collapse-btn" onclick="toggleCollapse('${s.id}')">
-        ${state === 'passed' ? '▼ show' : '▲ hide'}
-      </button>`;
+      <div class="s-body">${bodyContent}</div>
+      <button class="collapse-btn" onclick="toggleCollapse('${s.id}')">▲ hide</button>`;
 
-    list.appendChild(li);
-  });
-
-  // Update progress
-  const totalEst = cumTimeAt(STATIONS.length - 1);
-  document.getElementById('estFinish').textContent = minToTime(totalEst);
-
-  if (nowMin !== null) {
-    // Estimate current mile based on pace
-    let cumMi = 0;
-    for (let i = 1; i < STATIONS.length; i++) {
-      const segT = segTime(STATIONS[i]);
-      const segStart = cumTimeAt(i-1);
-      if (nowMin <= cumTimeAt(i)) {
-        const frac = Math.max(0, (nowMin - segStart) / segT);
-        cumMi = STATIONS[i-1].mile + frac * STATIONS[i].segMiles;
-        break;
-      }
-      cumMi = STATIONS[i].mile;
+    // Collapse passed stations by default unless current
+    if (isPassed && !isCurrent) {
+      el.querySelector('.s-body').style.display = 'none';
+      el.querySelector('.collapse-btn').textContent = '▼ show';
     }
-    const pct = Math.min(100, (cumMi / 53.9) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressLabel').textContent = `~Mi ${cumMi.toFixed(1)}`;
+
+    list.appendChild(el);
+  });
+}
+
+// ─── CHECK-IN ACTIONS ─────────────────────────────────────────────────────────
+function checkInCurrent() {
+  const timeline = buildTimeline();
+  const currentIdx = getCurrentStationIdx(timeline);
+  const nextIdx = Math.min(currentIdx + 1, STATIONS.length - 1);
+  const nextId = STATIONS[nextIdx].id;
+  if (!checkinTime(nextId)) {
+    setCheckin(nextId, new Date().toISOString());
+    // Scroll to the newly checked-in station
+    setTimeout(() => {
+      const el = document.getElementById(`station-${nextId}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
   }
 }
 
+function undoCheckin(id) {
+  removeCheckin(id);
+}
+
+// ─── RETROACTIVE CHECK-IN ─────────────────────────────────────────────────────
+function openRetro(id) {
+  _retroTargetId = id;
+  const s = STATIONS.find(s => s.id === id);
+  document.getElementById('retroTitle').textContent = `When did you arrive at ${s.name}?`;
+  document.getElementById('retroCurrentTime').textContent = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('retroCustomInput').value = '';
+  document.getElementById('retroModal').classList.add('show');
+}
+
+function setRetroOffset(minutesAgo) {
+  const t = new Date(Date.now() - minutesAgo * 60000);
+  setCheckin(_retroTargetId, t.toISOString());
+  document.getElementById('retroModal').classList.remove('show');
+}
+
+function setRetroCustom() {
+  const val = document.getElementById('retroCustomInput').value.trim();
+  // Parse HH:MM AM/PM or HH:MM
+  let date = new Date();
+  const match = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+  if (match) {
+    let h = parseInt(match[1]), m = parseInt(match[2]);
+    const ampm = match[3] ? match[3].toUpperCase() : null;
+    if (ampm === 'PM' && h < 12) h += 12;
+    if (ampm === 'AM' && h === 12) h = 0;
+    // Build date on race day
+    date = new Date(RACE_START);
+    date.setHours(h, m, 0, 0);
+    // If time is before midnight start, must be next day — add 24h
+    if (date < RACE_START) date = new Date(date.getTime() + 24*3600000);
+  }
+  setCheckin(_retroTargetId, date.toISOString());
+  document.getElementById('retroModal').classList.remove('show');
+}
+
+function closeRetro() {
+  document.getElementById('retroModal').classList.remove('show');
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────────
 function toggleCollapse(id) {
   const el = document.getElementById(`station-${id}`);
   const body = el.querySelector('.s-body');
   const btn = el.querySelector('.collapse-btn');
-  if (body.style.display === 'none' || body.style.display === '') {
-    body.style.display = 'block';
-    btn.textContent = '▲ hide';
-  } else {
-    body.style.display = 'none';
-    btn.textContent = '▼ show';
-  }
+  if (!body) return;
+  const hidden = body.style.display === 'none' || body.style.display === '';
+  body.style.display = hidden ? 'block' : 'none';
+  btn.textContent = hidden ? '▲ hide' : '▼ show';
 }
 
-// ─── RACE CLOCK ───────────────────────────────────────────────────────────────
-const RACE_START = new Date('2026-06-06T00:00:00'); // midnight local
-
-function getRaceMinutes() {
-  const now = new Date();
-  const diff = now - RACE_START;
-  if (diff < 0 || diff > 24 * 60 * 60 * 1000) return null;
-  return diff / 60000;
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  const open = el.classList.contains('show');
+  closePanel('giPanel'); closePanel('nutPanel');
+  if (!open) el.classList.add('show');
 }
 
-function updateClock() {
-  const el = document.getElementById('liveClock');
-  const m = getRaceMinutes();
-  if (m === null) {
-    el.textContent = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    el.style.color = '#718096';
-    return;
-  }
-  const h = Math.floor(m / 60);
-  const min = Math.floor(m % 60);
-  const sec = Math.floor((m * 60) % 60);
-  el.textContent = `${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-  el.style.color = '#68d391';
+function closePanel(id) { document.getElementById(id).classList.remove('show'); }
+
+function scrollToCurrent() {
+  const cur = document.querySelector('.station.current') || document.querySelector('.station.checked:last-of-type');
+  if (cur) cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── PACE INPUT ───────────────────────────────────────────────────────────────
-function togglePaceInput() {
-  document.getElementById('paceInputRow').classList.toggle('show');
-}
+function togglePaceInput() { document.getElementById('paceInputRow').classList.toggle('show'); }
 
 function setPace() {
   const val = document.getElementById('paceInput').value.trim();
@@ -622,40 +787,34 @@ function setPace() {
   let mins = parseFloat(parts[0]);
   if (parts.length > 1) mins += parseFloat(parts[1]) / 60;
   if (!isNaN(mins) && mins >= 10 && mins <= 30) {
-    basePaceMin = mins;
-    const m = Math.floor(mins), s = Math.round((mins-m)*60);
-    document.getElementById('paceDisplay').textContent = `${m}:${String(s).padStart(2,'0')}`;
-    renderStations();
+    manualPaceMin = mins;
+    render();
   }
   document.getElementById('paceInputRow').classList.remove('show');
 }
 
-// ─── PANELS ───────────────────────────────────────────────────────────────────
-function togglePanel(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('show');
-  closePanel('giPanel'); closePanel('nutPanel');
-  if (!isOpen) el.classList.add('show');
-}
-
-function closePanel(id) {
-  document.getElementById(id).classList.remove('show');
-}
-
-function scrollToCurrent() {
-  const cur = document.querySelector('.station.current');
-  if (cur) cur.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  else window.scrollTo({ top: 0, behavior: 'smooth' });
+// ─── CLOCK ────────────────────────────────────────────────────────────────────
+function updateClock() {
+  const el = document.getElementById('liveClock');
+  const ms = getRaceMs();
+  if (ms !== null) {
+    const h = Math.floor(ms/3600000);
+    const m = Math.floor((ms%3600000)/60000);
+    const s = Math.floor((ms%60000)/1000);
+    el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    el.style.color = '#68d391';
+  } else {
+    el.textContent = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    el.style.color = '#718096';
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-renderStations();
+loadCheckins();
+render();
 updateClock();
-setInterval(() => {
-  updateClock();
-  renderStations(); // refresh pace/progress every minute
-}, 60000);
 setInterval(updateClock, 1000);
+setInterval(render, 30000); // re-render every 30s to update current position
 </script>
 </body>
 </html>
