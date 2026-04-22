@@ -308,6 +308,41 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <div class="key-descent"><strong>Miles 24.7→30.4 (Elk Meadows → West Fork):</strong> Mostly downhill (-1,565 ft), recover your legs. Use this to eat, hydrate, and regroup before the push to Scout Mtn.</div>
       <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
     </div>
+
+    <!-- Mile-by-mile chart -->
+    <div class="card section">
+      <div class="section-title">Mile-by-Mile Gain & Loss</div>
+      <div style="font-size:0.78rem;color:#718096;margin-bottom:12px;">
+        Each bar shows gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile. Hover for exact numbers. Aid station boundaries marked in amber.
+      </div>
+      <div style="position:relative;height:220px;">
+        <canvas id="mileChart"></canvas>
+      </div>
+      <!-- Hardest miles callouts -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:14px;">
+        <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest climb</div>
+          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span></div>
+          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">City Creek wall · steeper than any single mile on Sisar Canyon or Topa Topa</div>
+        </div>
+        <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest descent</div>
+          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span></div>
+          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Post-summit quad destroyer · 4 consecutive miles 400–900 ft down on 43-mile legs</div>
+        </div>
+        <div style="background:#141820;border:1px solid rgba(246,173,85,0.3);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#f6ad55;font-weight:700;margin-bottom:4px;">Summit push (Mi 41–43)</div>
+          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">+488 / +450 / +272 ft</div>
+          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Three hard climbing miles above 8,000 ft after 40 miles on your legs</div>
+        </div>
+        <div style="background:#141820;border:1px solid rgba(104,211,145,0.3);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#68d391;font-weight:700;margin-bottom:4px;">Best runnable miles</div>
+          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">10–12, 19–30</div>
+          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Mostly clean descents 270–420 ft/mi · run these hard to build cutoff buffer</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- PACE TAB -->
@@ -1621,12 +1656,96 @@ function buildDropBagCards(basePaceMin) {
   });
 }
 
+// === MILE-BY-MILE DATA ===
+const MILE_DATA = [{"mile":1,"gain":283,"loss":11,"net":273,"startElev":5203,"endElev":5476},{"mile":2,"gain":412,"loss":0,"net":411,"startElev":5476,"endElev":5887},{"mile":3,"gain":187,"loss":123,"net":65,"startElev":5887,"endElev":5952},{"mile":4,"gain":252,"loss":67,"net":185,"startElev":5952,"endElev":6137},{"mile":5,"gain":149,"loss":103,"net":46,"startElev":6137,"endElev":6183},{"mile":6,"gain":129,"loss":125,"net":4,"startElev":6183,"endElev":6187},{"mile":7,"gain":62,"loss":357,"net":-295,"startElev":6187,"endElev":5892},{"mile":8,"gain":157,"loss":240,"net":-83,"startElev":5892,"endElev":5809},{"mile":9,"gain":290,"loss":17,"net":273,"startElev":5809,"endElev":6082},{"mile":10,"gain":0,"loss":371,"net":-370,"startElev":6082,"endElev":5712},{"mile":11,"gain":5,"loss":373,"net":-368,"startElev":5712,"endElev":5344},{"mile":12,"gain":4,"loss":389,"net":-385,"startElev":5344,"endElev":4959},{"mile":13,"gain":142,"loss":135,"net":6,"startElev":4959,"endElev":4965},{"mile":14,"gain":205,"loss":40,"net":165,"startElev":4965,"endElev":5130},{"mile":15,"gain":325,"loss":1,"net":324,"startElev":5130,"endElev":5454},{"mile":16,"gain":468,"loss":0,"net":468,"startElev":5454,"endElev":5922},{"mile":17,"gain":1105,"loss":1,"net":1104,"startElev":5922,"endElev":7026},{"mile":18,"gain":77,"loss":46,"net":31,"startElev":7026,"endElev":7057},{"mile":19,"gain":0,"loss":397,"net":-396,"startElev":7057,"endElev":6661},{"mile":20,"gain":0,"loss":332,"net":-333,"startElev":6661,"endElev":6328},{"mile":21,"gain":46,"loss":272,"net":-225,"startElev":6328,"endElev":6103},{"mile":22,"gain":448,"loss":79,"net":369,"startElev":6103,"endElev":6472},{"mile":23,"gain":258,"loss":21,"net":238,"startElev":6472,"endElev":6710},{"mile":24,"gain":5,"loss":131,"net":-126,"startElev":6710,"endElev":6584},{"mile":25,"gain":164,"loss":150,"net":14,"startElev":6584,"endElev":6598},{"mile":26,"gain":12,"loss":153,"net":-141,"startElev":6598,"endElev":6457},{"mile":27,"gain":6,"loss":280,"net":-274,"startElev":6457,"endElev":6183},{"mile":28,"gain":13,"loss":175,"net":-161,"startElev":6183,"endElev":6022},{"mile":29,"gain":0,"loss":419,"net":-419,"startElev":6022,"endElev":5603},{"mile":30,"gain":5,"loss":275,"net":-270,"startElev":5603,"endElev":5333},{"mile":31,"gain":209,"loss":122,"net":87,"startElev":5333,"endElev":5420},{"mile":32,"gain":324,"loss":0,"net":325,"startElev":5420,"endElev":5745},{"mile":33,"gain":370,"loss":0,"net":369,"startElev":5745,"endElev":6114},{"mile":34,"gain":538,"loss":0,"net":538,"startElev":6114,"endElev":6652},{"mile":35,"gain":247,"loss":12,"net":235,"startElev":6652,"endElev":6887},{"mile":36,"gain":225,"loss":157,"net":67,"startElev":6887,"endElev":6954},{"mile":37,"gain":82,"loss":307,"net":-225,"startElev":6954,"endElev":6729},{"mile":38,"gain":481,"loss":0,"net":480,"startElev":6729,"endElev":7209},{"mile":39,"gain":186,"loss":34,"net":153,"startElev":7209,"endElev":7362},{"mile":40,"gain":323,"loss":86,"net":236,"startElev":7362,"endElev":7598},{"mile":41,"gain":488,"loss":0,"net":488,"startElev":7598,"endElev":8086},{"mile":42,"gain":450,"loss":12,"net":439,"startElev":8086,"endElev":8525},{"mile":43,"gain":272,"loss":162,"net":110,"startElev":8525,"endElev":8635},{"mile":44,"gain":37,"loss":917,"net":-880,"startElev":8635,"endElev":7755},{"mile":45,"gain":5,"loss":538,"net":-533,"startElev":7755,"endElev":7222},{"mile":46,"gain":1,"loss":640,"net":-639,"startElev":7222,"endElev":6583},{"mile":47,"gain":41,"loss":472,"net":-431,"startElev":6583,"endElev":6152},{"mile":48,"gain":278,"loss":375,"net":-97,"startElev":6152,"endElev":6055},{"mile":49,"gain":235,"loss":411,"net":-176,"startElev":6055,"endElev":5879},{"mile":50,"gain":77,"loss":579,"net":-501,"startElev":5879,"endElev":5378},{"mile":51,"gain":355,"loss":1,"net":355,"startElev":5378,"endElev":5733},{"mile":52,"gain":339,"loss":234,"net":106,"startElev":5733,"endElev":5839},{"mile":53,"gain":1,"loss":427,"net":-427,"startElev":5839,"endElev":5412},{"mile":54,"gain":25,"loss":283,"net":-257,"startElev":5412,"endElev":5155}];
+
+const AS_MILES = [7.5, 12.8, 16.9, 24.7, 30.5, 36.8, 47.7];
+
+function buildMileChart() {
+  const ctx = document.getElementById('mileChart')?.getContext('2d');
+  if (!ctx) return;
+  const gains  = MILE_DATA.map(d => d.gain);
+  const losses = MILE_DATA.map(d => -d.loss);
+  const gainColors = gains.map(g =>
+    g >= 800 ? 'rgba(252,129,129,0.95)' :
+    g >= 400 ? 'rgba(246,173,85,0.85)'  :
+               'rgba(104,211,145,0.75)');
+  const lossColors = losses.map(l =>
+    l <= -800 ? 'rgba(252,129,129,0.95)' :
+    l <= -400 ? 'rgba(246,173,85,0.8)'   :
+                'rgba(252,129,129,0.6)');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MILE_DATA.map(d => d.mile),
+      datasets: [
+        { label: 'Gain', data: gains,  backgroundColor: gainColors,  borderWidth: 0, barPercentage: 0.9 },
+        { label: 'Loss', data: losses, backgroundColor: lossColors,  borderWidth: 0, barPercentage: 0.9 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1f2e',
+          borderColor: '#4a5568',
+          borderWidth: 1,
+          callbacks: {
+            title: items => {
+              const d = MILE_DATA[items[0].dataIndex];
+              return `Mile ${d.mile}  ·  ${d.startElev.toLocaleString()} → ${d.endElev.toLocaleString()} ft`;
+            },
+            label: item => {
+              const d = MILE_DATA[item.dataIndex];
+              if (item.datasetIndex === 0) return `  ▲ +${d.gain} ft gain`;
+              return `  ▼ −${d.loss} ft loss   (net ${d.net > 0 ? '+' : ''}${d.net} ft)`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#4a5568', font: { size: 9 }, maxRotation: 0,
+            callback: (_, i) => (i + 1) % 5 === 0 ? `${i+1}` : ''
+          },
+          grid: { color: '#1e2535' }
+        },
+        y: {
+          ticks: {
+            color: '#718096', font: { size: 10 },
+            callback: v => `${Math.abs(v)}`
+          },
+          grid: { color: '#1e2535' }
+        }
+      }
+    },
+    plugins: [{
+      id: 'asLines',
+      afterDraw(chart) {
+        const { ctx: c, chartArea: { top, bottom }, scales: { x } } = chart;
+        c.save();
+        c.strokeStyle = 'rgba(246,173,85,0.45)';
+        c.lineWidth = 1; c.setLineDash([3,3]);
+        AS_MILES.forEach(m => {
+          const xp = x.getPixelForValue(Math.round(m) - 1);
+          c.beginPath(); c.moveTo(xp, top); c.lineTo(xp, bottom); c.stroke();
+        });
+        c.setLineDash([]); c.restore();
+      }
+    }]
+  });
+}
+
 // === INIT ===
 buildChart();
 requestAnimationFrame(buildMap);
 buildTempBar();
 updateTable(18);
 buildDropBagCards(18);
+buildMileChart();
 
 // ============================================================
 // TRAINING PLAN
