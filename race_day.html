@@ -445,13 +445,19 @@ function formatPace(p) {
 
 // ─── CURRENT STATION ──────────────────────────────────────────────────────────
 function getCurrentStationIdx(timeline) {
+  // Check-in data always takes priority over the clock.
+  // The furthest checked-in station is your last known position.
+  let lastCheckedIdx = -1;
+  for (let i = 1; i < STATIONS.length; i++) {
+    if (checkinTime(STATIONS[i].id)) lastCheckedIdx = i;
+  }
+  if (lastCheckedIdx >= 0) return lastCheckedIdx;
+
+  // No check-ins yet — fall back to time estimate during race.
   const raceMin = getRaceMin();
   if (raceMin === null) return 0;
-  // Last station we've passed (either checked in or estimated time has passed)
   let current = 0;
   for (let i = 0; i < STATIONS.length - 1; i++) {
-    const ct = checkinTime(STATIONS[i].id);
-    if (ct) { current = i; continue; }
     if (timeline[i].min <= raceMin) current = i;
     else break;
   }
@@ -482,11 +488,12 @@ function render() {
   // Update estimated finish
   document.getElementById('estFinish').textContent = minToTime(timeline[timeline.length-1].min);
 
-  // Progress bar
-  let currentMile = 0;
-  if (raceMin !== null) {
-    const ct = checkinTime(STATIONS[currentIdx].id);
-    const stStart = currentIdx === 0 ? 0 : (ct ? (ct - RACE_START)/60000 : timeline[currentIdx].min);
+  // Progress bar — use last check-in if available, else time estimate
+  let currentMile = STATIONS[currentIdx].mile;
+  const raceMin = getRaceMin();
+  if (raceMin !== null && !checkinTime(STATIONS[currentIdx].id)) {
+    // Interpolate within current segment
+    const stStart = timeline[currentIdx].min;
     const nextMin = timeline[Math.min(currentIdx+1, STATIONS.length-1)].min;
     const segT = nextMin - stStart;
     const nextS = STATIONS[Math.min(currentIdx+1, STATIONS.length-1)];
@@ -496,7 +503,7 @@ function render() {
   const pct = Math.min(100, (currentMile / 53.9) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent =
-    raceMin !== null ? `Mi ${currentMile.toFixed(1)}` : 'Pre-race';
+    currentIdx > 0 || raceMin !== null ? `Mi ${currentMile.toFixed(1)}` : 'Pre-race';
 
   // Check-in bar
   const curS = STATIONS[currentIdx];
@@ -528,11 +535,15 @@ function render() {
   STATIONS.forEach((s, i) => {
     const { min: arrMin, actual } = timeline[i];
     const isChecked = !!checkinTime(s.id);
-    const isPassed = i < currentIdx || (i === currentIdx && isChecked);
-    const isCurrent = i === currentIdx && !isChecked;
+    // "Here" = last checked-in station (last known position)
+    const isHere = i === currentIdx;
+    // "Passed" = checked in but not the last one, OR time-estimated past without check-in
+    const isPassed = isChecked && !isHere;
+    const isCurrent = isHere && !isChecked; // time-estimated current, no check-in yet
 
     let stateClass = '';
-    if (isChecked) stateClass = 'checked';
+    if (isHere && isChecked) stateClass = 'current'; // checked-in = last known position
+    else if (isChecked) stateClass = 'checked';
     else if (isPassed) stateClass = 'passed';
     else if (isCurrent) stateClass = 'current';
 
@@ -578,9 +589,9 @@ function render() {
       : s.isWater ? `<span class="s-bag" style="background:rgba(85,60,154,0.15);color:#b794f4;">🚰 Water</span>`
       : s.isFinish ? '' : `<span class="s-bag" style="background:rgba(113,128,150,0.08);color:#4a5568;">No bag</span>`;
 
-    const topBadge = isCurrent
+    const topBadge = isHere
       ? `<div class="current-badge">▶ You are here</div>`
-      : isChecked ? `<div class="checked-badge">✓ Checked in</div>` : '';
+      : isChecked ? `<div class="checked-badge">✓ Passed</div>` : '';
 
     const el = document.createElement('div');
     el.className = `station ${stateClass}`;
