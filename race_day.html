@@ -41,57 +41,100 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .checkin-sub{font-size:0.65rem;font-weight:400;opacity:0.7;display:block;margin-top:2px;}
 
 /* ── Station cards ── */
-.stations{padding:10px 10px 0;}
-.station{border-radius:12px;overflow:hidden;margin-bottom:10px;border:1px solid #2d3748;background:#1a1f2e;}
-.station.current{border-color:#f6ad55;box-shadow:0 0 0 1px rgba(246,173,85,0.25);}
-.station.passed{opacity:0.5;}
-.station.checked{border-color:rgba(104,211,145,0.4);}
+.stations{padding:8px 10px 0;}
 
-.s-banner{display:flex;align-items:stretch;}
-.s-strip{width:5px;flex-shrink:0;}
-.s-banner-inner{flex:1;padding:9px 12px;background:#141820;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
-.s-left{flex:1;}
-.s-name{font-size:0.95rem;font-weight:700;color:#e2e8f0;line-height:1.2;}
-.s-meta{display:flex;gap:8px;align-items:center;margin-top:3px;flex-wrap:wrap;}
-.s-mile{font-size:1rem;font-weight:800;color:#f6ad55;font-family:monospace;}
-.s-elev{font-size:0.72rem;color:#718096;}
-.s-bag{font-size:0.67rem;font-weight:700;padding:2px 6px;border-radius:7px;}
-.s-right{text-align:right;flex-shrink:0;min-width:80px;}
-.s-time{font-size:0.9rem;font-weight:800;font-family:monospace;}
-.s-time.est{color:#a0aec0;}
-.s-time.actual{color:#68d391;}
-.s-cutoff{font-size:0.65rem;color:#718096;margin-top:1px;}
-.s-buffer{font-size:0.7rem;font-weight:700;margin-top:2px;}
+/* Tier 1: Passed — single compact line */
+.station-past{display:flex;align-items:center;gap:0;margin-bottom:6px;border-radius:8px;overflow:hidden;border:1px solid #1e2535;}
+.sp-strip{width:3px;flex-shrink:0;align-self:stretch;}
+.sp-inner{flex:1;background:#141820;padding:7px 10px;display:flex;align-items:center;gap:0;justify-content:space-between;}
+.sp-left{display:flex;align-items:center;gap:8px;}
+.sp-check{color:#68d391;font-size:0.8rem;flex-shrink:0;}
+.sp-name{font-size:0.8rem;font-weight:600;color:#718096;}
+.sp-mile{font-size:0.75rem;color:#4a5568;font-family:monospace;}
+.sp-right{display:flex;align-items:center;gap:8px;}
+.sp-time{font-size:0.8rem;font-weight:700;color:#68d391;font-family:monospace;}
+.sp-time.est{color:#4a5568;}
+.sp-undo{font-size:0.68rem;color:#4a5568;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
+.sp-retro{font-size:0.68rem;color:#553c9a;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
+
+/* Tier 2: Current — prominent, focused */
+.station-current{border-radius:12px;overflow:hidden;margin-bottom:10px;border:2px solid #f6ad55;box-shadow:0 0 16px rgba(246,173,85,0.15);}
+.sc-header{display:flex;align-items:stretch;}
+.sc-strip{width:6px;flex-shrink:0;}
+.sc-header-inner{flex:1;padding:12px 14px;background:#141820;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.sc-badge{font-size:0.62rem;font-weight:800;background:rgba(246,173,85,0.2);color:#f6ad55;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:5px;}
+.sc-name{font-size:1.15rem;font-weight:800;color:#e2e8f0;line-height:1.15;}
+.sc-meta{display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap;}
+.sc-mile{font-size:1.4rem;font-weight:900;color:#f6ad55;font-family:monospace;line-height:1;}
+.sc-elev{font-size:0.72rem;color:#718096;}
+.sc-bag{font-size:0.68rem;font-weight:700;padding:2px 7px;border-radius:7px;}
+.sc-right{text-align:right;flex-shrink:0;}
+.sc-time{font-size:1.05rem;font-weight:800;font-family:monospace;}
+.sc-time.est{color:#a0aec0;} .sc-time.actual{color:#68d391;}
+.sc-cutoff{font-size:0.67rem;color:#718096;margin-top:2px;}
+.sc-buffer{font-size:0.8rem;font-weight:800;margin-top:3px;}
 .buf-ok{color:#68d391;} .buf-warn{color:#f6ad55;} .buf-dnf{color:#fc8181;}
-.current-badge{font-size:0.62rem;font-weight:800;background:rgba(246,173,85,0.2);color:#f6ad55;padding:1px 6px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:3px;}
-.checked-badge{font-size:0.62rem;font-weight:700;color:#68d391;margin-bottom:2px;display:inline-block;}
+
+/* Current body */
+.sc-body{padding:10px 14px 12px;}
+.sc-decision{padding:9px 12px;background:rgba(246,173,85,0.08);border-left:3px solid #f6ad55;border-radius:0 8px 8px 0;font-size:0.85rem;color:#fbd38d;line-height:1.55;margin-bottom:10px;font-weight:500;}
+.sc-next{font-size:0.78rem;padding:6px 10px;background:#141820;border-radius:6px;line-height:1.4;margin-bottom:10px;}
+.sc-next.danger{color:#fc8181;background:rgba(252,129,129,0.06);}
+.sc-next.ok{color:#718096;}
+.sc-crit-label{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#718096;margin-bottom:6px;}
+.sc-crit{list-style:none;padding:0;margin-bottom:8px;}
+.sc-crit li{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.88rem;color:#e2e8f0;font-weight:600;line-height:1.35;}
+.sc-crit li:last-child{border-bottom:none;}
+.sc-crit li .dot{color:#f6ad55;flex-shrink:0;font-size:0.7rem;margin-top:3px;}
+.sc-toggle{display:flex;align-items:center;gap:6px;background:none;border:1px solid #2d3748;border-radius:8px;padding:7px 12px;color:#718096;font-size:0.75rem;cursor:pointer;width:100%;margin-top:4px;}
+.sc-toggle:active{background:#1e2535;}
+/* Expanded details */
+.sc-details{display:none;margin-top:8px;padding-top:8px;border-top:1px solid #2d3748;}
+.sc-details.open{display:block;}
+.sd-section{margin-bottom:8px;}
+.sd-label{font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;}
+.sd-label.gear{color:#7f9cf5;} .sd-label.food{color:#68d391;} .sd-label.med{color:#fc8181;}
+.sd-list{list-style:none;padding:0;}
+.sd-list li{font-size:0.78rem;color:#a0aec0;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:6px;line-height:1.35;}
+.sd-list li:last-child{border-bottom:none;}
+.sd-list li .dot{color:#4a5568;flex-shrink:0;font-size:0.65rem;margin-top:2px;}
+.checkin-summary{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:7px 10px;background:rgba(104,211,145,0.07);border:1px solid rgba(104,211,145,0.2);border-radius:8px;}
+.checkin-summary-text{font-size:0.78rem;color:#68d391;}
+.checkin-summary-text span{font-weight:700;}
+.undo-btn{font-size:0.7rem;color:#718096;background:none;border:1px solid #2d3748;border-radius:6px;padding:3px 8px;cursor:pointer;}
+
+/* Tier 3: Upcoming — collapsed banner, tap to expand */
+.station-upcoming{border-radius:10px;overflow:hidden;margin-bottom:8px;border:1px solid #2d3748;background:#1a1f2e;}
+.su-banner{display:flex;align-items:stretch;cursor:pointer;}
+.su-strip{width:4px;flex-shrink:0;}
+.su-inner{flex:1;padding:9px 12px;background:#141820;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.su-left{display:flex;align-items:center;gap:10px;}
+.su-mile{font-size:1.05rem;font-weight:800;color:#a0aec0;font-family:monospace;}
+.su-name{font-size:0.85rem;font-weight:700;color:#a0aec0;}
+.su-bag{font-size:0.65rem;font-weight:700;padding:1px 6px;border-radius:6px;}
+.su-right{text-align:right;flex-shrink:0;}
+.su-time{font-size:0.82rem;font-weight:700;color:#718096;font-family:monospace;}
+.su-cutoff{font-size:0.65rem;margin-top:1px;}
+.su-buffer{font-size:0.72rem;font-weight:700;margin-top:1px;}
+.su-expand{font-size:0.65rem;color:#4a5568;margin-top:3px;}
+/* Expanded upcoming */
+.su-body{display:none;padding:8px 12px 10px 16px;}
+.su-body.open{display:block;}
+.su-next{font-size:0.76rem;color:#718096;margin-bottom:7px;padding:5px 8px;background:#141820;border-radius:6px;line-height:1.4;}
+.su-next.danger{color:#fc8181;background:rgba(252,129,129,0.05);}
+.su-list{list-style:none;padding:0;margin-bottom:6px;}
+.su-list li{font-size:0.8rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:6px;line-height:1.35;}
+.su-list li:last-child{border-bottom:none;}
+.su-list li .dot{flex-shrink:0;font-size:0.68rem;margin-top:2px;}
+.su-list li.hi{color:#e2e8f0;font-weight:600;}
+.su-list li.hi .dot{color:#f6ad55;}
+.su-list li.lo{color:#718096;}
+.su-list li.lo .dot{color:#4a5568;}
+.su-decision{margin-top:6px;border-left:2px solid #f6ad55;padding:5px 9px;background:#141820;border-radius:0 6px 6px 0;font-size:0.76rem;color:#fbd38d;line-height:1.5;}
 
 /* ── Actual vs est pace diff ── */
 .pace-diff{font-size:0.65rem;margin-top:2px;}
-.pace-diff.fast{color:#68d391;} .pace-diff.slow{color:#fc8181;} .pace-diff.ok{color:#718096;}
-
-/* ── Station body ── */
-.s-body{padding:9px 12px 10px 17px;}
-.s-next{font-size:0.76rem;color:#718096;margin-bottom:7px;padding:5px 8px;background:#141820;border-radius:6px;line-height:1.4;}
-.s-next.danger{color:#fc8181;background:rgba(252,129,129,0.05);}
-.s-sections{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.s-sections.full{grid-template-columns:1fr;}
-.s-col-label{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;}
-.s-col-label.gear{color:#7f9cf5;} .s-col-label.food{color:#68d391;} .s-col-label.med{color:#fc8181;}
-.s-list{list-style:none;padding:0;}
-.s-list li{font-size:0.76rem;color:#a0aec0;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:5px;line-height:1.3;}
-.s-list li:last-child{border-bottom:none;}
-.s-list li .dot{color:#4a5568;flex-shrink:0;font-size:0.65rem;margin-top:2px;}
-.s-list li.hi{color:#e2e8f0;font-weight:600;}
-.s-list li.hi .dot{color:#f6ad55;}
-.s-decision{margin-top:7px;border-left:3px solid #f6ad55;padding:6px 9px;background:#141820;border-radius:0 6px 6px 0;font-size:0.76rem;color:#fbd38d;line-height:1.5;}
-.collapse-btn{background:none;border:none;color:#4a5568;font-size:0.65rem;width:100%;padding:4px;cursor:pointer;display:block;text-align:center;}
-
-/* ── Checked-in summary ── */
-.checkin-summary{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:7px 10px;background:rgba(104,211,145,0.07);border:1px solid rgba(104,211,145,0.2);border-radius:8px;}
-.checkin-summary-text{font-size:0.76rem;color:#68d391;}
-.checkin-summary-text span{font-weight:700;}
-.undo-btn{font-size:0.7rem;color:#718096;background:none;border:1px solid #2d3748;border-radius:6px;padding:3px 8px;cursor:pointer;}
+.pace-diff.fast{color:#68d391;} .pace-diff.slow{color:#fc8181;}
 
 /* ── Retroactive entry ── */
 .retro-btn{font-size:0.7rem;color:#4a5568;background:none;border:none;padding:2px 4px;cursor:pointer;text-decoration:underline;display:block;margin-top:4px;}
@@ -536,21 +579,12 @@ function render() {
   list.innerHTML = '';
 
   STATIONS.forEach((s, i) => {
-    const { min: arrMin, actual } = timeline[i];
+    const { min: arrMin } = timeline[i];
     const isChecked = !!checkinTime(s.id);
-    // "Here" = last checked-in station (last known position)
     const isHere = i === currentIdx;
-    // "Passed" = checked in but not the last one, OR time-estimated past without check-in
     const isPassed = isChecked && !isHere;
-    const isCurrent = isHere && !isChecked; // time-estimated current, no check-in yet
+    const isUpcoming = !isHere && !isPassed;
 
-    let stateClass = '';
-    if (isHere && isChecked) stateClass = 'current'; // checked-in = last known position
-    else if (isChecked) stateClass = 'checked';
-    else if (isPassed) stateClass = 'passed';
-    else if (isCurrent) stateClass = 'current';
-
-    // Buffer
     const cut = s.cutoffMin;
     let bufStr = '', bufClass = '';
     if (cut !== null) {
@@ -560,149 +594,188 @@ function render() {
       else { bufStr = `+${formatDur(buf)}`; bufClass = 'buf-ok'; }
     }
 
-    // Time display
     const ct = checkinTime(s.id);
     const timeStr = ct ? minToTime((ct - RACE_START)/60000) : (i === 0 ? '12:00 AM' : minToTime(arrMin));
-    const timeClass = ct ? 'actual' : 'est';
-    const timePrefix = ct ? '' : '~';
 
-    // Pace diff (for checked-in stations)
+    // Pace diff for checked-in stations
     let paceDiffStr = '';
     if (isChecked && i > 0) {
-      const prevCheckedIdx = (() => {
-        for (let j = i-1; j >= 0; j--) if (checkinTime(STATIONS[j].id) || j===0) return j;
-        return 0;
-      })();
-      let spanMiles = 0, spanGain = 0;
-      for (let j = prevCheckedIdx+1; j <= i; j++) { spanMiles += STATIONS[j].segMiles; spanGain += STATIONS[j].segGain; }
-      const prevTime = prevCheckedIdx === 0 ? RACE_START : checkinTime(STATIONS[prevCheckedIdx].id);
-      const elapsed = (ct - prevTime) / 60000;
-      const movingTime = Math.max(1, elapsed - spanGain/100);
-      const segPace = spanMiles > 0 ? movingTime / spanMiles : manualPaceMin;
-      const diff = segPace - manualPaceMin;
+      const prevCI = (() => { for (let j=i-1;j>=0;j--) if (checkinTime(STATIONS[j].id)||j===0) return j; return 0; })();
+      let sm=0, sg=0;
+      for (let j=prevCI+1;j<=i;j++){sm+=STATIONS[j].segMiles;sg+=STATIONS[j].segGain;}
+      const pt = prevCI===0 ? RACE_START : checkinTime(STATIONS[prevCI].id);
+      const sp = sm > 0 ? Math.max(1,(ct-pt)/60000 - sg/100) / sm : manualPaceMin;
+      const diff = sp - manualPaceMin;
       if (Math.abs(diff) > 0.5) {
-        const sign = diff < 0 ? '↑' : '↓';
-        const cls = diff < 0 ? 'fast' : 'slow';
-        paceDiffStr = `<div class="pace-diff ${cls}">${sign} ${formatPace(segPace)} this segment</div>`;
+        paceDiffStr = `<div class="pace-diff ${diff<0?'fast':'slow'}">${diff<0?'↑':'↓'} ${formatPace(sp)} this seg</div>`;
       }
     }
 
-    const dbBadge = s.dropBag
-      ? `<span class="s-bag" style="background:rgba(104,211,145,0.15);color:#68d391;">✅ Drop bag</span>`
-      : s.isWater ? `<span class="s-bag" style="background:rgba(85,60,154,0.15);color:#b794f4;">🚰 Water</span>`
-      : s.isFinish ? '' : `<span class="s-bag" style="background:rgba(113,128,150,0.08);color:#4a5568;">No bag</span>`;
-
-    const topBadge = isHere
-      ? `<div class="current-badge">▶ You are here</div>`
-      : isChecked ? `<div class="checked-badge">✓ Passed</div>` : '';
-
     const el = document.createElement('div');
-    el.className = `station ${stateClass}`;
     el.id = `station-${s.id}`;
 
-    if (s.isFinish) {
-      const finishCt = checkinTime(s.id);
+    // ── TIER 1: PASSED (single compact line) ──────────────────────────────
+    if (isPassed) {
       el.innerHTML = `
-        <div class="s-banner">
-          <div class="s-strip" style="background:#276749;"></div>
-          <div class="s-banner-inner">
-            <div class="s-left">
-              ${topBadge}
-              <div class="s-name">🏁 Finish — Mink Creek CG</div>
-              <div class="s-meta"><span class="s-mile">Mi 53.9</span><span class="s-elev">5,154 ft</span></div>
+        <div class="station-past" id="station-${s.id}">
+          <div class="sp-strip" style="background:${s.strip};"></div>
+          <div class="sp-inner">
+            <div class="sp-left">
+              <span class="sp-check">✓</span>
+              <span class="sp-name">${s.name}</span>
+              <span class="sp-mile">Mi ${s.mile}</span>
             </div>
-            <div class="s-right">
-              <div class="s-time ${timeClass}">${timePrefix}${timeStr}</div>
-              <div class="s-cutoff">Cutoff: 10:00 PM</div>
-              ${bufStr ? `<div class="s-buffer ${bufClass}">${bufStr}</div>` : ''}
+            <div class="sp-right">
+              <span class="sp-time ${ct?'':'est'}">${timeStr}</span>
+              ${ct ? `<button class="sp-undo" onclick="undoCheckin('${s.id}')">undo</button>`
+                   : `<button class="sp-retro" onclick="openRetro('${s.id}')">set time</button>`}
+            </div>
+          </div>
+        </div>`;
+      list.appendChild(el.firstElementChild);
+      return;
+    }
+
+    // ── TIER 2: CURRENT (prominent, focused) ──────────────────────────────
+    if (isHere) {
+      const dbBadge = s.dropBag
+        ? `<span class="sc-bag" style="background:rgba(104,211,145,0.15);color:#68d391;">✅ Drop bag</span>`
+        : s.isWater ? `<span class="sc-bag" style="background:rgba(85,60,154,0.2);color:#b794f4;">🚰 Water only</span>`
+        : s.isFinish ? '' : `<span class="sc-bag" style="background:rgba(113,128,150,0.08);color:#4a5568;">No bag</span>`;
+
+      if (s.isFinish) {
+        el.className = 'station-current';
+        el.innerHTML = `
+          <div class="sc-header">
+            <div class="sc-strip" style="background:#276749;"></div>
+            <div class="sc-header-inner">
+              <div><div class="sc-badge">▶ You are here</div>
+                <div class="sc-name">🏁 Finish</div>
+                <div class="sc-meta"><span class="sc-mile">Mi 53.9</span></div>
+              </div>
+              <div class="sc-right">
+                <div class="sc-time ${ct?'actual':'est'}">${timeStr}</div>
+                <div class="sc-cutoff">Cutoff 10:00 PM</div>
+                ${bufStr ? `<div class="sc-buffer ${bufClass}">${bufStr}</div>` : ''}
+              </div>
+            </div>
+          </div>
+          ${ct ? `<div class="finish-banner"><div class="finish-title">YOU ARE AMAZING 🏁</div><div class="finish-sub">Baked potato dinner included</div><div class="finish-time">Finish: ${minToTime((ct-RACE_START)/60000)}</div></div>`
+               : `<div class="finish-banner"><div class="finish-title" style="font-size:1rem;">Almost there</div><div class="finish-sub">Dry clothes · sandals · baked potato dinner included</div></div>`}`;
+        list.appendChild(el);
+        return;
+      }
+
+      if (s.isWater) {
+        el.className = 'station-current';
+        el.innerHTML = `
+          <div class="sc-header">
+            <div class="sc-strip" style="background:#553c9a;"></div>
+            <div class="sc-header-inner">
+              <div><div class="sc-badge">▶ You are here</div>
+                <div class="sc-name">${s.name}</div>
+                <div class="sc-meta"><span class="sc-mile">Mi ${s.mile}</span><span class="sc-elev">${s.elev.toLocaleString()} ft</span></div>
+              </div>
+              <div class="sc-right"><div class="sc-time ${ct?'actual':'est'}">${timeStr}</div></div>
+            </div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-decision">${s.waterNote}</div>
+            ${isChecked ? `<div class="checkin-summary"><span class="checkin-summary-text">✓ Passed <span>${timeStr}</span>${paceDiffStr}</span><button class="undo-btn" onclick="undoCheckin('${s.id}')">undo</button></div>` : ''}
+          </div>`;
+        list.appendChild(el);
+        return;
+      }
+
+      // Critical items only (hi:true)
+      const allItems = [...(s.gear||[]),...(s.food||[]),...(s.med||[])];
+      const critItems = allItems.filter(it=>it.hi);
+      const moreItems = allItems.filter(it=>!it.hi);
+
+      const critHTML = critItems.map(it=>`<li><span class="dot">▶</span><span>${it.text}</span></li>`).join('');
+      const moreHTML = moreItems.map(it=>`<li class="lo"><span class="dot">·</span><span>${it.text}</span></li>`).join('');
+      const stationFood = (s.food||[]).find(it=>it.text.startsWith('Station:') || it.text.startsWith('Station food'));
+      const foodNote = stationFood ? `<li class="lo"><span class="dot">·</span><span>${stationFood.text}</span></li>` : '';
+
+      el.className = 'station-current';
+      el.innerHTML = `
+        <div class="sc-header">
+          <div class="sc-strip" style="background:${s.strip};"></div>
+          <div class="sc-header-inner">
+            <div>
+              <div class="sc-badge">▶ You are here</div>
+              <div class="sc-name">${s.name}</div>
+              <div class="sc-meta">
+                <span class="sc-mile">Mi ${s.mile}</span>
+                <span class="sc-elev">${s.elev.toLocaleString()} ft</span>
+                ${dbBadge}
+              </div>
+            </div>
+            <div class="sc-right">
+              <div class="sc-time ${ct?'actual':'est'}">${ct?'':' ~'}${timeStr}</div>
+              ${cut ? `<div class="sc-cutoff">Cutoff ${minToTime(cut)}</div>` : ''}
+              ${bufStr ? `<div class="sc-buffer ${bufClass}">${bufStr}</div>` : ''}
             </div>
           </div>
         </div>
-        ${finishCt ? `<div class="finish-banner"><div class="finish-title">YOU ARE AMAZING 🏁</div><div class="finish-sub">Baked potato dinner included · You did it</div><div class="finish-time">Finish time: ${minToTime((finishCt-RACE_START)/60000)}</div></div>`
-          : `<div class="finish-banner"><div class="finish-title" style="font-size:1rem;color:#68d391;">Almost there</div><div class="finish-sub">Dry clothes · sandals · baked potato dinner included</div></div>`}`;
+        <div class="sc-body">
+          ${s.next?.text ? `<div class="sc-next ${s.next.danger?'danger':'ok'}">→ ${s.next.text}</div>` : ''}
+          ${s.decision ? `<div class="sc-decision">${s.decision}</div>` : ''}
+          <div class="sc-crit-label">Do this now</div>
+          <ul class="sc-crit">${critHTML}</ul>
+          ${moreHTML || foodNote ? `
+            <button class="sc-toggle" onclick="toggleDetails('${s.id}')">
+              <span id="toggle-icon-${s.id}">▼</span> All details
+            </button>
+            <div class="sc-details" id="details-${s.id}">
+              <ul class="sd-list">${moreHTML}${foodNote}</ul>
+            </div>` : ''}
+          ${isChecked ? `<div class="checkin-summary" style="margin-top:10px;"><span class="checkin-summary-text">✓ Arrived <span>${timeStr}</span>${paceDiffStr}</span><button class="undo-btn" onclick="undoCheckin('${s.id}')">undo</button></div>` : ''}
+        </div>`;
       list.appendChild(el);
       return;
     }
 
-    if (s.isWater) {
-      el.innerHTML = `
-        <div class="s-banner">
-          <div class="s-strip" style="background:#553c9a;"></div>
-          <div class="s-banner-inner">
-            <div class="s-left">
-              ${topBadge}
-              <div class="s-name">${s.name}</div>
-              <div class="s-meta"><span class="s-mile">Mi ${s.mile}</span><span class="s-elev">${s.elev.toLocaleString()} ft</span>${dbBadge}</div>
-            </div>
-            <div class="s-right">
-              <div class="s-time ${timeClass}">${timePrefix}${timeStr}</div>
-            </div>
-          </div>
-        </div>
-        <div class="water-note">${s.waterNote}</div>
-        ${isChecked
-          ? `<div class="s-body"><div class="checkin-summary"><span class="checkin-summary-text">✓ Passed <span>${timeStr}</span>${paceDiffStr}</span><button class="undo-btn" onclick="undoCheckin('${s.id}')">undo</button></div></div>`
-          : `<div class="s-body"><button class="retro-btn" onclick="openRetro('${s.id}')">⏱ Set actual time</button></div>`}`;
-      list.appendChild(el);
-      return;
-    }
+    // ── TIER 3: UPCOMING (collapsed, tap to expand) ───────────────────────
+    const dbBadgeU = s.dropBag
+      ? `<span class="su-bag" style="background:rgba(104,211,145,0.12);color:#4a7c5e;">✅ bag</span>`
+      : s.isWater ? `<span class="su-bag" style="background:rgba(85,60,154,0.12);color:#553c9a;">🚰</span>`
+      : s.isFinish ? '' : '';
 
-    // Normal station
-    const gear = s.gear?.map(it=>`<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('')||'';
-    const food = s.food?.map(it=>`<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('')||'';
-    const med  = s.med?.map(it =>`<li class="${it.hi?'hi':''}"><span class="dot">${it.hi?'▶':'·'}</span><span>${it.text}</span></li>`).join('')||'';
-    const nextClass = s.next.danger ? 'danger' : '';
-    const hasBoth = gear && food;
+    const allItemsU = [...(s.gear||[]),...(s.food||[]),...(s.med||[])];
+    const critU = allItemsU.filter(it=>it.hi);
+    const moreU = allItemsU.filter(it=>!it.hi);
+    const allListHTML = [
+      ...critU.map(it=>`<li class="hi"><span class="dot">▶</span><span>${it.text}</span></li>`),
+      ...moreU.map(it=>`<li class="lo"><span class="dot">·</span><span>${it.text}</span></li>`)
+    ].join('');
 
-    const checkedSummary = isChecked ? `
-      <div class="checkin-summary">
-        <span class="checkin-summary-text">✓ Arrived <span>${timeStr}</span>${paceDiffStr}</span>
-        <button class="undo-btn" onclick="undoCheckin('${s.id}')">undo</button>
-      </div>` : '';
-
-    const retroLink = !isChecked && isPassed
-      ? `<button class="retro-btn" onclick="openRetro('${s.id}')">⏱ Forgot to check in? Set actual time</button>` : '';
-
-    const bodyContent = isPassed && !isChecked
-      ? `${retroLink}`
-      : `${s.next.text ? `<div class="s-next ${nextClass}">→ ${s.next.text}</div>` : ''}
-         <div class="s-sections ${hasBoth?'':'full'}">
-           ${gear ? `<div><div class="s-col-label gear">Gear</div><ul class="s-list">${gear}</ul></div>` : ''}
-           ${food ? `<div><div class="s-col-label food">Food & Fuel</div><ul class="s-list">${food}</ul></div>` : ''}
-         </div>
-         ${med ? `<div style="margin-top:7px;"><div class="s-col-label med">Body Check</div><ul class="s-list">${med}</ul></div>` : ''}
-         ${s.decision ? `<div class="s-decision">${s.decision}</div>` : ''}
-         ${checkedSummary}`;
-
+    el.className = 'station-upcoming';
     el.innerHTML = `
-      <div class="s-banner">
-        <div class="s-strip" style="background:${s.strip};"></div>
-        <div class="s-banner-inner">
-          <div class="s-left">
-            ${topBadge}
-            <div class="s-name">${s.name}</div>
-            <div class="s-meta">
-              <span class="s-mile">Mi ${s.mile}</span>
-              <span class="s-elev">${s.elev.toLocaleString()} ft</span>
-              ${dbBadge}
+      <div class="su-banner" onclick="toggleUpcoming('${s.id}')">
+        <div class="su-strip" style="background:${s.strip};"></div>
+        <div class="su-inner">
+          <div class="su-left">
+            <span class="su-mile">Mi ${s.mile}</span>
+            <div>
+              <div class="su-name">${s.name} ${dbBadgeU}</div>
+              <div class="su-expand" id="su-hint-${s.id}">tap for details</div>
             </div>
           </div>
-          <div class="s-right">
-            <div class="s-time ${timeClass}">${timePrefix}${timeStr}</div>
-            ${cut ? `<div class="s-cutoff">Cutoff: ${minToTime(cut)}</div>` : ''}
-            ${bufStr ? `<div class="s-buffer ${bufClass}">${bufStr}</div>` : ''}
+          <div class="su-right">
+            <div class="su-time">${s.isFinish && ct ? minToTime((ct-RACE_START)/60000) : '~'+timeStr}</div>
+            ${cut ? `<div class="su-cutoff" style="color:#718096;font-size:0.63rem;">Cutoff ${minToTime(cut)}</div>` : ''}
+            ${bufStr ? `<div class="su-buffer ${bufClass}">${bufStr}</div>` : ''}
           </div>
         </div>
       </div>
-      <div class="s-body">${bodyContent}</div>
-      <button class="collapse-btn" onclick="toggleCollapse('${s.id}')">▲ hide</button>`;
-
-    // Collapse passed stations by default unless current
-    if (isPassed && !isCurrent) {
-      el.querySelector('.s-body').style.display = 'none';
-      el.querySelector('.collapse-btn').textContent = '▼ show';
-    }
-
+      <div class="su-body" id="su-body-${s.id}">
+        ${s.next?.text ? `<div class="su-next ${s.next.danger?'danger':''}">→ ${s.next.text}</div>` : ''}
+        ${s.decision ? `<div class="su-decision">${s.decision}</div>` : ''}
+        ${allListHTML ? `<ul class="su-list">${allListHTML}</ul>` : ''}
+        ${s.isWater ? `<div style="font-size:0.76rem;color:#b794f4;padding:4px 0;">${s.waterNote}</div>` : ''}
+        ${s.isFinish ? `<div class="finish-banner" style="margin-top:8px;"><div class="finish-title" style="font-size:1rem;">YOU ARE AMAZING 🏁</div><div class="finish-sub">Dry clothes · baked potato dinner included</div></div>` : ''}
+      </div>`;
     list.appendChild(el);
   });
 }
@@ -768,14 +841,20 @@ function closeRetro() {
 }
 
 // ─── UI HELPERS ───────────────────────────────────────────────────────────────
-function toggleCollapse(id) {
-  const el = document.getElementById(`station-${id}`);
-  const body = el.querySelector('.s-body');
-  const btn = el.querySelector('.collapse-btn');
+function toggleDetails(id) {
+  const det = document.getElementById(`details-${id}`);
+  const ico = document.getElementById(`toggle-icon-${id}`);
+  if (!det) return;
+  const open = det.classList.toggle('open');
+  if (ico) ico.textContent = open ? '▲' : '▼';
+}
+
+function toggleUpcoming(id) {
+  const body = document.getElementById(`su-body-${id}`);
+  const hint = document.getElementById(`su-hint-${id}`);
   if (!body) return;
-  const hidden = body.style.display === 'none' || body.style.display === '';
-  body.style.display = hidden ? 'block' : 'none';
-  btn.textContent = hidden ? '▲ hide' : '▼ show';
+  const open = body.classList.toggle('open');
+  if (hint) hint.textContent = open ? 'tap to collapse' : 'tap for details';
 }
 
 function togglePanel(id) {
