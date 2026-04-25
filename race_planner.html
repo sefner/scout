@@ -283,20 +283,47 @@ tr:hover td { background:rgba(255,255,255,0.025); }
     <div class="alert alert-alt">
       ⛰️ <strong>Altitude & GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving Thu Jun 4 gives you ~36 hours at 4,464 ft before the midnight start — use it. Beetroot loading and your GI toolkit still matter; one day of altitude exposure helps but doesn't fully substitute for the 8,000+ ft the race demands. See the <strong>Supplements tab</strong> for the full strategy.
     </div>
-    <div class="section grid-2">
-      <div class="card">
-        <div class="section-title">Elevation Profile</div>
-        <canvas id="elevationChart"></canvas>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night (before sunrise)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate altitude (6,500–7,500 ft)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High altitude (7,500+ ft) — GI risk zone</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
-        </div>
+    <!-- Elevation + mile chart stacked, cross-linked on hover -->
+    <div class="card section">
+      <div class="section-title">Elevation Profile</div>
+      <canvas id="elevationChart"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night (before sunrise)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate altitude (6,500–7,500 ft)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High altitude (7,500+ ft) — GI risk zone</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
       </div>
-      <div class="card">
-        <div class="section-title">Course Map</div>
-        <div id="map"></div>
+      <div style="margin-top:24px;">
+        <div class="section-title" style="margin-bottom:6px;">Mile-by-Mile Gain & Loss</div>
+        <div style="font-size:0.78rem;color:#718096;margin-bottom:12px;">
+          Each bar shows gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile. Hover either chart to cross-highlight. Aid station boundaries in amber.
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="mileChart"></canvas>
+        </div>
+        <!-- Hardest miles callouts -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:14px;">
+          <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest climb</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span></div>
+            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">City Creek wall · steeper than any single mile on Sisar Canyon or Topa Topa</div>
+          </div>
+          <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest descent</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span></div>
+            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Post-summit quad destroyer · 4 consecutive miles 400–900 ft down on 43-mile legs</div>
+          </div>
+          <div style="background:#141820;border:1px solid rgba(246,173,85,0.3);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#f6ad55;font-weight:700;margin-bottom:4px;">Summit push (Mi 41–43)</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">+488 / +450 / +272 ft</div>
+            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Three hard climbing miles above 8,000 ft after 40 miles on your legs</div>
+          </div>
+          <div style="background:#141820;border:1px solid rgba(104,211,145,0.3);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#68d391;font-weight:700;margin-bottom:4px;">Best runnable miles</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">10–12, 19–30</div>
+            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Mostly clean descents 270–420 ft/mi · run these hard to build cutoff buffer</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -309,39 +336,18 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
     </div>
 
-    <!-- Mile-by-mile chart -->
-    <div class="card section">
-      <div class="section-title">Mile-by-Mile Gain & Loss</div>
-      <div style="font-size:0.78rem;color:#718096;margin-bottom:12px;">
-        Each bar shows gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile. Hover for exact numbers. Aid station boundaries marked in amber.
+    <!-- Collapsible course map -->
+    <details class="card section" id="mapDetails" style="padding:0;">
+      <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:20px;">
+        <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
+          Course Map
+          <span id="mapToggleHint" style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to show)</span>
+        </div>
+      </summary>
+      <div style="padding:0 20px 20px;">
+        <div id="map"></div>
       </div>
-      <div style="position:relative;height:220px;">
-        <canvas id="mileChart"></canvas>
-      </div>
-      <!-- Hardest miles callouts -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:14px;">
-        <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
-          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest climb</div>
-          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span></div>
-          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">City Creek wall · steeper than any single mile on Sisar Canyon or Topa Topa</div>
-        </div>
-        <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
-          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest descent</div>
-          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span></div>
-          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Post-summit quad destroyer · 4 consecutive miles 400–900 ft down on 43-mile legs</div>
-        </div>
-        <div style="background:#141820;border:1px solid rgba(246,173,85,0.3);border-radius:8px;padding:10px 12px;">
-          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#f6ad55;font-weight:700;margin-bottom:4px;">Summit push (Mi 41–43)</div>
-          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">+488 / +450 / +272 ft</div>
-          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Three hard climbing miles above 8,000 ft after 40 miles on your legs</div>
-        </div>
-        <div style="background:#141820;border:1px solid rgba(104,211,145,0.3);border-radius:8px;padding:10px 12px;">
-          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#68d391;font-weight:700;margin-bottom:4px;">Best runnable miles</div>
-          <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">10–12, 19–30</div>
-          <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Mostly clean descents 270–420 ft/mi · run these hard to build cutoff buffer</div>
-        </div>
-      </div>
-    </div>
+    </details>
 
   </div>
 
@@ -967,6 +973,8 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 </div><!-- end container -->
 
 <script>
+let elevChart = null, mileChartInst = null, _activeMileIdx = null;
+
 const STATIONS = [{"name":"00:START GibsonJack","mile":0.0,"elev_ft":5203,"lat":42.793151001677025,"lon":-112.430929094553,"seg_gain_ft":0,"seg_loss_ft":0,"seg_miles":0.0,"cum_gain_ft":0},{"name":"1:CusickCrkAS","mile":7.5,"elev_ft":5692,"lat":42.81982467216316,"lon":-112.46763110160829,"seg_gain_ft":1481,"seg_loss_ft":992,"seg_miles":7.5,"cum_gain_ft":1481},{"name":"2:CityCrkAS","mile":12.8,"elev_ft":4820,"lat":42.84791649695969,"lon":-112.46064662933351,"seg_gain_ft":450,"seg_loss_ft":1318,"seg_miles":5.3,"cum_gain_ft":1931},{"name":"3:WaterOnly","mile":16.9,"elev_ft":7057,"lat":42.804573991094145,"lon":-112.49729394893409,"seg_gain_ft":2226,"seg_loss_ft":41,"seg_miles":4.1,"cum_gain_ft":4157},{"name":"4:ElkMeadowsAS","mile":24.7,"elev_ft":6781,"lat":42.74115006467178,"lon":-112.4715578556061,"seg_gain_ft":1018,"seg_loss_ft":1285,"seg_miles":7.8,"cum_gain_ft":5174},{"name":"5:WestForkAS","mile":30.4,"elev_ft":5213,"lat":42.72247862885166,"lon":-112.4194023013115,"seg_gain_ft":36,"seg_loss_ft":1565,"seg_miles":5.7,"cum_gain_ft":5211},{"name":"6:ScoutMtnAS","mile":36.8,"elev_ft":6621,"lat":42.68898127042611,"lon":-112.3594629764557,"seg_gain_ft":1912,"seg_loss_ft":478,"seg_miles":6.4,"cum_gain_ft":7123},{"name":"7:BigFirAS","mile":47.6,"elev_ft":5797,"lat":42.70696605062863,"lon":-112.36248046159746,"seg_gain_ft":2384,"seg_loss_ft":3233,"seg_miles":10.8,"cum_gain_ft":9507},{"name":"FINISH","mile":53.9,"elev_ft":5154,"lat":42.72822132926143,"lon":-112.4164116382599,"seg_gain_ft":1293,"seg_loss_ft":1936,"seg_miles":6.3,"cum_gain_ft":10800}];
 
 const PROFILE = [[0.0,5203],[0.02,5203],[0.04,5203],[0.06,5213],[0.08,5221],[0.11,5230],[0.12,5233],[0.13,5240],[0.18,5253],[0.22,5266],[0.26,5285],[0.3,5302],[0.34,5318],[0.38,5327],[0.42,5328],[0.46,5335],[0.5,5336],[0.53,5338],[0.56,5345],[0.59,5348],[0.61,5351],[0.63,5352],[0.66,5350],[0.7,5353],[0.74,5367],[0.78,5380],[0.81,5394],[0.84,5404],[0.86,5407],[0.88,5423],[0.92,5437],[0.95,5456],[0.99,5472],[1.03,5492],[1.07,5510],[1.1,5528],[1.13,5539],[1.16,5555],[1.2,5564],[1.24,5578],[1.28,5594],[1.32,5614],[1.35,5627],[1.37,5636],[1.4,5646],[1.42,5656],[1.45,5670],[1.48,5689],[1.52,5705],[1.56,5722],[1.59,5735],[1.62,5755],[1.65,5766],[1.69,5784],[1.73,5804],[1.77,5823],[1.81,5834],[1.84,5846],[1.88,5856],[1.92,5863],[1.96,5869],[2.0,5886],[2.03,5899],[2.05,5896],[2.08,5894],[2.11,5895],[2.13,5892],[2.16,5888],[2.2,5892],[2.23,5904],[2.26,5915],[2.29,5920],[2.32,5920],[2.35,5921],[2.38,5927],[2.41,5922],[2.43,5916],[2.45,5907],[2.49,5914],[2.51,5914],[2.54,5919],[2.57,5932],[2.61,5925],[2.63,5927],[2.66,5919],[2.69,5922],[2.73,5948],[2.76,5968],[2.8,5976],[2.83,5980],[2.84,5991],[2.87,5999],[2.89,5997],[2.91,5985],[2.93,5974],[2.94,5971],[2.97,5968],[2.99,5953],[3.02,5957],[3.05,5978],[3.08,6003],[3.11,6007],[3.14,6013],[3.17,6014],[3.2,6029],[3.22,6033],[3.26,6029],[3.29,6042],[3.32,6038],[3.35,6029],[3.37,6028],[3.4,6042],[3.44,6058],[3.47,6069],[3.5,6064],[3.53,6068],[3.56,6076],[3.59,6074],[3.62,6089],[3.64,6100],[3.67,6100],[3.7,6109],[3.73,6112],[3.77,6122],[3.79,6122],[3.81,6115],[3.83,6127],[3.86,6124],[3.88,6121],[3.92,6126],[3.95,6129],[3.98,6131],[4.02,6138],[4.04,6136],[4.07,6131],[4.1,6134],[4.12,6135],[4.15,6144],[4.18,6150],[4.22,6156],[4.25,6158],[4.28,6159],[4.3,6157],[4.32,6152],[4.35,6151],[4.38,6154],[4.41,6161],[4.43,6165],[4.45,6168],[4.49,6181],[4.52,6188],[4.55,6201],[4.62,6214],[4.65,6224],[4.67,6222],[4.71,6224],[4.74,6231],[4.77,6219],[4.8,6221],[4.83,6217],[4.85,6220],[4.88,6209],[4.9,6200],[4.93,6195],[4.96,6189],[4.98,6181],[5.01,6183],[5.04,6186],[5.07,6193],[5.1,6187],[5.14,6204],[5.17,6207],[5.2,6211],[5.23,6204],[5.26,6206],[5.29,6221],[5.32,6222],[5.35,6214],[5.37,6212],[5.41,6221],[5.44,6219],[5.48,6215],[5.5,6218],[5.53,6211],[5.56,6209],[5.59,6204],[5.61,6202],[5.64,6204],[5.66,6206],[5.69,6213],[5.72,6220],[5.75,6221],[5.77,6210],[5.79,6201],[5.81,6191],[5.83,6177],[5.85,6170],[5.87,6161],[5.91,6160],[5.95,6173],[5.98,6183],[6.02,6186],[6.06,6198],[6.09,6218],[6.12,6209],[6.14,6205],[6.17,6193],[6.19,6186],[6.21,6180],[6.23,6165],[6.26,6161],[6.28,6148],[6.3,6138],[6.33,6129],[6.35,6119],[6.38,6108],[6.4,6101],[6.42,6092],[6.44,6086],[6.46,6076],[6.49,6069],[6.51,6059],[6.53,6053],[6.55,6045],[6.57,6033],[6.59,6024],[6.61,6015],[6.63,6001],[6.65,6000],[6.67,5994],[6.69,6004],[6.71,5997],[6.73,5991],[6.76,5991],[6.78,5981],[6.8,5968],[6.83,5962],[6.85,5950],[6.87,5939],[6.89,5931],[6.91,5926],[6.93,5912],[6.95,5895],[6.98,5894],[7.0,5892],[7.02,5889],[7.04,5882],[7.06,5869],[7.09,5859],[7.1,5844],[7.13,5838],[7.15,5828],[7.17,5818],[7.18,5809],[7.2,5799],[7.22,5788],[7.25,5776],[7.27,5764],[7.29,5758],[7.31,5752],[7.33,5742],[7.35,5729],[7.37,5721],[7.39,5715],[7.41,5699],[7.42,5692],[7.43,5692],[7.44,5696],[7.45,5696],[7.47,5693],[7.51,5701],[7.55,5715],[7.57,5713],[7.59,5707],[7.61,5694],[7.65,5699],[7.69,5711],[7.72,5719],[7.75,5716],[7.79,5721],[7.82,5734],[7.86,5753],[7.89,5778],[7.93,5784],[7.96,5801],[8.0,5810],[8.04,5820],[8.07,5832],[8.11,5837],[8.14,5856],[8.17,5869],[8.21,5876],[8.24,5888],[8.28,5901],[8.31,5915],[8.35,5935],[8.38,5952],[8.42,5951],[8.45,5957],[8.48,5968],[8.51,5979],[8.55,5993],[8.58,6009],[8.62,6027],[8.65,6034],[8.69,6047],[8.72,6053],[8.76,6053],[8.79,6073],[8.83,6093],[8.99,6079],[9.46,5921],[9.83,5800],[10.22,5637],[10.64,5439],[10.72,5405],[10.85,5354],[10.99,5345],[11.12,5316],[11.25,5273],[11.33,5223],[11.43,5187],[11.56,5149],[11.64,5087],[11.74,5036],[11.85,5012],[11.95,4980],[12.03,4954],[12.17,4918],[12.34,4879],[12.58,4852],[12.75,4827],[12.78,4826],[12.84,4856],[12.9,4892],[12.96,4936],[13.03,4980],[13.11,5026],[13.21,5042],[13.33,5043],[13.51,5024],[13.63,5026],[13.67,5036],[13.8,5067],[13.92,5101],[14.0,5131],[14.1,5174],[14.18,5196],[14.29,5227],[14.4,5253],[14.5,5294],[14.62,5333],[14.68,5367],[14.73,5367],[14.83,5394],[14.92,5427],[15.01,5456],[15.27,5571],[15.76,5784],[16.24,6129],[16.72,6625],[17.2,7031],[17.69,7065],[18.18,6969],[18.66,6768],[19.15,6617],[19.64,6450],[20.12,6296],[20.61,6148],[21.09,6154],[21.57,6578],[22.06,6463],[22.51,6509],[22.99,6702],[23.47,6614],[23.96,6586],[24.45,6611],[24.92,6614],[25.4,6555],[25.89,6503],[26.38,6407],[26.73,6243],[26.91,6194],[27.09,6180],[27.28,6175],[27.47,6152],[27.66,6122],[27.85,6074],[28.03,6004],[28.22,5932],[28.4,5843],[28.58,5779],[28.78,5689],[28.97,5607],[29.15,5561],[29.33,5502],[29.52,5455],[29.71,5420],[29.89,5388],[30.07,5305],[30.26,5259],[30.44,5213],[30.84,5340],[31.63,5591],[32.64,5958],[32.97,6097],[33.15,6214],[33.32,6329],[33.49,6457],[33.67,6505],[33.85,6558],[34.02,6654],[34.2,6673],[34.37,6755],[34.55,6827],[34.72,6887],[34.9,6896],[35.08,6867],[35.26,6929],[35.43,6936],[35.61,6991],[35.78,7076],[36.21,6900],[36.7,6686],[37.18,6815],[37.67,6975],[37.93,7162],[38.11,7200],[38.28,7218],[38.46,7228],[38.64,7224],[38.81,7293],[38.99,7356],[39.16,7329],[39.35,7290],[39.52,7283],[39.7,7395],[39.88,7507],[40.05,7628],[40.22,7698],[40.4,7784],[40.67,7945],[40.92,8047],[40.95,8061],[40.97,8077],[41.0,8085],[41.02,8093],[41.05,8100],[41.07,8104],[41.1,8110],[41.12,8117],[41.15,8127],[41.17,8136],[41.2,8140],[41.22,8153],[41.23,8158],[41.24,8159],[41.26,8163],[41.28,8179],[41.31,8186],[41.33,8199],[41.35,8212],[41.37,8225],[41.39,8235],[41.42,8248],[41.44,8264],[41.46,8274],[41.48,8289],[41.5,8304],[41.52,8310],[41.55,8321],[41.57,8330],[41.59,8346],[41.61,8356],[41.63,8365],[41.64,8379],[41.65,8383],[41.67,8393],[41.69,8404],[41.71,8414],[41.73,8423],[41.75,8439],[41.77,8451],[41.79,8462],[41.82,8468],[41.84,8471],[41.85,8483],[41.87,8494],[41.9,8501],[41.93,8510],[41.95,8520],[41.97,8533],[42.0,8524],[42.04,8507],[42.06,8501],[42.09,8493],[42.13,8468],[42.16,8458],[42.2,8449],[42.24,8442],[42.28,8432],[42.31,8432],[42.34,8438],[42.36,8445],[42.39,8455],[42.41,8461],[42.44,8471],[42.46,8481],[42.49,8491],[42.51,8501],[42.54,8510],[42.56,8517],[42.58,8530],[42.61,8540],[42.63,8556],[42.64,8570],[42.66,8586],[42.68,8600],[42.7,8615],[42.73,8625],[42.75,8638],[42.77,8647],[42.79,8658],[42.81,8671],[42.84,8681],[42.86,8694],[42.88,8691],[42.89,8685],[42.9,8672],[42.92,8652],[42.95,8645],[42.99,8627],[43.01,8635],[43.04,8625],[43.07,8622],[43.12,8625],[43.14,8629],[43.18,8612],[43.21,8612],[43.25,8606],[43.27,8619],[43.3,8615],[43.33,8599],[43.36,8567],[43.4,8529],[43.43,8474],[43.46,8428],[43.47,8409],[43.49,8383],[43.52,8352],[43.54,8315],[43.57,8291],[43.6,8267],[43.63,8231],[43.66,8198],[43.68,8176],[43.7,8148],[43.73,8109],[43.75,8071],[43.77,8032],[43.79,7989],[43.82,7962],[43.84,7932],[43.86,7904],[43.89,7868],[43.91,7838],[43.94,7812],[43.97,7779],[43.99,7761],[44.01,7749],[44.02,7730],[44.04,7714],[44.05,7700],[44.07,7680],[44.08,7667],[44.09,7651],[44.11,7641],[44.13,7629],[44.15,7618],[44.17,7608],[44.19,7601],[44.21,7593],[44.23,7582],[44.25,7569],[44.27,7556],[44.29,7539],[44.3,7529],[44.32,7516],[44.34,7502],[44.36,7486],[44.38,7475],[44.39,7465],[44.41,7458],[44.42,7442],[44.45,7428],[44.48,7429],[44.51,7423],[44.53,7419],[44.56,7408],[44.58,7398],[44.6,7386],[44.62,7376],[44.64,7369],[44.66,7357],[44.69,7345],[44.71,7338],[44.73,7329],[44.75,7320],[44.77,7312],[44.8,7301],[44.82,7291],[44.83,7279],[44.85,7274],[44.88,7263],[44.9,7256],[44.93,7247],[44.95,7245],[44.97,7238],[45.0,7225],[45.02,7211],[45.04,7198],[45.06,7188],[45.09,7178],[45.11,7165],[45.13,7158],[45.15,7142],[45.17,7136],[45.19,7127],[45.21,7118],[45.24,7105],[45.26,7091],[45.28,7084],[45.3,7072],[45.32,7059],[45.34,7051],[45.36,7035],[45.38,7027],[45.4,7019],[45.41,7009],[45.43,7001],[45.45,6985],[45.46,6971],[45.48,6955],[45.5,6942],[45.51,6930],[45.52,6916],[45.53,6903],[45.55,6888],[45.57,6875],[45.58,6865],[45.6,6855],[45.62,6837],[45.63,6823],[45.65,6807],[45.67,6795],[45.69,6779],[45.71,6764],[45.73,6746],[45.75,6731],[45.77,6717],[45.8,6703],[45.82,6692],[45.83,6683],[45.85,6674],[45.88,6653],[45.9,6636],[45.92,6629],[45.95,6615],[45.97,6597],[45.99,6589],[46.02,6573],[46.05,6582],[46.07,6575],[46.09,6566],[46.11,6550],[46.13,6533],[46.16,6518],[46.18,6503],[46.21,6492],[46.23,6476],[46.24,6475],[46.25,6458],[46.27,6447],[46.29,6439],[46.31,6428],[46.34,6417],[46.37,6414],[46.39,6407],[46.42,6399],[46.43,6396],[46.46,6391],[46.48,6392],[46.5,6378],[46.52,6374],[46.54,6364],[46.56,6359],[46.58,6348],[46.6,6337],[46.62,6323],[46.64,6312],[46.66,6299],[46.68,6289],[46.7,6279],[46.71,6271],[46.73,6259],[46.74,6253],[46.76,6229],[46.78,6230],[46.8,6233],[46.82,6224],[46.84,6209],[46.86,6209],[46.88,6204],[46.9,6194],[46.92,6188],[46.93,6182],[46.95,6175],[46.97,6165],[46.98,6162],[46.99,6156],[47.01,6152],[47.02,6138],[47.05,6128],[47.07,6119],[47.09,6110],[47.12,6096],[47.14,6086],[47.17,6091],[47.19,6076],[47.21,6063],[47.23,6050],[47.25,6037],[47.28,6024],[47.3,6009],[47.31,6002],[47.34,5984],[47.36,5971],[47.38,5962],[47.41,5946],[47.43,5931],[47.45,5920],[47.47,5904],[47.5,5906],[47.52,5889],[47.54,5872],[47.56,5860],[47.58,5844],[47.6,5820],[47.62,5807],[47.64,5804],[47.67,5797],[47.69,5826],[47.72,5869],[47.75,5906],[47.78,5919],[47.82,5938],[47.85,5960],[47.88,5988],[47.91,6015],[47.94,6038],[47.98,6050],[48.01,6059],[48.05,6072],[48.08,6089],[48.1,6102],[48.13,6132],[48.16,6152],[48.18,6172],[48.2,6193],[48.23,6220],[48.27,6243],[48.3,6273],[48.33,6289],[48.36,6289],[48.39,6288],[48.41,6274],[48.43,6256],[48.44,6237],[48.46,6220],[48.48,6204],[48.51,6191],[48.53,6178],[48.56,6169],[48.59,6166],[48.61,6149],[48.63,6132],[48.65,6115],[48.67,6100],[48.69,6086],[48.72,6073],[48.77,6060],[48.94,5948],[49.12,5783],[49.29,5681],[49.47,5469],[49.65,5328],[49.82,5356],[50.0,5374],[50.17,5446],[50.34,5518],[50.51,5577],[50.69,5636],[50.86,5712],[51.03,5751],[51.21,5868],[51.37,6010],[51.55,6066],[51.73,5968],[51.91,5889],[52.09,5830],[52.27,5748],[52.45,5663],[52.64,5558],[52.82,5479],[53.01,5413],[53.19,5361],[53.37,5298],[53.57,5299],[53.72,5222],[53.86,5167]];
@@ -1031,7 +1039,7 @@ function buildChart() {
   gradient.addColorStop(0, 'rgba(246,173,85,0.45)');
   gradient.addColorStop(1, 'rgba(246,173,85,0.03)');
 
-  chart = new Chart(ctx, {
+  elevChart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: miles,
@@ -1136,11 +1144,41 @@ function buildChart() {
           const rect = chart.canvas.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const { left, right } = chart.chartArea;
-          chart._crosshairX = (x >= left && x <= right) ? x : null;
+          if (x >= left && x <= right) {
+            chart._crosshairX = x;
+            const mile = chart.scales.x.getValueForPixel(x);
+            _activeMileIdx = Math.max(0, Math.min(53, Math.ceil(mile) - 1));
+          } else {
+            chart._crosshairX = null;
+            _activeMileIdx = null;
+          }
+          if (mileChartInst) {
+            if (_activeMileIdx !== null) {
+              const px = mileChartInst.scales.x.getPixelForValue(_activeMileIdx);
+              mileChartInst.setActiveElements([
+                { datasetIndex: 0, index: _activeMileIdx },
+                { datasetIndex: 1, index: _activeMileIdx }
+              ]);
+              mileChartInst.tooltip.setActiveElements(
+                [{ datasetIndex: 0, index: _activeMileIdx }, { datasetIndex: 1, index: _activeMileIdx }],
+                { x: px, y: mileChartInst.chartArea.bottom }
+              );
+            } else {
+              mileChartInst.setActiveElements([]);
+              mileChartInst.tooltip.setActiveElements([], { x: 0, y: 0 });
+            }
+            mileChartInst.draw();
+          }
           chart.draw();
         });
         chart.canvas.addEventListener('mouseleave', () => {
           chart._crosshairX = null;
+          _activeMileIdx = null;
+          if (mileChartInst) {
+            mileChartInst.setActiveElements([]);
+            mileChartInst.tooltip.setActiveElements([], { x: 0, y: 0 });
+            mileChartInst.draw();
+          }
           chart.draw();
         });
       },
@@ -1614,7 +1652,7 @@ function buildMileChart() {
     l <= -800 ? 'rgba(252,129,129,0.95)' :
     l <= -400 ? 'rgba(246,173,85,0.8)'   :
                 'rgba(252,129,129,0.6)');
-  new Chart(ctx, {
+  mileChartInst = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: MILE_DATA.map(d => d.mile),
@@ -1675,17 +1713,72 @@ function buildMileChart() {
         });
         c.setLineDash([]); c.restore();
       }
+    }, {
+      id: 'crossLink',
+      afterInit(chart) {
+        chart.canvas.addEventListener('mousemove', e => {
+          const rect = chart.canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const { left, right } = chart.chartArea;
+          if (x >= left && x <= right) {
+            const idx = Math.max(0, Math.min(53, Math.round(chart.scales.x.getValueForPixel(x))));
+            _activeMileIdx = idx;
+            if (elevChart) {
+              elevChart._crosshairX = elevChart.scales.x.getPixelForValue(idx + 0.5);
+              elevChart.draw();
+            }
+          } else {
+            _activeMileIdx = null;
+            if (elevChart) {
+              elevChart._crosshairX = null;
+              elevChart.draw();
+            }
+          }
+        });
+        chart.canvas.addEventListener('mouseleave', () => {
+          _activeMileIdx = null;
+          if (elevChart) {
+            elevChart._crosshairX = null;
+            elevChart.draw();
+          }
+        });
+      },
+      afterDraw(chart) {
+        if (_activeMileIdx === null) return;
+        const { ctx: c, chartArea: { top, bottom }, scales: { x } } = chart;
+        const xPos = x.getPixelForValue(_activeMileIdx);
+        const halfBar = (x.getPixelForValue(1) - x.getPixelForValue(0)) / 2;
+        c.save();
+        c.fillStyle = 'rgba(226,232,240,0.06)';
+        c.fillRect(xPos - halfBar, top, halfBar * 2, bottom - top);
+        c.strokeStyle = 'rgba(226,232,240,0.18)';
+        c.lineWidth = 1;
+        c.strokeRect(xPos - halfBar, top, halfBar * 2, bottom - top);
+        c.restore();
+      }
     }]
   });
 }
 
 // === INIT ===
 buildChart();
-requestAnimationFrame(buildMap);
+buildMileChart();
 buildTempBar();
 updateTable(18);
 buildDropBagCards(18);
-buildMileChart();
+
+// Lazy-init map when user expands the panel
+(function() {
+  let mapReady = false;
+  const mapDetails = document.getElementById('mapDetails');
+  mapDetails.addEventListener('toggle', () => {
+    document.getElementById('mapToggleHint').textContent = mapDetails.open ? '(click to hide)' : '(click to show)';
+    if (mapDetails.open && !mapReady) {
+      mapReady = true;
+      requestAnimationFrame(buildMap);
+    }
+  });
+})();
 
 // ============================================================
 // TRAINING PLAN
