@@ -286,7 +286,9 @@ tr:hover td { background:rgba(255,255,255,0.025); }
     <!-- Elevation + mile chart stacked, cross-linked on hover -->
     <div class="card section">
       <div class="section-title">Elevation Profile</div>
-      <canvas id="elevationChart"></canvas>
+      <div style="position:relative;height:260px;">
+        <canvas id="elevationChart"></canvas>
+      </div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night (before sunrise)</div>
         <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate altitude (6,500–7,500 ft)</div>
@@ -1035,7 +1037,7 @@ function buildChart() {
   const modAltLow = 6500;
   const highAltLow = 7500;
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+  const gradient = ctx.createLinearGradient(0, 0, 0, 260);
   gradient.addColorStop(0, 'rgba(246,173,85,0.45)');
   gradient.addColorStop(1, 'rgba(246,173,85,0.03)');
 
@@ -1059,6 +1061,7 @@ function buildChart() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       animation: false,
       plugins: {
         legend: { display: false },
