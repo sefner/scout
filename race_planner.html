@@ -326,6 +326,13 @@ tr:hover td { background:rgba(255,255,255,0.025); }
             <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Mostly clean descents 270–420 ft/mi · run these hard to build cutoff buffer</div>
           </div>
         </div>
+        <!-- Arrival time strip synced to pace slider -->
+        <div style="margin-top:18px;">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#718096;font-weight:600;margin-bottom:8px;">
+            Target arrivals &nbsp;<span id="overviewPaceLabel" style="font-weight:400;text-transform:none;letter-spacing:0;color:#a0aec0;"></span>
+          </div>
+          <div id="overviewSegmentStrip" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#2d3748 transparent;"></div>
+        </div>
       </div>
     </div>
 
@@ -975,7 +982,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 </div><!-- end container -->
 
 <script>
-let elevChart = null, mileChartInst = null, _activeMileIdx = null;
+let elevChart = null, mileChartInst = null, _activeMileIdx = null, currentBasePace = 18;
 
 const STATIONS = [{"name":"00:START GibsonJack","mile":0.0,"elev_ft":5203,"lat":42.793151001677025,"lon":-112.430929094553,"seg_gain_ft":0,"seg_loss_ft":0,"seg_miles":0.0,"cum_gain_ft":0},{"name":"1:CusickCrkAS","mile":7.5,"elev_ft":5692,"lat":42.81982467216316,"lon":-112.46763110160829,"seg_gain_ft":1481,"seg_loss_ft":992,"seg_miles":7.5,"cum_gain_ft":1481},{"name":"2:CityCrkAS","mile":12.8,"elev_ft":4820,"lat":42.84791649695969,"lon":-112.46064662933351,"seg_gain_ft":450,"seg_loss_ft":1318,"seg_miles":5.3,"cum_gain_ft":1931},{"name":"3:WaterOnly","mile":16.9,"elev_ft":7057,"lat":42.804573991094145,"lon":-112.49729394893409,"seg_gain_ft":2226,"seg_loss_ft":41,"seg_miles":4.1,"cum_gain_ft":4157},{"name":"4:ElkMeadowsAS","mile":24.7,"elev_ft":6781,"lat":42.74115006467178,"lon":-112.4715578556061,"seg_gain_ft":1018,"seg_loss_ft":1285,"seg_miles":7.8,"cum_gain_ft":5174},{"name":"5:WestForkAS","mile":30.4,"elev_ft":5213,"lat":42.72247862885166,"lon":-112.4194023013115,"seg_gain_ft":36,"seg_loss_ft":1565,"seg_miles":5.7,"cum_gain_ft":5211},{"name":"6:ScoutMtnAS","mile":36.8,"elev_ft":6621,"lat":42.68898127042611,"lon":-112.3594629764557,"seg_gain_ft":1912,"seg_loss_ft":478,"seg_miles":6.4,"cum_gain_ft":7123},{"name":"7:BigFirAS","mile":47.6,"elev_ft":5797,"lat":42.70696605062863,"lon":-112.36248046159746,"seg_gain_ft":2384,"seg_loss_ft":3233,"seg_miles":10.8,"cum_gain_ft":9507},{"name":"FINISH","mile":53.9,"elev_ft":5154,"lat":42.72822132926143,"lon":-112.4164116382599,"seg_gain_ft":1293,"seg_loss_ft":1936,"seg_miles":6.3,"cum_gain_ft":10800}];
 
@@ -1013,6 +1020,16 @@ function segmentTime(seg, basePaceMin) {
   const flatTime = seg.seg_miles * basePaceMin;
   const climbBonus = seg.seg_gain_ft / 100;
   return flatTime + climbBonus;
+}
+
+function computeStationTimes(basePaceMin) {
+  let cum = 0;
+  return STATIONS.map((s, i) => { if (i > 0) cum += segmentTime(s, basePaceMin); return cum; });
+}
+
+function stationDisplayName(name) {
+  if (name === 'FINISH') return 'Finish';
+  return name.replace(/^\d+:/, '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\s*AS\s*$/i, '').trim();
 }
 
 function giRisk(s) {
@@ -1116,7 +1133,9 @@ function buildChart() {
         ctx.fillStyle = 'rgba(252,129,129,0.09)';
         ctx.fillRect(left, highY_top, right - left, highY_bot - highY_top);
 
-        // Aid station vertical lines
+        // Aid station vertical lines + arrival time labels
+        const stTimes = computeStationTimes(currentBasePace);
+        let labelRow = 0;
         STATIONS.forEach((s, i) => {
           if (i === 0 || s.name.includes('FINISH')) return;
           const x = xScale.getPixelForValue(s.mile);
@@ -1128,6 +1147,13 @@ function buildChart() {
           ctx.lineTo(x, bottom);
           ctx.stroke();
           ctx.setLineDash([]);
+          // Time label, alternating rows to avoid overlap on close stations
+          const labelY = top + 10 + (labelRow % 2) * 13;
+          labelRow++;
+          ctx.font = '8.5px system-ui';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = s.name.includes('Water') ? '#9f7aea' : 'rgba(246,173,85,0.9)';
+          ctx.fillText(minToTime(stTimes[i]), x, labelY);
         });
 
         // Summit marker
@@ -1375,16 +1401,49 @@ function showTab(name) {
   }
 }
 
+// === OVERVIEW TIMES STRIP ===
+function updateOverviewTimes(basePaceMin) {
+  const mins = Math.floor(basePaceMin);
+  const secs = Math.round((basePaceMin - mins) * 60);
+  document.getElementById('overviewPaceLabel').textContent = `@ ${mins}:${String(secs).padStart(2,'0')} /mi`;
+
+  const times = computeStationTimes(basePaceMin);
+  const strip = document.getElementById('overviewSegmentStrip');
+  strip.innerHTML = STATIONS.slice(1).map((s, idx) => {
+    const i = idx + 1;
+    const cum = times[i];
+    const timeStr = minToTime(cum);
+    const co = OFFICIAL_CUTOFFS[s.name] || (s.name.includes('FINISH') ? CUTOFF_MIN : null);
+    const bufMin = co !== null ? co - cum : null;
+    const borderColor = bufMin !== null && bufMin < 0 ? 'rgba(252,129,129,0.4)'
+      : bufMin !== null && bufMin < 60 ? 'rgba(246,173,85,0.4)' : '#2d3748';
+    const bufEl = bufMin === null ? ''
+      : bufMin < 0 ? `<div style="color:#fc8181;font-size:0.65rem;margin-top:2px;">⛔ DNF</div>`
+      : bufMin < 60 ? `<div style="color:#f6ad55;font-size:0.65rem;margin-top:2px;">⚠️ +${formatDuration(bufMin)}</div>`
+      : `<div style="color:#68d391;font-size:0.65rem;margin-top:2px;">+${formatDuration(bufMin)}</div>`;
+    const isWater = s.name.includes('Water');
+    const nameColor = isWater ? '#9f7aea' : s.name.includes('FINISH') ? '#68d391' : '#f6ad55';
+    return `<div style="flex:0 0 auto;background:#141820;border:1px solid ${borderColor};border-radius:8px;padding:8px 12px;min-width:90px;text-align:center;">
+      <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.4px;color:${nameColor};white-space:nowrap;font-weight:600;">${stationDisplayName(s.name)}</div>
+      <div style="font-size:0.88rem;font-weight:700;color:#e2e8f0;font-family:monospace;margin-top:3px;">${timeStr}</div>
+      ${bufEl}
+    </div>`;
+  }).join('');
+}
+
 // === PACE SLIDER ===
 const slider = document.getElementById('paceSlider');
 const paceDisplay = document.getElementById('paceDisplay');
 slider.addEventListener('input', () => {
   const val = parseFloat(slider.value);
+  currentBasePace = val;
   const mins = Math.floor(val);
   const secs = Math.round((val - mins) * 60);
   paceDisplay.textContent = `${mins}:${String(secs).padStart(2,'0')} /mi`;
   updateTable(val);
   buildDropBagCards(val);
+  updateOverviewTimes(val);
+  if (elevChart) elevChart.draw();
 });
 
 // === DROP BAG CARDS ===
@@ -1769,6 +1828,7 @@ buildMileChart();
 buildTempBar();
 updateTable(18);
 buildDropBagCards(18);
+updateOverviewTimes(18);
 
 // Lazy-init map when user expands the panel
 (function() {
