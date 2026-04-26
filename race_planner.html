@@ -269,7 +269,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 
   <div class="tabs">
     <div class="tab active" onclick="showTab('overview')">Overview</div>
-    <div class="tab" onclick="showTab('pace')">Pace & Splits</div>
+    <div class="tab" onclick="showTab('pace')">Splits</div>
     <div class="tab" onclick="showTab('dropbags')">Race Day</div>
     <div class="tab" onclick="showTab('supplements')">Supplements</div>
     <div class="tab" onclick="showTab('training')">Training & Prep</div>
@@ -283,6 +283,16 @@ tr:hover td { background:rgba(255,255,255,0.025); }
     <div class="alert alert-alt">
       ⛰️ <strong>Altitude & GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving Thu Jun 4 gives you ~36 hours at 4,464 ft before the midnight start — use it. Beetroot loading and your GI toolkit still matter; one day of altitude exposure helps but doesn't fully substitute for the 8,000+ ft the race demands. See the <strong>Supplements tab</strong> for the full strategy.
     </div>
+    <!-- Compact pace control -->
+    <div class="card section" style="padding:14px 20px;">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <span style="font-size:0.78rem;color:#a0aec0;white-space:nowrap;font-weight:600;">Base pace</span>
+        <input type="range" id="overviewPaceSlider" min="12" max="30" step="0.5" value="18" style="flex:1;min-width:140px;accent-color:#f6ad55;">
+        <span id="overviewPaceDisplay" style="font-family:monospace;font-weight:700;color:#f6ad55;white-space:nowrap;font-size:1rem;min-width:72px;">18:00 /mi</span>
+        <span style="font-size:0.7rem;color:#4a5568;white-space:nowrap;">Naismith: +1 min per 100 ft climb</span>
+      </div>
+    </div>
+
     <!-- Elevation + mile chart stacked, cross-linked on hover -->
     <div class="card section">
       <div class="section-title">Elevation Profile</div>
@@ -328,9 +338,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         </div>
         <!-- Arrival time strip synced to pace slider -->
         <div style="margin-top:18px;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#718096;font-weight:600;margin-bottom:8px;">
-            Target arrivals &nbsp;<span id="overviewPaceLabel" style="font-weight:400;text-transform:none;letter-spacing:0;color:#a0aec0;"></span>
-          </div>
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#718096;font-weight:600;margin-bottom:8px;">Target arrivals</div>
           <div id="overviewSegmentStrip" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#2d3748 transparent;"></div>
         </div>
       </div>
@@ -363,13 +371,13 @@ tr:hover td { background:rgba(255,255,255,0.025); }
   <!-- PACE TAB -->
   <div id="tab-pace" class="tab-panel">
     <div class="card">
-      <div class="section-title">Pace Calculator</div>
+      <div class="section-title">Splits</div>
       <div class="pace-controls">
         <div class="pace-control">
-          <label>Base Flat Pace (min/mile)</label>
+          <label>Base Flat Pace (min/mile) — also adjustable on Overview tab</label>
           <input type="range" id="paceSlider" min="12" max="30" step="0.5" value="18">
           <div class="pace-display" id="paceDisplay">18:00 /mi</div>
-          <div class="pace-hint">Naismith adjustment applied: +1 min per 100 ft of climb per segment</div>
+          <div class="pace-hint">Naismith adjustment: +1 min per 100 ft of climb per segment</div>
           <div class="pace-hint" style="margin-top:6px;color:#a0aec0;"><strong style="color:#68d391;">Target: 18–20 min/mi</strong> gives 3–5 hr cutoff buffer. Above 22 min/mi risks missing Big Fir cutoff (8 PM). <strong style="color:#f6ad55;">Expect 15–20% slowdown above 7,000 ft</strong> — this is normal, not a sign something is wrong.</div>
         </div>
         <div class="summary-box" style="min-width:280px;">
@@ -440,7 +448,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       </div>
     </div>
 
-    <div style="font-size:0.78rem;color:#718096;margin-bottom:14px;">Arrival times based on 18:00 min/mi base pace — update in the <span style="color:#f6ad55;cursor:pointer;" onclick="showTab('pace')">Pace tab</span>.</div>
+    <div style="font-size:0.78rem;color:#718096;margin-bottom:14px;">Arrival times based on <span id="dropbagPaceLabel">18:00 /mi</span> base pace — adjust on the <span style="color:#f6ad55;cursor:pointer;" onclick="showTab('overview')">Overview tab</span>.</div>
 
     <div id="dropbag-cards"></div>
 
@@ -1403,10 +1411,6 @@ function showTab(name) {
 
 // === OVERVIEW TIMES STRIP ===
 function updateOverviewTimes(basePaceMin) {
-  const mins = Math.floor(basePaceMin);
-  const secs = Math.round((basePaceMin - mins) * 60);
-  document.getElementById('overviewPaceLabel').textContent = `@ ${mins}:${String(secs).padStart(2,'0')} /mi`;
-
   const times = computeStationTimes(basePaceMin);
   const strip = document.getElementById('overviewSegmentStrip');
   strip.innerHTML = STATIONS.slice(1).map((s, idx) => {
@@ -1431,20 +1435,26 @@ function updateOverviewTimes(basePaceMin) {
   }).join('');
 }
 
-// === PACE SLIDER ===
-const slider = document.getElementById('paceSlider');
-const paceDisplay = document.getElementById('paceDisplay');
-slider.addEventListener('input', () => {
-  const val = parseFloat(slider.value);
+// === PACE CONTROL (shared by overview slider + splits tab slider) ===
+function setPace(val) {
   currentBasePace = val;
   const mins = Math.floor(val);
   const secs = Math.round((val - mins) * 60);
-  paceDisplay.textContent = `${mins}:${String(secs).padStart(2,'0')} /mi`;
+  const label = `${mins}:${String(secs).padStart(2,'0')} /mi`;
+  // Sync both sliders and displays
+  document.getElementById('paceSlider').value = val;
+  document.getElementById('paceDisplay').textContent = label;
+  document.getElementById('overviewPaceSlider').value = val;
+  document.getElementById('overviewPaceDisplay').textContent = label;
+  document.getElementById('dropbagPaceLabel').textContent = label;
   updateTable(val);
   buildDropBagCards(val);
   updateOverviewTimes(val);
   if (elevChart) elevChart.draw();
-});
+}
+
+document.getElementById('paceSlider').addEventListener('input', function() { setPace(parseFloat(this.value)); });
+document.getElementById('overviewPaceSlider').addEventListener('input', function() { setPace(parseFloat(this.value)); });
 
 // === DROP BAG CARDS ===
 const DB_STATIONS = [
