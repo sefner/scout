@@ -350,12 +350,12 @@ tr:hover td { background:rgba(255,255,255,0.025); }
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:8px 10px;">
               <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:2px;">Hardest climb</div>
-              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span></div>
+              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span> <span style="color:#fc8181;font-size:0.8rem;">+20.9%</span></div>
               <div style="font-size:0.72rem;color:#718096;margin-top:1px;">City Creek wall · steeper than Sisar or Topa Topa</div>
             </div>
             <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:8px 10px;">
               <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:2px;">Hardest descent</div>
-              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span></div>
+              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span> <span style="color:#fc8181;font-size:0.8rem;">−16.7%</span></div>
               <div style="font-size:0.72rem;color:#718096;margin-top:1px;">Post-summit quad destroyer on 43-mile legs</div>
             </div>
             <div style="background:#141820;border:1px solid rgba(246,173,85,0.3);border-radius:8px;padding:8px 10px;">
@@ -394,6 +394,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
               <th>Segment</th>
               <th>Climb</th>
               <th>Descent</th>
+              <th>Grade</th>
               <th>Difficulty</th>
               <th>GI Risk</th>
               <th>Light</th>
@@ -1123,7 +1124,15 @@ function buildChart() {
           intersect: false,
           callbacks: {
             title: ctx => `Mile ${parseFloat(ctx[0].label).toFixed(1)}`,
-            label: ctx => `${Number(ctx.raw).toLocaleString()} ft`
+            label: ctx => `${Number(ctx.raw).toLocaleString()} ft`,
+            afterBody: items => {
+              const mi = Math.floor(parseFloat(items[0].label));
+              const d = MILE_DATA[mi - 1];
+              if (!d) return [];
+              const pct = (d.net / 5280 * 100).toFixed(1);
+              const sign = d.net > 0 ? '+' : '';
+              return [`${sign}${pct}% grade (mi ${mi})`];
+            }
           }
         }
       },
@@ -1328,6 +1337,14 @@ function updateTable(basePaceMin) {
       : isSummitApproach ? '<span class="badge badge-summit">⛰️ Summit zone</span>'
       : '<span class="badge badge-day">☀️ Day</span>';
 
+    const segGrade = i === 0 ? '—' : (() => {
+      const net = s.seg_gain_ft - s.seg_loss_ft;
+      const pct = net / (s.seg_miles * 5280) * 100;
+      const sign = pct > 0 ? '+' : '';
+      const color = pct > 8 ? '#fc8181' : pct > 3 ? '#f6ad55' : pct < -8 ? '#68d391' : pct < -3 ? '#9ae6b4' : '#718096';
+      return `<span style="color:${color};font-family:monospace;font-weight:600;">${sign}${pct.toFixed(1)}%</span>`;
+    })();
+
     const difficulty = i === 0 ? '—' : (() => {
       if (s.seg_gain_ft > 1800 || s.seg_miles > 9) return '<span style="color:#fc8181;font-weight:600;">⬛⬛⬛ Hard</span>';
       if (s.seg_gain_ft > 900 || s.seg_miles > 7) return '<span style="color:#f6ad55;font-weight:600;">⬛⬛ Moderate</span>';
@@ -1355,6 +1372,7 @@ function updateTable(basePaceMin) {
         <td>${i === 0 ? '—' : s.seg_miles + ' mi'}</td>
         <td class="elev-gain">${i === 0 ? '—' : '+' + s.seg_gain_ft.toLocaleString() + ' ft'}</td>
         <td class="elev-loss">${i === 0 ? '—' : '−' + s.seg_loss_ft.toLocaleString() + ' ft'}</td>
+        <td>${segGrade}</td>
         <td>${difficulty}</td>
         <td>${giRisk(s)}</td>
         <td>${conditions}</td>
@@ -1786,6 +1804,12 @@ function buildMileChart() {
               const d = MILE_DATA[item.dataIndex];
               if (item.datasetIndex === 0) return `  ▲ +${d.gain} ft gain`;
               return `  ▼ −${d.loss} ft loss   (net ${d.net > 0 ? '+' : ''}${d.net} ft)`;
+            },
+            afterBody: items => {
+              const d = MILE_DATA[items[0].dataIndex];
+              const pct = (d.net / 5280 * 100).toFixed(1);
+              const sign = d.net > 0 ? '+' : '';
+              return [`  ${sign}${pct}% net grade`];
             }
           }
         }
