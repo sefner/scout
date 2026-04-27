@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SMU 50M — Race Day</title>
 <style>
+/* --safe-b adds 16px on top of the reported safe-area to clear the Apple Intelligence bar on iPhone 16/17 */
+:root { --safe-b: calc(env(safe-area-inset-bottom, 0px) + 16px); }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;padding-bottom:calc(160px + env(safe-area-inset-bottom, 0px));}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;padding-bottom:calc(160px + var(--safe-b));}
 
 /* ── Header ── */
 .header{background:#141820;border-bottom:2px solid #2d3748;padding:10px 14px;position:sticky;top:0;z-index:100;}
@@ -32,7 +34,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .progress-mi{color:#a0aec0;font-weight:600;}
 
 /* ── CHECK-IN BUTTON (sticky above bottom nav) ── */
-.checkin-bar{position:fixed;bottom:calc(52px + env(safe-area-inset-bottom, 0px));left:0;right:0;z-index:99;padding:8px 12px;background:#0f1117;border-top:1px solid #2d3748;}
+.checkin-bar{position:fixed;bottom:calc(52px + var(--safe-b));left:0;right:0;z-index:99;padding:8px 12px;background:#0f1117;border-top:1px solid #2d3748;}
 .checkin-btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;letter-spacing:0.3px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;}
 .checkin-btn.ready{background:#f6ad55;color:#0f1117;}
 .checkin-btn.ready:active{transform:scale(0.97);background:#e09c3a;}
@@ -133,7 +135,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .su-decision{margin-top:6px;border-left:2px solid #f6ad55;padding:5px 9px;background:#141820;border-radius:0 6px 6px 0;font-size:0.76rem;color:#fbd38d;line-height:1.5;}
 
 /* ── Route panel ── */
-.route-panel{display:none;position:fixed;bottom:calc(52px + env(safe-area-inset-bottom, 0px));left:0;right:0;background:#1a1f2e;border-top:2px solid #f6ad55;padding:14px;max-height:62vh;overflow-y:auto;z-index:98;}
+.route-panel{display:none;position:fixed;bottom:calc(52px + var(--safe-b));left:0;right:0;background:#1a1f2e;border-top:2px solid #f6ad55;padding:14px;max-height:62vh;overflow-y:auto;z-index:98;}
 .route-panel.show{display:block;}
 .route-panel h3{font-size:0.83rem;font-weight:700;color:#f6ad55;margin-bottom:10px;}
 .seg-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #2d3748;gap:6px;}
@@ -170,16 +172,16 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .finish-time{font-size:1rem;font-weight:700;color:#f6ad55;font-family:monospace;margin-top:8px;}
 
 /* ── Bottom nav ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#141820;border-top:1px solid #2d3748;display:flex;align-items:flex-start;z-index:100;height:calc(52px + env(safe-area-inset-bottom, 0px));padding-bottom:env(safe-area-inset-bottom, 0px);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#141820;border-top:1px solid #2d3748;display:flex;align-items:flex-start;z-index:100;height:calc(52px + var(--safe-b));padding-bottom:var(--safe-b);}
 .nav-btn{flex:1;padding:8px 4px;text-align:center;cursor:pointer;border:none;background:none;color:#718096;font-size:0.6rem;display:flex;flex-direction:column;align-items:center;gap:2px;height:52px;}
 .nav-btn.active{color:#f6ad55;}
 .nav-btn svg{width:18px;height:18px;}
 
 /* ── Panels ── */
-.quick-panel{display:none;position:fixed;bottom:calc(52px + env(safe-area-inset-bottom, 0px));left:0;right:0;background:#1a1f2e;border-top:2px solid #553c9a;padding:14px 14px;max-height:55vh;overflow-y:auto;z-index:98;}
+.quick-panel{display:none;position:fixed;bottom:calc(52px + var(--safe-b));left:0;right:0;background:#1a1f2e;border-top:2px solid #553c9a;padding:14px 14px;max-height:55vh;overflow-y:auto;z-index:98;}
 .quick-panel.show{display:block;}
 .quick-panel h3{font-size:0.83rem;font-weight:700;color:#b794f4;margin-bottom:10px;}
-.nut-panel{display:none;position:fixed;bottom:calc(52px + env(safe-area-inset-bottom, 0px));left:0;right:0;background:#1a1f2e;border-top:2px solid #276749;padding:14px 14px;max-height:55vh;overflow-y:auto;z-index:98;}
+.nut-panel{display:none;position:fixed;bottom:calc(52px + var(--safe-b));left:0;right:0;background:#1a1f2e;border-top:2px solid #276749;padding:14px 14px;max-height:55vh;overflow-y:auto;z-index:98;}
 .nut-panel.show{display:block;}
 .nut-panel h3{font-size:0.83rem;font-weight:700;color:#68d391;margin-bottom:10px;}
 .q-item{padding:7px 0;border-bottom:1px solid #2d3748;font-size:0.78rem;color:#a0aec0;line-height:1.45;}
