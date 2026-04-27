@@ -229,6 +229,17 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 .week-filter { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
 .filter-btn { padding:5px 12px; border-radius:16px; font-size:0.78rem; cursor:pointer; border:1px solid #2d3748; background:#141820; color:#718096; transition:all 0.15s; }
 .filter-btn.active, .filter-btn:hover { background:#2d3748; color:#e2e8f0; }
+/* Overview tab */
+.proj-pill { background:#141820; border:1px solid #2d3748; border-radius:8px; padding:8px 14px; min-width:110px; }
+.proj-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.5px; color:#718096; font-weight:600; margin-bottom:3px; }
+.proj-val { font-size:0.95rem; font-weight:700; color:#f6ad55; font-family:monospace; white-space:nowrap; }
+.proj-pill.danger .proj-val { color:#fc8181; }
+.proj-pill.warn .proj-val { color:#f6ad55; }
+.proj-pill.ok .proj-val { color:#68d391; }
+.overview-grid { display:grid; grid-template-columns:1fr 360px; gap:16px; align-items:start; margin-bottom:28px; }
+@media(max-width:1000px){ .overview-grid { grid-template-columns:1fr; } }
+.arrival-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid #1e2535; }
+.arrival-row:last-child { border-bottom:none; }
 </style>
 </head>
 <body>
@@ -276,99 +287,155 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 
   <!-- OVERVIEW TAB -->
   <div id="tab-overview" class="tab-panel active">
-    <div class="alert alert-night">
-      🌙 <strong>Midnight start:</strong> You'll be in complete darkness from Miles 0–14 to 23 (depending on pace). Sunrise in Pocatello on June 5 is <strong>5:47 AM MDT</strong>. The first big climb — 2,226 ft in just 4.1 miles to Water Only (Mile 16.9) — will happen in the dark. Carry primary headlamp, backup light, and spare batteries.
-    </div>
-    <div class="alert alert-alt">
-      ⛰️ <strong>Altitude & GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving Thu Jun 4 gives you ~36 hours at 4,464 ft before the midnight start — use it. Beetroot loading and your GI toolkit still matter; one day of altitude exposure helps but doesn't fully substitute for the 8,000+ ft the race demands. See the <strong>Supplements tab</strong> for the full strategy.
-    </div>
-    <!-- Pace control + finish estimate -->
-    <div class="card section" style="padding:14px 20px;">
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;">
+
+    <!-- PACE + PROJECTIONS -->
+    <div class="card section" style="padding:16px 20px;">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;">
         <span style="font-size:0.78rem;color:#a0aec0;white-space:nowrap;font-weight:600;">Base pace</span>
-        <input type="range" id="overviewPaceSlider" min="12" max="30" step="0.5" value="18" style="flex:1;min-width:140px;accent-color:#f6ad55;">
-        <span id="overviewPaceDisplay" style="font-family:monospace;font-weight:700;color:#f6ad55;white-space:nowrap;font-size:1rem;min-width:72px;">18:00 /mi</span>
+        <input type="range" id="overviewPaceSlider" min="12" max="30" step="0.5" value="18" style="flex:1;min-width:160px;accent-color:#f6ad55;">
+        <span id="overviewPaceDisplay" style="font-family:monospace;font-weight:700;color:#f6ad55;white-space:nowrap;font-size:1.2rem;min-width:80px;">18:00 /mi</span>
       </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
-        <div style="flex:1;min-width:200px;">
-          <div class="pace-hint">Naismith adjustment: +1 min per 100 ft of climb per segment</div>
-          <div class="pace-hint" style="margin-top:6px;color:#a0aec0;"><strong style="color:#68d391;">Target: 18–20 min/mi</strong> gives 3–5 hr cutoff buffer. Above 22 min/mi risks missing Big Fir cutoff (8 PM). <strong style="color:#f6ad55;">Expect 15–20% slowdown above 7,000 ft</strong> — this is normal, not a sign something is wrong.</div>
-        </div>
-        <div class="summary-box" style="min-width:260px;">
-          <h4>Finish Estimate</h4>
-          <div class="summary-row"><span>Total time</span><span id="estTime">—</span></div>
-          <div class="summary-row"><span>Finish clock time</span><span id="estFinish">—</span></div>
-          <div class="summary-row"><span>Finish / cutoff status</span><span id="estBuffer">—</span></div>
-          <div class="summary-row"><span>Tightest cutoff</span><span id="tightestCutoff">—</span></div>
-          <div class="summary-row"><span>Sunrise (5:47 AM) reached at</span><span id="sunriseMile">—</span></div>
-          <div class="summary-row"><span>Miles in darkness</span><span id="darkMiles">—</span></div>
-        </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <div class="proj-pill"><div class="proj-label">Total time</div><div class="proj-val" id="estTime">—</div></div>
+        <div class="proj-pill"><div class="proj-label">Finish</div><div class="proj-val" id="estFinish">—</div></div>
+        <div class="proj-pill" id="estBufferPill"><div class="proj-label">vs. cutoff</div><div class="proj-val" id="estBuffer">—</div></div>
+        <div class="proj-pill" id="tightestPill"><div class="proj-label">Tightest cutoff</div><div class="proj-val" id="tightestCutoff">—</div></div>
+        <div class="proj-pill"><div class="proj-label">Sunrise at</div><div class="proj-val" id="sunriseMile">—</div></div>
+        <div class="proj-pill"><div class="proj-label">Dark miles</div><div class="proj-val" id="darkMiles">—</div></div>
+      </div>
+      <div style="font-size:0.74rem;color:#4a5568;line-height:1.6;">
+        Naismith: +1 min per 100 ft climb &nbsp;·&nbsp;
+        <strong style="color:#68d391;">18–20 min/mi</strong> = 3–5 hr cutoff buffer &nbsp;·&nbsp;
+        <strong style="color:#fc8181;">above 22 min/mi</strong> risks Big Fir cutoff (8 PM) &nbsp;·&nbsp;
+        <strong style="color:#f6ad55;">+15–20% slowdown above 7,000 ft</strong> is normal
       </div>
     </div>
 
-    <!-- Elevation + mile chart stacked, cross-linked on hover -->
+    <!-- MAIN GRID: Charts | Sidebar -->
+    <div class="overview-grid">
+
+      <!-- LEFT: Elevation + Mile charts -->
+      <div class="card section" style="margin-bottom:0;">
+        <div class="section-title">Elevation Profile</div>
+        <div style="position:relative;height:250px;">
+          <canvas id="elevationChart"></canvas>
+        </div>
+        <div class="legend" style="margin-top:10px;">
+          <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate alt (6,500–7,500 ft)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High alt (7,500+ ft) — GI risk</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
+        </div>
+        <div style="margin-top:22px;">
+          <div class="section-title" style="margin-bottom:6px;">Mile-by-Mile Gain & Loss</div>
+          <div style="font-size:0.76rem;color:#718096;margin-bottom:10px;">Gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile · hover either chart to cross-highlight · aid stations in amber</div>
+          <div style="position:relative;height:200px;">
+            <canvas id="mileChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Arrivals + Key Miles + Temperature -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Target Arrivals -->
+        <div class="card" style="padding:14px 16px;">
+          <div class="section-title" style="margin-bottom:10px;">Target Arrivals</div>
+          <div id="overviewSegmentStrip"></div>
+        </div>
+
+        <!-- Key Miles -->
+        <div class="card" style="padding:14px 16px;">
+          <div class="section-title" style="margin-bottom:10px;">Key Miles</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:2px;">Hardest climb</div>
+              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span></div>
+              <div style="font-size:0.72rem;color:#718096;margin-top:1px;">City Creek wall · steeper than Sisar or Topa Topa</div>
+            </div>
+            <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:2px;">Hardest descent</div>
+              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span></div>
+              <div style="font-size:0.72rem;color:#718096;margin-top:1px;">Post-summit quad destroyer on 43-mile legs</div>
+            </div>
+            <div style="background:#141820;border:1px solid rgba(246,173,85,0.3);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#f6ad55;font-weight:700;margin-bottom:2px;">Summit push (Mi 41–43)</div>
+              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">+488 / +450 / +272 ft</div>
+              <div style="font-size:0.72rem;color:#718096;margin-top:1px;">Three hard climbing miles above 8,000 ft</div>
+            </div>
+            <div style="background:#141820;border:1px solid rgba(104,211,145,0.3);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#68d391;font-weight:700;margin-bottom:2px;">Best runnable miles</div>
+              <div style="font-size:0.95rem;font-weight:800;color:#e2e8f0;font-family:monospace;">10–12, 19–30</div>
+              <div style="font-size:0.72rem;color:#718096;margin-top:1px;">Run these hard to build cutoff buffer</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Temperature -->
+        <div class="card" style="padding:14px 16px;">
+          <div class="section-title" style="margin-bottom:6px;">Temperature (June 5–6)</div>
+          <div style="font-size:0.72rem;color:#718096;margin-bottom:10px;">Lows 42–48°F at midnight · up to 68–76°F by afternoon · start in removable layers</div>
+          <div class="temp-bar" id="tempBar" style="font-size:0.62rem;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SPLITS TABLE -->
     <div class="card section">
-      <div class="section-title">Elevation Profile</div>
-      <div style="position:relative;height:260px;">
-        <canvas id="elevationChart"></canvas>
-      </div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night (before sunrise)</div>
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate altitude (6,500–7,500 ft)</div>
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High altitude (7,500+ ft) — GI risk zone</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
-      </div>
-      <div style="margin-top:24px;">
-        <div class="section-title" style="margin-bottom:6px;">Mile-by-Mile Gain & Loss</div>
-        <div style="font-size:0.78rem;color:#718096;margin-bottom:12px;">
-          Each bar shows gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile. Hover either chart to cross-highlight. Aid station boundaries in amber.
-        </div>
-        <div style="position:relative;height:220px;">
-          <canvas id="mileChart"></canvas>
-        </div>
-        <!-- Hardest miles callouts -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:14px;">
-          <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
-            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest climb</div>
-            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 17 <span style="color:#fc8181;">+1,105 ft</span></div>
-            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">City Creek wall · steeper than any single mile on Sisar Canyon or Topa Topa</div>
-          </div>
-          <div style="background:#141820;border:1px solid rgba(252,129,129,0.3);border-radius:8px;padding:10px 12px;">
-            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#fc8181;font-weight:700;margin-bottom:4px;">Hardest descent</div>
-            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">Mile 44 <span style="color:#fc8181;">−917 ft</span></div>
-            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Post-summit quad destroyer · 4 consecutive miles 400–900 ft down on 43-mile legs</div>
-          </div>
-          <div style="background:#141820;border:1px solid rgba(246,173,85,0.3);border-radius:8px;padding:10px 12px;">
-            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#f6ad55;font-weight:700;margin-bottom:4px;">Summit push (Mi 41–43)</div>
-            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">+488 / +450 / +272 ft</div>
-            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Three hard climbing miles above 8,000 ft after 40 miles on your legs</div>
-          </div>
-          <div style="background:#141820;border:1px solid rgba(104,211,145,0.3);border-radius:8px;padding:10px 12px;">
-            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#68d391;font-weight:700;margin-bottom:4px;">Best runnable miles</div>
-            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;font-family:monospace;">10–12, 19–30</div>
-            <div style="font-size:0.75rem;color:#718096;margin-top:2px;">Mostly clean descents 270–420 ft/mi · run these hard to build cutoff buffer</div>
-          </div>
-        </div>
-        <!-- Arrival time strip synced to pace slider -->
-        <div style="margin-top:18px;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#718096;font-weight:600;margin-bottom:8px;">Target arrivals</div>
-          <div id="overviewSegmentStrip" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#2d3748 transparent;"></div>
-        </div>
+      <div class="section-title">Splits</div>
+      <div style="overflow-x:auto;">
+        <table id="stationsTable">
+          <thead>
+            <tr>
+              <th>Station</th>
+              <th>Mile</th>
+              <th>Elev</th>
+              <th>Segment</th>
+              <th>Climb</th>
+              <th>Descent</th>
+              <th>Difficulty</th>
+              <th>GI Risk</th>
+              <th>Light</th>
+              <th>Est. Arrival</th>
+              <th>Official Cutoff</th>
+              <th>Buffer</th>
+            </tr>
+          </thead>
+          <tbody id="stationsBody"></tbody>
+        </table>
       </div>
     </div>
 
-    <div class="card section">
-      <div class="section-title">Course Segments at a Glance</div>
-      <div class="key-climb"><strong>Miles 12.8→16.9 (City Creek → Water Only):</strong> +2,226 ft in 4.1 miles. Happens in the dark. Steepest gain-per-mile on the course (543 ft/mi). Altitude goes from 4,820 → 7,057 ft. Start eating solids before this climb; switch to liquids on it.</div>
-      <div class="key-climb"><strong>Miles 30.4→36.8 (West Fork → Scout Mtn AS):</strong> +1,912 ft in 6.4 miles. You've already run 30 miles. Big climb but manageable — this is your gateway to the summit.</div>
-      <div class="key-climb"><strong>Miles 36.8→47.6 (Scout Mtn AS → Big Fir):</strong> 10.8-mile mega-segment. +2,384 ft to the 8,694 ft summit around Mile 43, then -3,233 ft descent. Longest gap between aid (no crew access). Load up at Scout Mtn AS. Summit zone = peak GI risk.</div>
-      <div class="key-descent"><strong>Miles 24.7→30.4 (Elk Meadows → West Fork):</strong> Mostly downhill (-1,565 ft), recover your legs. Use this to eat, hydrate, and regroup before the push to Scout Mtn.</div>
-      <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
-    </div>
+    <!-- COLLAPSIBLE: Course Segments + Warnings -->
+    <details class="card section" style="padding:0;">
+      <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
+        <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
+          Course Segments &amp; Warnings
+          <span style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to expand)</span>
+        </div>
+      </summary>
+      <div style="padding:0 20px 20px;">
+        <div class="alert alert-night" style="margin-top:12px;">
+          🌙 <strong>Midnight start:</strong> You'll be in complete darkness from Miles 0–14 to 23 (depending on pace). Sunrise in Pocatello on June 5 is <strong>5:47 AM MDT</strong>. The first big climb — 2,226 ft in just 4.1 miles to Water Only (Mile 16.9) — will happen in the dark. Carry primary headlamp, backup light, and spare batteries.
+        </div>
+        <div class="alert alert-alt">
+          ⛰️ <strong>Altitude &amp; GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving Thu Jun 4 gives you ~36 hours at 4,464 ft before the midnight start — use it. Beetroot loading and your GI toolkit still matter; one day of altitude exposure helps but doesn't fully substitute for the 8,000+ ft the race demands. See the <strong>Supplements tab</strong> for the full strategy.
+        </div>
+        <div style="margin-top:14px;">
+          <div class="section-title">Course Segments at a Glance</div>
+          <div class="key-climb"><strong>Miles 12.8→16.9 (City Creek → Water Only):</strong> +2,226 ft in 4.1 miles. Happens in the dark. Steepest gain-per-mile on the course (543 ft/mi). Altitude goes from 4,820 → 7,057 ft. Start eating solids before this climb; switch to liquids on it.</div>
+          <div class="key-climb"><strong>Miles 30.4→36.8 (West Fork → Scout Mtn AS):</strong> +1,912 ft in 6.4 miles. You've already run 30 miles. Big climb but manageable — this is your gateway to the summit.</div>
+          <div class="key-climb"><strong>Miles 36.8→47.6 (Scout Mtn AS → Big Fir):</strong> 10.8-mile mega-segment. +2,384 ft to the 8,694 ft summit around Mile 43, then -3,233 ft descent. Longest gap between aid (no crew access). Load up at Scout Mtn AS. Summit zone = peak GI risk.</div>
+          <div class="key-descent"><strong>Miles 24.7→30.4 (Elk Meadows → West Fork):</strong> Mostly downhill (-1,565 ft), recover your legs. Use this to eat, hydrate, and regroup before the push to Scout Mtn.</div>
+          <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
+        </div>
+      </div>
+    </details>
 
-    <!-- Collapsible course map -->
+    <!-- COLLAPSIBLE: Course Map -->
     <details class="card section" id="mapDetails" style="padding:0;">
-      <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:20px;">
+      <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
         <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
           Course Map
           <span id="mapToggleHint" style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to show)</span>
@@ -378,39 +445,6 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         <div id="map"></div>
       </div>
     </details>
-
-    <!-- Splits table -->
-    <div class="card section">
-      <div class="section-title">Splits</div>
-      <div style="overflow-x:auto;">
-      <table id="stationsTable">
-        <thead>
-          <tr>
-            <th>Station</th>
-            <th>Mile</th>
-            <th>Elev</th>
-            <th>Segment</th>
-            <th>Climb</th>
-            <th>Descent</th>
-            <th>Difficulty</th>
-            <th>GI Risk</th>
-            <th>Light</th>
-            <th>Est. Arrival</th>
-            <th>Official Cutoff</th>
-            <th>Buffer</th>
-          </tr>
-        </thead>
-        <tbody id="stationsBody"></tbody>
-      </table>
-      </div>
-    </div>
-
-    <!-- Temperature -->
-    <div class="card section">
-      <div class="section-title">Temperature Expectations (June 5–6)</div>
-      <div class="alert alert-info" style="margin-bottom:10px;">June in Pocatello: typical lows 42–48°F (midnight–5 AM), warming to 68–76°F by early afternoon. Significant temperature swing — dress in removable layers at start.</div>
-      <div class="temp-bar" id="tempBar"></div>
-    </div>
 
   </div>
 
@@ -1403,7 +1437,7 @@ function showTab(name) {
   }
 }
 
-// === OVERVIEW TIMES STRIP ===
+// === OVERVIEW ARRIVALS (vertical list in right sidebar) ===
 function updateOverviewTimes(basePaceMin) {
   const times = computeStationTimes(basePaceMin);
   const strip = document.getElementById('overviewSegmentStrip');
@@ -1413,18 +1447,29 @@ function updateOverviewTimes(basePaceMin) {
     const timeStr = minToTime(cum);
     const co = OFFICIAL_CUTOFFS[s.name] || (s.name.includes('FINISH') ? CUTOFF_MIN : null);
     const bufMin = co !== null ? co - cum : null;
-    const borderColor = bufMin !== null && bufMin < 0 ? 'rgba(252,129,129,0.4)'
-      : bufMin !== null && bufMin < 60 ? 'rgba(246,173,85,0.4)' : '#2d3748';
+
     const bufEl = bufMin === null ? ''
-      : bufMin < 0 ? `<div style="color:#fc8181;font-size:0.65rem;margin-top:2px;">⛔ DNF</div>`
-      : bufMin < 60 ? `<div style="color:#f6ad55;font-size:0.65rem;margin-top:2px;">⚠️ +${formatDuration(bufMin)}</div>`
-      : `<div style="color:#68d391;font-size:0.65rem;margin-top:2px;">+${formatDuration(bufMin)}</div>`;
+      : bufMin < 0
+        ? `<div style="font-size:0.68rem;color:#fc8181;font-weight:700;">⛔ missed by ${formatDuration(-bufMin)}</div>`
+        : bufMin < 60
+          ? `<div style="font-size:0.68rem;color:#f6ad55;">+${formatDuration(bufMin)} buffer</div>`
+          : `<div style="font-size:0.68rem;color:#68d391;">+${formatDuration(bufMin)} buffer</div>`;
+
     const isWater = s.name.includes('Water');
-    const nameColor = isWater ? '#9f7aea' : s.name.includes('FINISH') ? '#68d391' : '#f6ad55';
-    return `<div style="flex:0 0 auto;background:#141820;border:1px solid ${borderColor};border-radius:8px;padding:8px 12px;min-width:90px;text-align:center;">
-      <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.4px;color:${nameColor};white-space:nowrap;font-weight:600;">${stationDisplayName(s.name)}</div>
-      <div style="font-size:0.88rem;font-weight:700;color:#e2e8f0;font-family:monospace;margin-top:3px;">${timeStr}</div>
-      ${bufEl}
+    const isFinish = s.name.includes('FINISH');
+    const nameColor = isWater ? '#9f7aea' : isFinish ? '#68d391' : '#e2e8f0';
+    const rowBg = bufMin !== null && bufMin < 0 ? 'rgba(252,129,129,0.06)'
+      : bufMin !== null && bufMin < 60 ? 'rgba(246,173,85,0.04)' : 'transparent';
+
+    return `<div class="arrival-row" style="background:${rowBg};">
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:${nameColor};">${stationDisplayName(s.name)}</div>
+        <div style="font-size:0.68rem;color:#4a5568;">Mi ${s.mile}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:monospace;font-size:0.9rem;font-weight:700;color:#f6ad55;">${timeStr}</div>
+        ${bufEl}
+      </div>
     </div>`;
   }).join('');
 }
