@@ -192,6 +192,49 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .nut-row span:first-child{color:#718096;}
 .nut-row span:last-child{color:#e2e8f0;font-weight:600;font-family:monospace;}
 .panel-close{float:right;background:none;border:none;color:#718096;font-size:1.1rem;cursor:pointer;margin-top:-2px;}
+
+/* ── Training Plan Panel ── */
+.train-panel{display:none;position:fixed;top:0;bottom:calc(52px + var(--safe-b));left:0;right:0;background:#0f1117;overflow-y:auto;z-index:110;}
+.train-panel.show{display:block;}
+.tp-header{background:#141820;border-bottom:2px solid #2d3748;padding:12px 14px 10px;position:sticky;top:0;z-index:1;}
+.tp-header-title{font-size:0.75rem;font-weight:700;color:#f6ad55;}
+.tp-progress{height:5px;background:#2d3748;border-radius:3px;overflow:hidden;margin:8px 0 4px;}
+.tp-progress-fill{height:100%;background:linear-gradient(90deg,#68d391,#f6ad55);border-radius:3px;}
+.tp-progress-labels{display:flex;justify-content:space-between;font-size:0.6rem;color:#4a5568;}
+.tp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 14px;border-bottom:1px solid #1e2535;}
+.tp-stat{background:#141820;border-radius:8px;padding:8px 6px;text-align:center;}
+.tp-stat-val{font-size:1.3rem;font-weight:800;color:#f6ad55;font-family:monospace;line-height:1.2;}
+.tp-stat-label{font-size:0.57rem;color:#718096;text-transform:uppercase;letter-spacing:0.4px;margin-top:2px;}
+.tp-week-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;}
+.tp-nav-btn{background:#141820;border:1px solid #2d3748;border-radius:8px;padding:9px 18px;color:#e2e8f0;font-size:1rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:48px;}
+.tp-nav-btn:active{background:#2d3748;}
+.tp-nav-btn:disabled{color:#2d3748;border-color:#1e2535;pointer-events:none;}
+.tp-week-info{text-align:center;flex:1;padding:0 8px;}
+.tp-week-title{font-size:0.88rem;font-weight:800;color:#e2e8f0;line-height:1.2;}
+.tp-week-sub{font-size:0.67rem;color:#718096;margin-top:2px;}
+.tp-week-meta{padding:0 14px 6px;display:flex;align-items:center;gap:8px;}
+.tp-week-badge{display:inline-block;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:2px 8px;border-radius:6px;}
+.tp-badge-current{background:rgba(246,173,85,0.2);color:#f6ad55;}
+.tp-badge-alt{background:rgba(183,148,244,0.2);color:#b794f4;}
+.tp-badge-race{background:rgba(104,211,145,0.2);color:#68d391;}
+.tp-badge-past{background:rgba(113,128,150,0.15);color:#718096;}
+.tp-badge-upcoming{background:rgba(74,85,104,0.15);color:#4a5568;}
+.tp-done-count{font-size:0.7rem;color:#718096;}
+.tp-days{padding:2px 14px 12px;}
+.tp-day{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid #1e2535;min-height:48px;}
+.tp-day:last-child{border-bottom:none;}
+.tp-day-left{width:34px;flex-shrink:0;text-align:center;padding-top:1px;}
+.tp-day-name{font-size:0.7rem;font-weight:800;color:#718096;text-transform:uppercase;}
+.tp-today-dot{display:block;width:5px;height:5px;background:#f6ad55;border-radius:50%;margin:3px auto 0;}
+.tp-day-body{flex:1;min-width:0;}
+.tp-day-desc{font-size:0.84rem;color:#a0aec0;line-height:1.45;}
+.tp-day.today .tp-day-name{color:#f6ad55;}
+.tp-day.today .tp-day-desc{color:#e2e8f0;}
+.tp-day.rest .tp-day-desc{color:#4a5568;font-style:italic;font-size:0.78rem;}
+.tp-day.done .tp-day-desc{text-decoration:line-through;color:#4a5568;}
+.tp-day-alt{font-size:0.7rem;color:#b794f4;margin-top:4px;line-height:1.4;}
+.tp-day-check{width:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding-top:2px;}
+.tp-day-check input[type=checkbox]{width:22px;height:22px;cursor:pointer;accent-color:#68d391;}
 </style>
 </head>
 <body>
@@ -281,6 +324,32 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <div class="nut-row"><span>Caffeine #2</span><span>Mi 47–50</span></div>
 </div>
 
+<!-- Training Plan Panel -->
+<div class="train-panel" id="trainPanel">
+  <div class="tp-header">
+    <div class="tp-header-title">SWAP 50M Training Plan · 12 Weeks · Race: Jun 6, 2026</div>
+    <div class="tp-progress"><div class="tp-progress-fill" id="tpProgressFill" style="width:0%"></div></div>
+    <div class="tp-progress-labels">
+      <span>Week 1 · Mar 16</span><span id="tpProgressLabel">—</span><span>Race · Jun 6</span>
+    </div>
+  </div>
+  <div class="tp-stats">
+    <div class="tp-stat"><div class="tp-stat-val" id="tpWeeksLeft">—</div><div class="tp-stat-label">Weeks Left</div></div>
+    <div class="tp-stat"><div class="tp-stat-val" id="tpCompleted">—</div><div class="tp-stat-label">Logged</div></div>
+    <div class="tp-stat"><div class="tp-stat-val" style="color:#b794f4;" id="tpAltLeft">—</div><div class="tp-stat-label">Alt Sessions</div></div>
+  </div>
+  <div class="tp-week-nav">
+    <button class="tp-nav-btn" id="tpPrevBtn" onclick="tpNavWeek(-1)">‹</button>
+    <div class="tp-week-info">
+      <div class="tp-week-title" id="tpWeekTitle">—</div>
+      <div class="tp-week-sub" id="tpWeekSub">—</div>
+    </div>
+    <button class="tp-nav-btn" id="tpNextBtn" onclick="tpNavWeek(1)">›</button>
+  </div>
+  <div class="tp-week-meta" id="tpWeekMeta"></div>
+  <div class="tp-days" id="tpDays"></div>
+</div>
+
 <!-- Bottom nav -->
 <div class="bottom-nav">
   <button class="nav-btn active" id="btn-stations" onclick="showStations()">
@@ -302,6 +371,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <button class="nav-btn" id="btn-route" onclick="openRoutePanel()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg>
     Route
+  </button>
+  <button class="nav-btn" id="btn-plan" onclick="showTraining()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+    Plan
   </button>
 </div>
 
@@ -903,6 +976,7 @@ function _hidePanel(id) { document.getElementById(id).classList.remove('show'); 
 
 function showStations() {
   _hidePanel('giPanel'); _hidePanel('nutPanel'); _hidePanel('routePanel');
+  document.getElementById('trainPanel').classList.remove('show');
   document.getElementById('checkinBar').style.display = '';
   setNavActive('btn-stations');
 }
@@ -911,6 +985,7 @@ function togglePanel(id, btnId) {
   const el = document.getElementById(id);
   const open = el.classList.contains('show');
   _hidePanel('giPanel'); _hidePanel('nutPanel'); _hidePanel('routePanel');
+  document.getElementById('trainPanel').classList.remove('show');
   if (!open) {
     el.classList.add('show');
     document.getElementById('checkinBar').style.display = 'none';
@@ -933,6 +1008,7 @@ function closePanel(id) {
 function openRoutePanel() {
   const open = document.getElementById('routePanel').classList.contains('show');
   _hidePanel('giPanel'); _hidePanel('nutPanel'); _hidePanel('routePanel');
+  document.getElementById('trainPanel').classList.remove('show');
   if (!open) {
     buildRoutePanel();
     document.getElementById('routePanel').classList.add('show');
@@ -1069,6 +1145,7 @@ function importBackup() {
 }
 
 function scrollToCurrent() {
+  showStations();
   const cur =
     document.querySelector('.station-current') ||
     document.querySelector('.station.current') ||
@@ -1114,6 +1191,224 @@ function updateClock() {
     el.textContent = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     el.style.color = '#718096';
   }
+}
+
+// ─── TRAINING PLAN ────────────────────────────────────────────────────────────
+const TP_PLAN_START = new Date(2026, 2, 16); // March 16
+const TP_RACE_DATE  = new Date(2026, 5, 6);  // June 6
+const TP_MS_WEEK    = 7 * 24 * 60 * 60 * 1000;
+
+const TP_PLAN = [
+  { week:1, miles:'18–57', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'3–10 mi easy. Easy runs: relaxed, fun, mini adventures — roads or trails.' },
+    { day:'Wed', desc:'Mtn Legs + 4–12 mi easy or cross-train 60–90 min (bike, hike, ski). Hiking = ultra potential.' },
+    { day:'Thu', desc:'3–10 mi easy. Mtn Legs.' },
+    { day:'Fri', desc:'Rest or x-train up to 90 min, or 3–6 mi easy.' },
+    { day:'Sat', desc:'8–15 mi easy on trails. Vert helpful but don\'t chase it. Hike with purpose!' },
+    { day:'Sun', desc:'4–10 mi easy. Can add x-train or all-day hike. Mtn Legs.' },
+  ]},
+  { week:2, miles:'28–69', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'4–10 mi easy with 5×30 sec hills. Think powerful & fast on 6–8% grade.' },
+    { day:'Wed', desc:'2–3 mi easy · 6×90 sec hills mod/hard (5k effort) w/ rundown recovery · 4×1 min hills mod/hard · 2–3 mi easy. VO2 hill workout! Optional easy double (20–30 min).' },
+    { day:'Thu', desc:'Mtn Legs + 4–10 mi easy.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'10–16 mi easy/mod on trails. Push downhills, find flow!' },
+    { day:'Sun', desc:'4–12 mi easy with 4×20 sec hills fast. All Sunday runs ideally hilly.' },
+  ]},
+  { week:3, miles:'33–80', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'4–10 mi easy with 6×20 sec hills.' },
+    { day:'Wed', desc:'2–3 mi easy · 5×2 min hills mod/hard (5k) · 5 min easy · 10×1 min fast/1 min easy flat/rolling (5k) · 2–3 mi easy/mod. Optional easy double.' },
+    { day:'Thu', desc:'4–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'12–18 mi easy on trails (after warm-up, do 20 min mod/hard ~1-hour effort). Tempos within long runs make them play longer!' },
+    { day:'Sun', desc:'5–14 mi easy with 5×20 sec hills fast or long hike. Mtn Legs.' },
+  ]},
+  { week:4, miles:'34–78', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy with 4×30 sec hills.' },
+    { day:'Wed', desc:'2–3 mi · 8×2 min fast/1 min easy · 3 min easy · 6×1 min fast/1 min easy · 3 min easy · 4×90 sec hills hard · 2–3 mi easy. Supercompensation intensity! 10k → hard hills. Optional double.' },
+    { day:'Thu', desc:'Mtn Legs + 5–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'10–16 mi easy/mod on trails. Feeling fitness adaptations around now!' },
+    { day:'Sun', desc:'6–12 mi easy with 4×20 sec hills. Flow on downhills. Long hike also great.' },
+  ]},
+  { week:5, miles:'38–71', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy. Aerobic build week!' },
+    { day:'Wed', desc:'6–12 mi easy/mod over hills. Optional easy double.' },
+    { day:'Thu', desc:'5–10 mi easy with 6×20 sec hills.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'14–20 mi easy on trails (in middle, 30 min mod/hard ~1-hour effort).' },
+    { day:'Sun', desc:'8–13 mi easy on trails with 6×20 sec hills. Mtn Legs.' },
+  ]},
+  { week:6, miles:'43–94', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–12 mi easy with 6×20 sec fast/2 min easy. Think 800m–mile effort on strides.' },
+    { day:'Wed', desc:'2–3 mi easy · 15 min mod/hard (10k) · 5 min easy · 6×2 min hills 5k effort w/ rundown · 2–3 mi easy. Optional easy double.' },
+    { day:'Thu', desc:'Mtn Legs + 5–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'18–26 mi easy on trails with strong downs. Aim for terrain adaptations. Strong fueling!', alt:'📍 Local: Sisar Canyon or Topa Topa (6,700 ft max). Save Mt Pinos for Week 7–8.' },
+    { day:'Sun', desc:'10–14 mi easy on trails + 8×30 sec steep hills at end. These hills will be tough!' },
+  ]},
+  { week:7, miles:'38–80', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy with 4×20 sec fast/1 min easy.' },
+    { day:'Wed', desc:'2–3 mi easy · 6/5/4/3/2/1 min fast w/ 1 min easy recovery (10k effort) · 5 min easy · 5×45 sec hills hard · 2–3 mi easy. Optional easy double.' },
+    { day:'Thu', desc:'Mtn Legs + 6–10 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 4–8 mi easy.' },
+    { day:'Sat', desc:'12–16 mi easy/mod on trails (40 min mod/hard in middle ~1-hour effort). Tempo will feel very tough by the end!', alt:'⛰️ MT PINOS (~1h 45m drive) — first real altitude session. Practice nutrition at 8,000+ ft.' },
+    { day:'Sun', desc:'8–14 mi easy on trails with strong downs. Can be long fast hike!' },
+  ]},
+  { week:8, miles:'44–53', note:'Race Simulation Week', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'5–10 mi easy with 4×20 sec hills. Slight reduction in volume with focus on workouts.' },
+    { day:'Wed', desc:'2–3 mi easy · 5×3 min hills mod/hard w/ rundown · 15 min mod-to-mod/hard on tired legs · 2–3 mi easy. Think smooth — very tough workout overall! Mtn Legs.' },
+    { day:'Thu', desc:'5–8 mi easy.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'RACE OR RACE SIMULATION: 1–2 mi easy warm-up · 20 mi moderate (50-mile effort, option to progress) · 1–2 mi easy cool-down. Or run a marathon or 50k!', alt:'⭐ DO THIS AT MT PINOS. Camp Fri night at 8,300 ft, race sim Saturday. Best altitude session of the plan — 4 weeks out is ideal timing. Acute dip resolves before race day.' },
+    { day:'Sun', desc:'Hike or rest. Main goal is recovery after race sim!' },
+  ]},
+  { week:9, miles:'52–101', note:'Big Aerobic Week', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'6–10 mi easy with 4×20 sec fast/1 min easy. Big aerobic emphasis week! Optional double.' },
+    { day:'Wed', desc:'10–15 mi easy/mod on trails. Optional double (big day, similar to Canova block but aerobic focus). Can progress effort if feeling good!' },
+    { day:'Thu', desc:'6–12 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Rest or x-train or 4–8 mi easy.' },
+    { day:'Sat', desc:'20–25 mi easy on trails ideally with vert. Really relax into this, aim to finish feeling great!', alt:'⛰️ Mt Pinos day trip (no overnight needed). Second altitude long run — 3 weeks out. Reinforces ventilatory adaptation. Day trip dip resolves in 72 hrs.' },
+    { day:'Sun', desc:'Long hike or very easy run 16–20 mi on trails. Lots of time on feet, fast hiking too!' },
+  ]},
+  { week:10, miles:'44–84', note:'⭐ Overnight Altitude Weekend', altWeek:true, days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'6–12 mi easy + 4×20 sec hills. If feeling tired, start taper and back off slightly.' },
+    { day:'Wed', desc:'2–3 mi easy · 10×3 min fast/90 sec easy (1-hour effort) · 2–3 mi mod on tired legs. Cruise intervals for final big threshold stimulus! Optional double.' },
+    { day:'Thu', desc:'Mtn Legs + 6–10 mi easy. Optional easy double.' },
+    { day:'Fri', desc:'Drive to Mt Pinos after work. Camp at Chula Vista or McGill CG (~8,300 ft). Sleep at altitude tonight.', alt:'⛰️ DRIVE UP FRIDAY EVENING. Sleep at 8,300 ft triggers EPO production overnight.' },
+    { day:'Sat', desc:'14–20 mi easy/mod on trails with 1 hr moderate in middle (50k effort). Steep downs. Mt Pinos route.', alt:'⛰️ LONG RUN AT ALTITUDE. Second night camping at 8,300 ft after run.' },
+    { day:'Sun', desc:'10–14 mi easy on trails with 4×30 sec hills. Drive home Sunday afternoon. Final altitude stimulus before taper.' },
+  ]},
+  { week:11, miles:'28–59', note:'Taper begins', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'4–8 mi easy with 4×30 sec fast/30 sec easy. Final strides before race — aerobic system and ST-muscle fibers.' },
+    { day:'Wed', desc:'2–3 mi easy · 20–30 min mod (~half marathon effort) on trails · 5 min easy · 4×1 min hills 5k effort · 2–3 mi easy. Final controlled tempo for neuromuscular + aerobic stimulus. Mtn Legs (final leg strength!).' },
+    { day:'Thu', desc:'4–8 mi easy.' },
+    { day:'Fri', desc:'Rest or x-train or 3–6 mi easy.' },
+    { day:'Sat', desc:'8–15 mi easy to easy/mod on trails. For advanced athletes, solidly long run is a good final aerobic stimulus.' },
+    { day:'Sun', desc:'4–10 mi easy on trails or rest if any fatigue built up.' },
+  ]},
+  { week:12, miles:'Race!', note:'RACE WEEK', days:[
+    { day:'Mon', desc:'Rest' },
+    { day:'Tue', desc:'2–3 mi easy · 15 min mod (marathon effort) · 2–3 mi easy.' },
+    { day:'Wed', desc:'3–6 mi easy.' },
+    { day:'Thu', desc:'Rest. ✈️ Travel to Pocatello if possible (even 36 hrs at 4,464 ft helps!)' },
+    { day:'Fri', desc:'2–4 mi easy AM. Run the day before to keep rhythm. Check in by 11:30 PM at Gibson Jack.' },
+    { day:'Sat', desc:'🏁 50 MILE RACE! Midnight start. YOU ARE AMAZING!' },
+    { day:'Sun', desc:'Recovery. YOU DID IT.' },
+  ]},
+];
+
+let tpViewWeek = null;
+
+function tpCurrentWeekNum() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.max(1, Math.min(12, Math.floor((today - TP_PLAN_START) / TP_MS_WEEK) + 1));
+}
+
+function tpWeekStart(w) {
+  const d = new Date(TP_PLAN_START);
+  d.setDate(d.getDate() + (w-1)*7);
+  return d;
+}
+
+function tpIsDone(w, d) { return localStorage.getItem(`smu_w${w}_d${d}`) === '1'; }
+
+function tpToggle(w, d) {
+  const key = `smu_w${w}_d${d}`;
+  if (localStorage.getItem(key) === '1') localStorage.removeItem(key);
+  else localStorage.setItem(key, '1');
+  renderTpWeek(tpViewWeek);
+  renderTpStats();
+}
+
+function showTraining() {
+  ['giPanel','nutPanel','routePanel'].forEach(id => document.getElementById(id).classList.remove('show'));
+  document.getElementById('checkinBar').style.display = 'none';
+  if (tpViewWeek === null) tpViewWeek = tpCurrentWeekNum();
+  document.getElementById('trainPanel').classList.add('show');
+  setNavActive('btn-plan');
+  renderTpStats();
+  renderTpWeek(tpViewWeek);
+}
+
+function tpNavWeek(delta) {
+  tpViewWeek = Math.max(1, Math.min(12, tpViewWeek + delta));
+  renderTpWeek(tpViewWeek);
+}
+
+function renderTpStats() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const curW = tpCurrentWeekNum();
+  const weeksLeft = Math.max(0, Math.ceil((TP_RACE_DATE - today) / TP_MS_WEEK));
+  const pct = Math.min(100, ((curW-1) / 12) * 100);
+  document.getElementById('tpProgressFill').style.width = pct + '%';
+  document.getElementById('tpProgressLabel').textContent = `Week ${curW} of 12`;
+  document.getElementById('tpWeeksLeft').textContent = weeksLeft;
+  let totalDone = 0, altLeft = 0;
+  for (let w = 1; w <= 12; w++) {
+    const wStart = tpWeekStart(w);
+    TP_PLAN[w-1].days.forEach((d,i) => { if (d.desc !== 'Rest' && tpIsDone(w,i)) totalDone++; });
+    if (TP_PLAN[w-1].altWeek && wStart >= today) altLeft++;
+  }
+  document.getElementById('tpCompleted').textContent = totalDone;
+  document.getElementById('tpAltLeft').textContent = altLeft;
+}
+
+function renderTpWeek(w) {
+  tpViewWeek = w;
+  const plan = TP_PLAN[w-1];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const curW = tpCurrentWeekNum();
+  const wStart = tpWeekStart(w);
+  const wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate()+6);
+  const fmt = d => d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+  document.getElementById('tpWeekTitle').textContent = `Week ${w} of 12${plan.note ? ' — ' + plan.note : ''}`;
+  document.getElementById('tpWeekSub').textContent = `${plan.miles} mi · ${fmt(wStart)} – ${fmt(wEnd)}`;
+  document.getElementById('tpPrevBtn').disabled = w === 1;
+  document.getElementById('tpNextBtn').disabled = w === 12;
+
+  let badge = '';
+  if (w === curW) badge = '<span class="tp-week-badge tp-badge-current">▶ Current Week</span>';
+  else if (w === 12) badge = '<span class="tp-week-badge tp-badge-race">🏁 Race Week</span>';
+  else if (plan.altWeek && wStart >= today) badge = '<span class="tp-week-badge tp-badge-alt">⛰️ Altitude Week</span>';
+  else if (wEnd < today) badge = '<span class="tp-week-badge tp-badge-past">Done</span>';
+  else badge = '<span class="tp-week-badge tp-badge-upcoming">Upcoming</span>';
+
+  const done = plan.days.filter((d,i) => d.desc !== 'Rest' && tpIsDone(w,i)).length;
+  const total = plan.days.filter(d => d.desc !== 'Rest').length;
+  document.getElementById('tpWeekMeta').innerHTML = badge + `<span class="tp-done-count">${done}/${total} done</span>`;
+
+  let html = '';
+  plan.days.forEach((d, i) => {
+    const dayDate = new Date(wStart); dayDate.setDate(dayDate.getDate() + i);
+    const isToday = dayDate.getTime() === today.getTime();
+    const isRest = d.desc === 'Rest' || d.desc.startsWith('Recovery');
+    const isDone = !isRest && tpIsDone(w, i);
+    const classes = ['tp-day', isToday?'today':'', isRest?'rest':'', isDone?'done':''].filter(Boolean).join(' ');
+    const todayDot = isToday ? '<span class="tp-today-dot"></span>' : '';
+    const altHTML = d.alt ? `<div class="tp-day-alt">${d.alt}</div>` : '';
+    const checkbox = !isRest
+      ? `<div class="tp-day-check"><input type="checkbox" ${isDone?'checked':''} onchange="tpToggle(${w},${i})"></div>`
+      : '<div class="tp-day-check"></div>';
+    html += `<div class="${classes}">
+      <div class="tp-day-left"><div class="tp-day-name">${d.day}</div>${todayDot}</div>
+      <div class="tp-day-body"><div class="tp-day-desc">${d.desc}</div>${altHTML}</div>
+      ${checkbox}
+    </div>`;
+  });
+  document.getElementById('tpDays').innerHTML = html;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
