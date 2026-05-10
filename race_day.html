@@ -235,6 +235,40 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .tp-day-alt{font-size:0.7rem;color:#b794f4;margin-top:4px;line-height:1.4;}
 .tp-day-check{width:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding-top:2px;}
 .tp-day-check input[type=checkbox]{width:22px;height:22px;cursor:pointer;accent-color:#68d391;}
+/* ── Cutoff status bar ── */
+.cutoff-status{padding:4px 14px 5px;background:#141820;border-bottom:1px solid #1e2535;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:24px;}
+.cs-label{font-size:0.6rem;color:#4a5568;text-transform:uppercase;letter-spacing:0.4px;white-space:nowrap;}
+.cs-pill{display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:8px;font-weight:700;font-size:0.65rem;white-space:nowrap;}
+.cs-ok{background:rgba(104,211,145,0.12);color:#68d391;}
+.cs-warn{background:rgba(246,173,85,0.15);color:#f6ad55;}
+.cs-dnf{background:rgba(252,129,129,0.15);color:#fc8181;}
+/* ── Caffeine log ── */
+.caff-log-btn{background:#141820;border:1px solid #553c9a;color:#b794f4;border-radius:8px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;width:100%;margin-top:10px;-webkit-tap-highlight-color:transparent;display:block;text-align:center;}
+.caff-log-btn:active{background:#2d3748;}
+.caff-dose-item{font-size:0.7rem;color:#b794f4;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:center;}
+.caff-dose-item:last-of-type{border-bottom:none;}
+/* ── Crew panel ── */
+.crew-panel{display:none;position:fixed;top:0;bottom:calc(52px + var(--safe-b));left:0;right:0;background:#0f1117;overflow-y:auto;z-index:110;}
+.crew-panel.show{display:block;}
+.crew-panel-hdr{background:#141820;border-bottom:2px solid #fc8181;padding:12px 14px;position:sticky;top:0;}
+.crew-panel-title{font-size:0.88rem;font-weight:800;color:#fc8181;}
+.crew-panel-sub{font-size:0.7rem;color:#718096;margin-top:2px;}
+.crew-eta-box{background:#141820;border-radius:10px;padding:14px;text-align:center;margin:12px 12px 8px;}
+.crew-eta-lbl{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#718096;margin-bottom:4px;}
+.crew-eta-time{font-size:1.8rem;font-weight:900;font-family:monospace;color:#f6ad55;line-height:1;}
+.crew-eta-sub{font-size:0.7rem;color:#718096;margin-top:4px;}
+.crew-card{background:#1a1f2e;border:1px solid #2d3748;border-radius:10px;padding:14px;margin:0 12px 10px;}
+.crew-card.red{border-color:rgba(252,129,129,0.35);}
+.crew-card-ttl{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px;}
+.crew-card.red .crew-card-ttl{color:#fc8181;}
+.crew-card.green .crew-card-ttl{color:#68d391;}
+.crew-card.orange .crew-card-ttl{color:#f6ad55;}
+.crew-list{list-style:none;padding:0;}
+.crew-list li{font-size:0.82rem;color:#a0aec0;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;gap:8px;line-height:1.35;}
+.crew-list li:last-child{border-bottom:none;}
+.crew-list li.hi{color:#e2e8f0;font-weight:600;}
+.crew-list .dot-hi{color:#fc8181;flex-shrink:0;font-size:0.7rem;margin-top:2px;}
+.crew-list .dot-lo{color:#4a5568;flex-shrink:0;font-size:0.7rem;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -256,6 +290,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
     <button onclick="setPace()">Set</button>
   </div>
 </div>
+<div class="cutoff-status" id="cutoffStatus"></div>
 
 <div class="progress-wrap">
   <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
@@ -309,6 +344,11 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <div class="q-item"><strong>Pepto chewables</strong>2 tabs at first sign of cramping.</div>
   <div class="q-item"><strong>Broth</strong>Most reliable food above 6,500 ft.</div>
   <div class="q-item" style="color:#fc8181;font-size:0.72rem;padding-top:8px;"><strong style="color:#fc8181;">Above 8,000 ft: liquids only</strong>Gels, broth, Coke, sports drink. No solids on steep climbs.<br>Avoid: PB, cheese, dairy, high-fiber bars.</div>
+  <div style="margin-top:10px;padding-top:10px;border-top:1px solid #2d3748;">
+    <div style="font-size:0.67rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#b794f4;margin-bottom:5px;">Caffeine Log</div>
+    <div id="caffeineLog"><div style="font-size:0.72rem;color:#4a5568;">No doses logged. Target: Mi 28–30 and Mi 47–50.</div></div>
+    <button class="caff-log-btn" onclick="logCaffeine()">☕ Log caffeine dose</button>
+  </div>
 </div>
 
 <!-- Nutrition panel -->
@@ -350,6 +390,62 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <div class="tp-days" id="tpDays"></div>
 </div>
 
+<!-- Crew packet panel -->
+<div class="crew-panel" id="crewPanel">
+  <div class="crew-panel-hdr">
+    <div class="crew-panel-title">West Fork Crew Packet</div>
+    <div class="crew-panel-sub">Mi 30.5 · ONLY crew access · ETA <span id="crewEtaSmall">—</span></div>
+  </div>
+  <div class="crew-eta-box">
+    <div class="crew-eta-lbl">Runner's estimated arrival at West Fork</div>
+    <div class="crew-eta-time" id="crewEtaTime">—</div>
+    <div class="crew-eta-sub" id="crewEtaSub">Based on current pace</div>
+  </div>
+  <div class="crew-card red">
+    <div class="crew-card-ttl">Have ready before runner arrives</div>
+    <ul class="crew-list">
+      <li class="hi"><span class="dot-hi">▶</span><span>Wind/puffy jacket out of bag and ready</span></li>
+      <li class="hi"><span class="dot-hi">▶</span><span>Gloves + hat/buff out of bag</span></li>
+      <li class="hi"><span class="dot-hi">▶</span><span>Fresh socks — last sock change before summit</span></li>
+      <li class="hi"><span class="dot-hi">▶</span><span>6–8 gels counted and ready to hand off</span></li>
+      <li><span class="dot-lo">·</span><span>Broth flask filled (warm if possible)</span></li>
+      <li><span class="dot-lo">·</span><span>Cold Coke (can) + electrolyte cap</span></li>
+      <li><span class="dot-lo">·</span><span>Body Glide for reapplication</span></li>
+      <li><span class="dot-lo">·</span><span>Blister kit accessible</span></li>
+    </ul>
+  </div>
+  <div class="crew-card green">
+    <div class="crew-card-ttl">Runner does at this stop (10–12 min)</div>
+    <ul class="crew-list">
+      <li class="hi"><span class="dot-hi">▶</span><span>Eat a full meal from station food</span></li>
+      <li class="hi"><span class="dot-hi">▶</span><span>Summit layers IN PACK now — not stuffed in pocket</span></li>
+      <li class="hi"><span class="dot-hi">▶</span><span>Take Zofran/anti-nausea PRE-EMPTIVELY</span></li>
+      <li><span class="dot-lo">·</span><span>Change socks if wet or blistered</span></li>
+      <li><span class="dot-lo">·</span><span>Fill broth flask to carry to summit</span></li>
+      <li><span class="dot-lo">·</span><span>Caffeine dose (Mi 28–30 range)</span></li>
+      <li><span class="dot-lo">·</span><span>Reapply anti-chafe</span></li>
+    </ul>
+  </div>
+  <div class="crew-card orange">
+    <div class="crew-card-ttl">Take from runner</div>
+    <ul class="crew-list">
+      <li><span class="dot-lo">·</span><span>Headlamp (daylight now — free up vest space)</span></li>
+      <li><span class="dot-lo">·</span><span>Any layer worn from start that's now too warm</span></li>
+      <li><span class="dot-lo">·</span><span>Trash / empty wrappers</span></li>
+    </ul>
+  </div>
+  <div class="crew-card red">
+    <div class="crew-card-ttl">After West Fork — no more crew access</div>
+    <ul class="crew-list">
+      <li class="hi"><span class="dot-hi">▶</span><span>Drive to Mink Creek Finish (Mi 53.9) now</span></li>
+      <li><span class="dot-lo">·</span><span>No crew at Scout Mtn AS, summit, or Big Fir AS</span></li>
+      <li><span class="dot-lo">·</span><span>Estimated finish: <strong id="crewFinishEta" style="color:#f6ad55;">—</strong></span></li>
+      <li><span class="dot-lo">·</span><span>Have dry clothes, warm puffy, sandals, food at finish</span></li>
+    </ul>
+  </div>
+  <div style="height:12px;"></div>
+</div>
+
 <!-- Bottom nav -->
 <div class="bottom-nav">
   <button class="nav-btn active" id="btn-stations" onclick="showStations()">
@@ -375,6 +471,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <button class="nav-btn" id="btn-plan" onclick="showTraining()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
     Plan
+  </button>
+  <button class="nav-btn" id="btn-crew" onclick="showCrew()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Crew
   </button>
 </div>
 
@@ -449,7 +549,7 @@ const STATIONS = [
 // ─── CHECK-IN STATE (localStorage) ───────────────────────────────────────────
 // checkins[id] = { time: Date ISO string }
 const LS_KEY = 'smu50m_checkins_2026';
-const LS_PACE_KEY = 'smu50m_target_pace_2026';
+const LS_PACE_KEY = 'smu50m_shared_pace_2026';
 let checkins = {};
 
 function loadCheckins() {
@@ -622,6 +722,7 @@ function render() {
   const raceMin = getRaceMin();
   const currentIdx = getCurrentStationIdx(timeline);
   const effPace = getEffectivePace(currentIdx);
+  updateCutoffStatus(timeline, currentIdx);
 
   // Update header pace display
   const hasActual = STATIONS.slice(1).some(s => checkinTime(s.id));
@@ -974,9 +1075,14 @@ function setNavActive(id) {
 
 function _hidePanel(id) { document.getElementById(id).classList.remove('show'); }
 
-function showStations() {
+function _hideAllPanels() {
   _hidePanel('giPanel'); _hidePanel('nutPanel'); _hidePanel('routePanel');
   document.getElementById('trainPanel').classList.remove('show');
+  document.getElementById('crewPanel').classList.remove('show');
+}
+
+function showStations() {
+  _hideAllPanels();
   document.getElementById('checkinBar').style.display = '';
   setNavActive('btn-stations');
 }
@@ -984,8 +1090,7 @@ function showStations() {
 function togglePanel(id, btnId) {
   const el = document.getElementById(id);
   const open = el.classList.contains('show');
-  _hidePanel('giPanel'); _hidePanel('nutPanel'); _hidePanel('routePanel');
-  document.getElementById('trainPanel').classList.remove('show');
+  _hideAllPanels();
   if (!open) {
     el.classList.add('show');
     document.getElementById('checkinBar').style.display = 'none';
@@ -1411,10 +1516,124 @@ function renderTpWeek(w) {
   document.getElementById('tpDays').innerHTML = html;
 }
 
+// ─── CUTOFF STATUS BAR ────────────────────────────────────────────────────────
+function updateCutoffStatus(timeline, currentIdx) {
+  const el = document.getElementById('cutoffStatus');
+  if (!el) return;
+  const upcoming = STATIONS.slice(currentIdx + 1).filter(s => s.cutoffMin !== null);
+  if (!upcoming.length) { el.innerHTML = ''; return; }
+  const pills = upcoming.map(s => {
+    const idx = STATIONS.indexOf(s);
+    const arrMin = timeline[idx].min;
+    const buf = s.cutoffMin - arrMin;
+    const cls = buf < 0 ? 'cs-dnf' : buf < 60 ? 'cs-warn' : 'cs-ok';
+    const bufStr = buf < 0 ? `⛔ ${formatDur(-buf)} late` : buf < 60 ? `⚠️ +${formatDur(buf)}` : `+${formatDur(buf)}`;
+    return `<span class="cs-pill ${cls}">${s.name} ${bufStr}</span>`;
+  }).join('');
+  el.innerHTML = `<span class="cs-label">Cutoffs:</span> ${pills}`;
+}
+
+// ─── CAFFEINE LOG ─────────────────────────────────────────────────────────────
+const LS_CAFFEINE = 'smu50m_caffeine_2026';
+
+function loadCaffeineLog() {
+  try { return JSON.parse(localStorage.getItem(LS_CAFFEINE)) || []; } catch(e) { return []; }
+}
+
+function saveCaffeineLog(log) { localStorage.setItem(LS_CAFFEINE, JSON.stringify(log)); }
+
+function logCaffeine() {
+  const log = loadCaffeineLog();
+  log.push(new Date().toISOString());
+  saveCaffeineLog(log);
+  renderCaffeineLog();
+}
+
+function undoCaffeine(idx) {
+  const log = loadCaffeineLog();
+  log.splice(idx, 1);
+  saveCaffeineLog(log);
+  renderCaffeineLog();
+}
+
+function renderCaffeineLog() {
+  const el = document.getElementById('caffeineLog');
+  if (!el) return;
+  const log = loadCaffeineLog();
+  if (!log.length) {
+    el.innerHTML = `<div style="font-size:0.72rem;color:#4a5568;">No doses logged. Target: Mi 28–30 and Mi 47–50.</div>`;
+    return;
+  }
+  const now = Date.now();
+  let html = log.map((iso, idx) => {
+    const t = new Date(iso);
+    const minAgo = Math.round((now - t) / 60000);
+    const timeStr = t.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+    const raceMs = t - RACE_START;
+    const raceMin2 = raceMs > 0 ? raceMs / 60000 : 0;
+    const mileApprox = raceMin2 > 0 ? (raceMin2 / manualPaceMin).toFixed(1) : '?';
+    const agoStr = minAgo < 60 ? `${minAgo}min ago` : `${Math.floor(minAgo/60)}h ${minAgo%60}m ago`;
+    return `<div class="caff-dose-item">
+      <span>☕ #${idx+1} — ${timeStr} (~Mi ${mileApprox}) · ${agoStr}</span>
+      <button onclick="undoCaffeine(${idx})" style="font-size:0.65rem;color:#4a5568;background:none;border:none;cursor:pointer;text-decoration:underline;flex-shrink:0;">undo</button>
+    </div>`;
+  }).join('');
+  if (log.length < 2) {
+    const lastT = new Date(log[log.length - 1]);
+    const nextDose = new Date(lastT.getTime() + 3.5 * 3600000);
+    const minUntil = Math.round((nextDose - now) / 60000);
+    if (minUntil > 0) {
+      const waitStr = minUntil > 60 ? `${Math.floor(minUntil/60)}h ${minUntil%60}m` : `${minUntil}min`;
+      html += `<div style="font-size:0.68rem;color:#68d391;padding:3px 0 1px;">Next dose window in ~${waitStr}</div>`;
+    } else {
+      html += `<div style="font-size:0.68rem;color:#f6ad55;padding:3px 0 1px;">Ready for second dose</div>`;
+    }
+  } else {
+    html += `<div style="font-size:0.68rem;color:#718096;padding:3px 0 1px;">2 doses logged — max 400mg total</div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ─── CREW PACKET ──────────────────────────────────────────────────────────────
+function showCrew() {
+  _hideAllPanels();
+  document.getElementById('checkinBar').style.display = 'none';
+  document.getElementById('crewPanel').classList.add('show');
+  setNavActive('btn-crew');
+  refreshCrewPanel();
+}
+
+function refreshCrewPanel() {
+  const timeline = buildTimeline();
+  const wfIdx = STATIONS.findIndex(s => s.id === 'westfork');
+  const finIdx = STATIONS.length - 1;
+  const wfMin = timeline[wfIdx].min;
+  const finMin = timeline[finIdx].min;
+  const wfTimeStr = minToTime(wfMin);
+  const finTimeStr = minToTime(finMin);
+  document.getElementById('crewEtaTime').textContent = wfTimeStr;
+  document.getElementById('crewEtaSmall').textContent = wfTimeStr;
+  document.getElementById('crewFinishEta').textContent = finTimeStr;
+  const raceMin2 = getRaceMin();
+  if (raceMin2 !== null) {
+    const minToWF = wfMin - raceMin2;
+    if (checkinTime('westfork')) {
+      document.getElementById('crewEtaSub').textContent = 'West Fork already passed — drive to finish now';
+    } else if (minToWF > 0) {
+      document.getElementById('crewEtaSub').textContent = `~${formatDur(minToWF)} away at current pace`;
+    } else {
+      document.getElementById('crewEtaSub').textContent = 'Runner should be at or past West Fork';
+    }
+  } else {
+    document.getElementById('crewEtaSub').textContent = 'Pre-race estimate based on target pace';
+  }
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 loadCheckins();
 loadPace();
 render();
+renderCaffeineLog();
 updateClock();
 setInterval(updateClock, 1000);
 setInterval(render, 30000); // re-render every 30s to update current position

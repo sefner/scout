@@ -229,6 +229,33 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 .week-filter { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
 .filter-btn { padding:5px 12px; border-radius:16px; font-size:0.78rem; cursor:pointer; border:1px solid #2d3748; background:#141820; color:#718096; transition:all 0.15s; }
 .filter-btn.active, .filter-btn:hover { background:#2d3748; color:#e2e8f0; }
+/* Print cheat sheet */
+@media print {
+  body { background:#fff !important; color:#000 !important; font-size:9pt; }
+  .tabs, .tab-panel:not(#tab-overview) { display:none !important; }
+  #tab-overview { display:block !important; }
+  .card { border:1px solid #ccc !important; background:#fff !important; break-inside:avoid; }
+  .header { background:#fff !important; border-bottom:2px solid #000 !important; }
+  .header h1 { color:#000 !important; }
+  .header p { color:#333 !important; }
+  .stat { border:1px solid #ccc !important; }
+  .stat-val { color:#000 !important; }
+  .stat-label { color:#555 !important; }
+  .overview-grid { grid-template-columns:1fr !important; }
+  canvas { display:none !important; }
+  #mapDetails, #printBtn { display:none !important; }
+  .time-cell { color:#000 !important; }
+  .on-track { color:#006400 !important; }
+  .cutoff-warning { color:#cc0000 !important; }
+  .elev-gain { color:#006400 !important; }
+  .elev-loss { color:#cc0000 !important; }
+  th { color:#000 !important; background:#eee !important; }
+  td { color:#000 !important; }
+  .section-title { color:#000 !important; border-bottom:1px solid #aaa !important; }
+  a { color:#000 !important; }
+}
+.print-btn { padding:5px 14px; border-radius:8px; font-size:0.78rem; cursor:pointer; border:1px solid #2d3748; background:#141820; color:#718096; transition:all 0.15s; margin-left:auto; }
+.print-btn:hover { background:#2d3748; color:#e2e8f0; }
 /* Overview tab */
 .proj-pill { background:#141820; border:1px solid #2d3748; border-radius:8px; padding:8px 14px; min-width:110px; }
 .proj-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.5px; color:#718096; font-weight:600; margin-bottom:3px; }
@@ -302,6 +329,8 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         <div class="proj-pill" id="tightestPill"><div class="proj-label">Tightest cutoff</div><div class="proj-val" id="tightestCutoff">—</div></div>
         <div class="proj-pill"><div class="proj-label">Sunrise at</div><div class="proj-val" id="sunriseMile">—</div></div>
         <div class="proj-pill"><div class="proj-label">Dark miles</div><div class="proj-val" id="darkMiles">—</div></div>
+        <div class="proj-pill"><div class="proj-label">Gels needed</div><div class="proj-val" id="gelCount">—</div></div>
+        <div class="proj-pill"><div class="proj-label">Total calories</div><div class="proj-val" id="totalCal" style="font-size:0.82rem;">—</div></div>
       </div>
       <div style="font-size:0.74rem;color:#4a5568;line-height:1.6;">
         Naismith: +1 min per 100 ft climb &nbsp;·&nbsp;
@@ -342,6 +371,14 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         <div class="card" style="padding:14px 16px;">
           <div class="section-title" style="margin-bottom:10px;">Target Arrivals</div>
           <div id="overviewSegmentStrip"></div>
+          <div style="margin-top:12px;padding-top:10px;border-top:1px solid #2d3748;">
+            <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#b794f4;margin-bottom:6px;">Compare pace</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <input type="range" id="comparePaceSlider" min="12" max="30" step="0.5" value="16" style="flex:1;accent-color:#b794f4;">
+              <span id="comparePaceDisplay" style="font-family:monospace;font-weight:700;color:#b794f4;white-space:nowrap;font-size:0.85rem;min-width:72px;">16:00 /mi</span>
+            </div>
+            <div id="compareStrip"></div>
+          </div>
         </div>
 
         <!-- Key Miles -->
@@ -383,7 +420,10 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 
     <!-- SPLITS TABLE -->
     <div class="card section">
-      <div class="section-title">Splits</div>
+      <div style="display:flex;align-items:center;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #2d3748;">
+        <div class="section-title" style="margin:0;padding:0;border:none;">Splits</div>
+        <button id="printBtn" class="print-btn" onclick="window.print()">🖨️ Print cheat sheet</button>
+      </div>
       <div style="overflow-x:auto;">
         <table id="stationsTable">
           <thead>
@@ -1423,6 +1463,16 @@ function updateTable(basePaceMin) {
     tcEl.textContent = `${tightestName} (+${formatDuration(tightestBuf)})`;
     tcEl.style.color = '#68d391';
   }
+
+  // Nutrition calculator
+  const totalHrs = totalMin / 60;
+  const calPerHr = 240;
+  const totalCalc = Math.round(totalHrs * calPerHr);
+  const gels = Math.ceil(totalCalc / 100);
+  const gelEl = document.getElementById('gelCount');
+  const calEl = document.getElementById('totalCal');
+  if (gelEl) gelEl.textContent = `~${gels} gels`;
+  if (calEl) calEl.textContent = `~${totalCalc.toLocaleString()} cal`;
 }
 
 // === TEMPERATURE BAR ===
@@ -1493,6 +1543,8 @@ function updateOverviewTimes(basePaceMin) {
 }
 
 // === PACE CONTROL ===
+const SHARED_PACE_KEY = 'smu50m_shared_pace_2026';
+
 function setPace(val) {
   currentBasePace = val;
   const mins = Math.floor(val);
@@ -1501,13 +1553,58 @@ function setPace(val) {
   document.getElementById('overviewPaceSlider').value = val;
   document.getElementById('overviewPaceDisplay').textContent = label;
   document.getElementById('dropbagPaceLabel').textContent = label;
+  localStorage.setItem(SHARED_PACE_KEY, String(val));
   updateTable(val);
   buildDropBagCards(val);
   updateOverviewTimes(val);
+  updateCompareStrip();
   if (elevChart) elevChart.draw();
 }
 
 document.getElementById('overviewPaceSlider').addEventListener('input', function() { setPace(parseFloat(this.value)); });
+
+// Compare pace slider
+function updateCompareStrip() {
+  const cSlider = document.getElementById('comparePaceSlider');
+  const cStrip = document.getElementById('compareStrip');
+  if (!cSlider || !cStrip) return;
+  const cPace = parseFloat(cSlider.value);
+  const baseTimes = computeStationTimes(currentBasePace);
+  const compTimes = computeStationTimes(cPace);
+  cStrip.innerHTML = STATIONS.slice(1).map((s, idx) => {
+    const i = idx + 1;
+    const baseMin = baseTimes[i];
+    const compMin = compTimes[i];
+    const diff = compMin - baseMin;
+    const diffStr = diff === 0 ? '=' : (diff > 0 ? `+${formatDuration(diff)} slower` : `−${formatDuration(-diff)} faster`);
+    const diffColor = diff < -5 ? '#68d391' : diff > 5 ? '#fc8181' : '#718096';
+    const isWater = s.name.includes('Water');
+    const isFinish = s.name.includes('FINISH');
+    const nameColor = isWater ? '#9f7aea' : isFinish ? '#68d391' : '#e2e8f0';
+    return `<div class="arrival-row" style="padding:4px 0;">
+      <div style="font-size:0.78rem;font-weight:600;color:${nameColor};">${stationDisplayName(s.name)}</div>
+      <div style="text-align:right;">
+        <div style="font-family:monospace;font-size:0.82rem;color:#b794f4;">${minToTime(compMin)}</div>
+        <div style="font-size:0.65rem;color:${diffColor};">${diffStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+(function() {
+  const sl = document.getElementById('comparePaceSlider');
+  const disp = document.getElementById('comparePaceDisplay');
+  if (!sl || !disp) return;
+  // Load saved pace as default if available
+  const saved = parseFloat(localStorage.getItem(SHARED_PACE_KEY));
+  if (!isNaN(saved) && saved >= 12 && saved <= 30) { currentBasePace = saved; }
+  sl.addEventListener('input', function() {
+    const v = parseFloat(this.value);
+    const m = Math.floor(v), s2 = Math.round((v-m)*60);
+    disp.textContent = `${m}:${String(s2).padStart(2,'0')} /mi`;
+    updateCompareStrip();
+  });
+})();
 
 // === DROP BAG CARDS ===
 const DB_STATIONS = [
@@ -1682,8 +1779,30 @@ const DB_STATIONS = [
   },
 ];
 
-function renderCol(label, cssClass, items) {
+// Drop bag checklist state (localStorage)
+const DB_CHECK_NS = 'smu50m_dbcheck_';
+function dbCheckKey(stId, col, idx) { return `${DB_CHECK_NS}${stId}_${col}_${idx}`; }
+function isDbChecked(stId, col, idx) { return localStorage.getItem(dbCheckKey(stId, col, idx)) === '1'; }
+function toggleDbCheck(stId, col, idx) {
+  const key = dbCheckKey(stId, col, idx);
+  if (localStorage.getItem(key) === '1') localStorage.removeItem(key); else localStorage.setItem(key, '1');
+  buildDropBagCards(currentBasePace);
+}
+
+function renderCol(label, cssClass, items, stId, colKey) {
   if (!items?.length) return `<div class="db-col"><div class="db-col-label ${cssClass}">${label}</div><ul><li><span class="dot">·</span><span style="color:#4a5568;font-style:italic;">Nothing extra</span></li></ul></div>`;
+  if (stId && colKey) {
+    const lis = items.map((it, idx) => {
+      const checked = isDbChecked(stId, colKey, idx);
+      return `<li class="${it.crit?'hi':''}" style="${checked?'opacity:0.45;text-decoration:line-through;':''}" onclick="toggleDbCheck('${stId}','${colKey}',${idx})" style="cursor:pointer;">
+        <span class="dot" style="cursor:pointer;">${checked?'✓':'□'}</span><span style="cursor:pointer;">${it.text}</span></li>`;
+    }).join('');
+    const done = items.filter((it, idx) => isDbChecked(stId, colKey, idx)).length;
+    const total = items.length;
+    const pctCls = done===total ? 'color:#68d391;' : done>0 ? 'color:#f6ad55;' : 'color:#4a5568;';
+    const hdr = `<div class="db-col-label ${cssClass}">${label} <span style="${pctCls}font-size:0.6rem;margin-left:4px;">${done}/${total}</span></div>`;
+    return `<div class="db-col">${hdr}<ul>${lis}</ul></div>`;
+  }
   const lis = items.map(it => `<li class="${it.crit?'hi':''}"><span class="dot">${it.crit?'▶':'·'}</span><span>${it.text}</span></li>`).join('');
   return `<div class="db-col"><div class="db-col-label ${cssClass}">${label}</div><ul>${lis}</ul></div>`;
 }
@@ -1729,13 +1848,29 @@ function buildDropBagCards(basePaceMin) {
     }
 
     const nextClass = s.next?.danger ? 'db-next-seg warn' : 'db-next-seg';
+    const stId = s.name.toLowerCase().replace(/[^a-z0-9]/g,'');
+
+    // Drop bag completion indicator
+    let bagBadge = '';
+    if (s.dropBag) {
+      const allItems = [...(s.gear||[]), ...(s.food||[]), ...(s.medical||[])];
+      const totalItems = allItems.length;
+      const checkedItems = (s.gear||[]).filter((it,idx)=>isDbChecked(stId,'gear',idx)).length
+        + (s.food||[]).filter((it,idx)=>isDbChecked(stId,'food',idx)).length
+        + (s.medical||[]).filter((it,idx)=>isDbChecked(stId,'med',idx)).length;
+      const allDone = checkedItems === totalItems && totalItems > 0;
+      bagBadge = allDone
+        ? `<span style="font-size:0.72rem;font-weight:700;color:#68d391;margin-left:8px;">✅ Bag packed</span>`
+        : `<span style="font-size:0.72rem;color:#718096;margin-left:8px;">${checkedItems}/${totalItems} packed</span>`;
+    }
+
     container.innerHTML += `
       <div class="db-card${s.critical?' critical':''}">
         <div class="db-banner">
           <div class="db-strip" style="background:${s.strip};"></div>
           <div class="db-banner-main">
             <div class="db-left">
-              <div class="db-name">${s.name}</div>
+              <div class="db-name">${s.name}${bagBadge}</div>
               <div class="db-mile-row">
                 <span class="db-mile">Mi ${s.mile}</span>
                 <span class="db-elev">${s.elev.toLocaleString()} ft</span>
@@ -1750,9 +1885,9 @@ function buildDropBagCards(basePaceMin) {
           </div>
         </div>
         <div class="db-body">
-          ${renderCol('🔧 Gear', 'gear', s.gear)}
-          ${renderCol('🍫 Food & Fuel', 'food', s.food)}
-          ${renderCol('💊 Body Check', 'med', s.medical)}
+          ${renderCol('🔧 Gear', 'gear', s.gear, s.dropBag?stId:null, 'gear')}
+          ${renderCol('🍫 Food & Fuel', 'food', s.food, s.dropBag?stId:null, 'food')}
+          ${renderCol('💊 Body Check', 'med', s.medical, s.dropBag?stId:null, 'med')}
         </div>
         ${s.decision ? `<div class="db-footer"><span class="db-footer-label">Do this ▶</span><span class="db-footer-text">${s.decision}</span></div>` : ''}
       </div>`;
@@ -1892,12 +2027,14 @@ function buildMileChart() {
 }
 
 // === INIT ===
+// Load shared pace from localStorage if available (shared with race_day.html)
+const _savedPace = parseFloat(localStorage.getItem('smu50m_shared_pace_2026'));
+if (!isNaN(_savedPace) && _savedPace >= 12 && _savedPace <= 30) currentBasePace = _savedPace;
 buildChart();
 buildMileChart();
 buildTempBar();
-updateTable(18);
-buildDropBagCards(18);
-updateOverviewTimes(18);
+setPace(currentBasePace);
+updateCompareStrip();
 
 // Lazy-init map when user expands the panel
 (function() {
