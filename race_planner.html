@@ -340,28 +340,101 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       </div>
     </div>
 
-    <!-- MAIN GRID: Charts | Sidebar -->
+    <!-- MAIN GRID: Charts + Content | Sidebar -->
     <div class="overview-grid">
 
-      <!-- LEFT: Elevation + Mile charts -->
-      <div class="card section" style="margin-bottom:0;">
-        <div class="section-title">Elevation Profile</div>
-        <div style="position:relative;height:250px;">
-          <canvas id="elevationChart"></canvas>
-        </div>
-        <div class="legend" style="margin-top:10px;">
-          <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate alt (6,500–7,500 ft)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High alt (7,500+ ft) — GI risk</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
-        </div>
-        <div style="margin-top:22px;">
-          <div class="section-title" style="margin-bottom:6px;">Mile-by-Mile Gain & Loss</div>
-          <div style="font-size:0.76rem;color:#718096;margin-bottom:10px;">Gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile · hover either chart to cross-highlight · aid stations in amber</div>
-          <div style="position:relative;height:200px;">
-            <canvas id="mileChart"></canvas>
+      <!-- LEFT: Charts, splits, segments, map -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <div class="card section">
+          <div class="section-title">Elevation Profile</div>
+          <div style="position:relative;height:250px;">
+            <canvas id="elevationChart"></canvas>
+          </div>
+          <div class="legend" style="margin-top:10px;">
+            <div class="legend-item"><div class="legend-dot" style="background:#1a1f4e;border:1px solid #4c51bf;"></div>Night</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(246,173,85,0.3);"></div>Moderate alt (6,500–7,500 ft)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(252,129,129,0.3);"></div>High alt (7,500+ ft) — GI risk</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f6ad55;"></div>Aid stations</div>
+          </div>
+          <div style="margin-top:22px;">
+            <div class="section-title" style="margin-bottom:6px;">Mile-by-Mile Gain & Loss</div>
+            <div style="font-size:0.76rem;color:#718096;margin-bottom:10px;">Gain <span style="color:#68d391;">▲</span> and loss <span style="color:#fc8181;">▼</span> per mile · hover either chart to cross-highlight · aid stations in amber</div>
+            <div style="position:relative;height:200px;">
+              <canvas id="mileChart"></canvas>
+            </div>
           </div>
         </div>
+
+        <!-- SPLITS TABLE -->
+        <div class="card section">
+          <div style="display:flex;align-items:center;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #2d3748;">
+            <div class="section-title" style="margin:0;padding:0;border:none;">Splits</div>
+            <button id="printBtn" class="print-btn" onclick="window.print()">🖨️ Print cheat sheet</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table id="stationsTable">
+              <thead>
+                <tr>
+                  <th>Station</th>
+                  <th>Mile</th>
+                  <th>Elev</th>
+                  <th>Segment</th>
+                  <th>Climb</th>
+                  <th>Descent</th>
+                  <th>Grade</th>
+                  <th>Difficulty</th>
+                  <th>GI Risk</th>
+                  <th>Light</th>
+                  <th>Est. Arrival</th>
+                  <th>Official Cutoff</th>
+                  <th>Buffer</th>
+                </tr>
+              </thead>
+              <tbody id="stationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- COLLAPSIBLE: Course Segments + Warnings -->
+        <details class="card section" style="padding:0;">
+          <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
+            <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
+              Course Segments &amp; Warnings
+              <span style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to expand)</span>
+            </div>
+          </summary>
+          <div style="padding:0 20px 20px;">
+            <div class="alert alert-night" style="margin-top:12px;">
+              🌙 <strong>Midnight start:</strong> You'll be in complete darkness from Miles 0–14 to 23 (depending on pace). Sunrise in Pocatello on June 5 is <strong>5:47 AM MDT</strong>. The first big climb — 2,226 ft in just 4.1 miles to Water Only (Mile 16.9) — will happen in the dark. Carry primary headlamp, backup light, and spare batteries.
+            </div>
+            <div class="alert alert-alt">
+              ⛰️ <strong>Altitude &amp; GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving Thu Jun 4 gives you ~36 hours at 4,464 ft before the midnight start — use it. Beetroot loading and your GI toolkit still matter; one day of altitude exposure helps but doesn't fully substitute for the 8,000+ ft the race demands. See the <strong>Supplements tab</strong> for the full strategy.
+            </div>
+            <div style="margin-top:14px;">
+              <div class="section-title">Course Segments at a Glance</div>
+              <div class="key-climb"><strong>Miles 12.8→16.9 (City Creek → Water Only):</strong> +2,226 ft in 4.1 miles. Happens in the dark. Steepest gain-per-mile on the course (543 ft/mi). Altitude goes from 4,820 → 7,057 ft. Start eating solids before this climb; switch to liquids on it.</div>
+              <div class="key-climb"><strong>Miles 30.4→36.8 (West Fork → Scout Mtn AS):</strong> +1,912 ft in 6.4 miles. You've already run 30 miles. Big climb but manageable — this is your gateway to the summit.</div>
+              <div class="key-climb"><strong>Miles 36.8→47.6 (Scout Mtn AS → Big Fir):</strong> 10.8-mile mega-segment. +2,384 ft to the 8,694 ft summit around Mile 43, then -3,233 ft descent. Longest gap between aid. Load up at Scout Mtn AS. Summit zone = peak GI risk.</div>
+              <div class="key-descent"><strong>Miles 24.7→30.4 (Elk Meadows → West Fork):</strong> Mostly downhill (-1,565 ft), recover your legs. Use this to eat, hydrate, and regroup before the push to Scout Mtn.</div>
+              <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
+            </div>
+          </div>
+        </details>
+
+        <!-- COLLAPSIBLE: Course Map -->
+        <details class="card section" id="mapDetails" style="padding:0;">
+          <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
+            <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
+              Course Map
+              <span id="mapToggleHint" style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to show)</span>
+            </div>
+          </summary>
+          <div style="padding:0 20px 20px;">
+            <div id="map"></div>
+          </div>
+        </details>
+
       </div>
 
       <!-- RIGHT: Arrivals + Key Miles + Temperature -->
@@ -417,75 +490,6 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 
       </div>
     </div>
-
-    <!-- SPLITS TABLE -->
-    <div class="card section">
-      <div style="display:flex;align-items:center;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #2d3748;">
-        <div class="section-title" style="margin:0;padding:0;border:none;">Splits</div>
-        <button id="printBtn" class="print-btn" onclick="window.print()">🖨️ Print cheat sheet</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table id="stationsTable">
-          <thead>
-            <tr>
-              <th>Station</th>
-              <th>Mile</th>
-              <th>Elev</th>
-              <th>Segment</th>
-              <th>Climb</th>
-              <th>Descent</th>
-              <th>Grade</th>
-              <th>Difficulty</th>
-              <th>GI Risk</th>
-              <th>Light</th>
-              <th>Est. Arrival</th>
-              <th>Official Cutoff</th>
-              <th>Buffer</th>
-            </tr>
-          </thead>
-          <tbody id="stationsBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- COLLAPSIBLE: Course Segments + Warnings -->
-    <details class="card section" style="padding:0;">
-      <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
-        <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
-          Course Segments &amp; Warnings
-          <span style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to expand)</span>
-        </div>
-      </summary>
-      <div style="padding:0 20px 20px;">
-        <div class="alert alert-night" style="margin-top:12px;">
-          🌙 <strong>Midnight start:</strong> You'll be in complete darkness from Miles 0–14 to 23 (depending on pace). Sunrise in Pocatello on June 5 is <strong>5:47 AM MDT</strong>. The first big climb — 2,226 ft in just 4.1 miles to Water Only (Mile 16.9) — will happen in the dark. Carry primary headlamp, backup light, and spare batteries.
-        </div>
-        <div class="alert alert-alt">
-          ⛰️ <strong>Altitude &amp; GI note:</strong> You consistently have GI issues at altitude. The course hits <strong>7,057 ft at Mile 16.9</strong> (night, after a steep climb) and peaks at <strong>8,694 ft around Mile 42.9</strong> (post-Mile-37, on tired legs). Arriving Thu Jun 4 gives you ~36 hours at 4,464 ft before the midnight start — use it. Beetroot loading and your GI toolkit still matter; one day of altitude exposure helps but doesn't fully substitute for the 8,000+ ft the race demands. See the <strong>Supplements tab</strong> for the full strategy.
-        </div>
-        <div style="margin-top:14px;">
-          <div class="section-title">Course Segments at a Glance</div>
-          <div class="key-climb"><strong>Miles 12.8→16.9 (City Creek → Water Only):</strong> +2,226 ft in 4.1 miles. Happens in the dark. Steepest gain-per-mile on the course (543 ft/mi). Altitude goes from 4,820 → 7,057 ft. Start eating solids before this climb; switch to liquids on it.</div>
-          <div class="key-climb"><strong>Miles 30.4→36.8 (West Fork → Scout Mtn AS):</strong> +1,912 ft in 6.4 miles. You've already run 30 miles. Big climb but manageable — this is your gateway to the summit.</div>
-          <div class="key-climb"><strong>Miles 36.8→47.6 (Scout Mtn AS → Big Fir):</strong> 10.8-mile mega-segment. +2,384 ft to the 8,694 ft summit around Mile 43, then -3,233 ft descent. Longest gap between aid (no crew access). Load up at Scout Mtn AS. Summit zone = peak GI risk.</div>
-          <div class="key-descent"><strong>Miles 24.7→30.4 (Elk Meadows → West Fork):</strong> Mostly downhill (-1,565 ft), recover your legs. Use this to eat, hydrate, and regroup before the push to Scout Mtn.</div>
-          <div class="key-descent"><strong>Miles 43→53.9 (Post-summit → Finish):</strong> Net descending from 8,694 ft → 5,154 ft. Quads take the beating here. Poles help. You're in the home stretch.</div>
-        </div>
-      </div>
-    </details>
-
-    <!-- COLLAPSIBLE: Course Map -->
-    <details class="card section" id="mapDetails" style="padding:0;">
-      <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
-        <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
-          Course Map
-          <span id="mapToggleHint" style="font-size:0.72rem;color:#718096;font-weight:400;text-transform:none;letter-spacing:0;">(click to show)</span>
-        </div>
-      </summary>
-      <div style="padding:0 20px 20px;">
-        <div id="map"></div>
-      </div>
-    </details>
 
   </div>
 
