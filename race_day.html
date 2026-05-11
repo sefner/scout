@@ -364,7 +364,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <div class="bag-card" style="border-color:rgba(252,129,129,0.4);">
     <div class="bag-card-hdr" style="border-color:rgba(252,129,129,0.2);">
       <div>
-        <div class="bag-tag" style="background:rgba(252,129,129,0.15);color:#fc8181;">Bag #2 — LAST BAG</div>
+        <div class="bag-tag" style="background:rgba(252,129,129,0.15);color:#fc8181;">Bag #2</div>
         <div class="bag-name">West Fork</div>
         <div class="bag-meta">Mi 30.5 · 5,213 ft · Est. arrive ~12:45 PM · 17.2 mi unsupported to Big Fir</div>
       </div>
@@ -506,14 +506,14 @@ const STATIONS = [
     segGain:2226, segMiles:4.1 },
 
   { id:'elkmeadows', name:'Elk Meadows', label:'AS · no bag', mile:24.7, elev:6781, dropBag:false, cutoffMin:null, strip:'#276749', isWater:false, isFinish:false,
-    next:{text:'5.7 mi → West Fork · mostly descending · LAST BAG ahead at Mi 30.5',danger:false},
+    next:{text:'5.7 mi → West Fork · mostly descending · Bag #2 at Mi 30.5',danger:false},
     gear:[{text:'Confirm summit layers in West Fork bag'}],
     food:[{text:'EAT A FULL MEAL',hi:true},{text:'Station: wraps (turkey/bacon/avocado), potato, PBJ, soup'},{text:'First caffeine gel if needed',hi:true},{text:'Top up gels for West Fork'}],
     med:[{text:'Blister check — tape hot spots now'}],
     decision:'No bag but great food. Best GI window of miles 17–30. West Fork is your LAST bag before the summit.',
     segGain:1018, segMiles:7.8 },
 
-  { id:'westfork', name:'West Fork', label:'Drop Bag #2 — LAST BAG', mile:30.5, elev:5213, dropBag:true, cutoffMin:12*60+45, strip:'#fc8181', isWater:false, isFinish:false,
+  { id:'westfork', name:'West Fork', label:'Drop Bag #2', mile:30.5, elev:5213, dropBag:true, cutoffMin:12*60+45, strip:'#fc8181', isWater:false, isFinish:false,
     next:{text:'6.4 mi → Scout Mtn (no bag) · then 10.8 mi to Big Fir · NO bag for 17.2 miles',danger:true},
     gear:[{text:'Puffy/wind jacket IN PACK NOW',hi:true},{text:'Gloves + hat/buff',hi:true},{text:'Change socks',hi:true},{text:'Reapply anti-chafe'}],
     food:[{text:'EAT A FULL MEAL',hi:true},{text:'Station: bacon, quesadillas, wraps, potato, broth, soda'},{text:'Load 6–8 gels — no bag for 17.2 miles',hi:true},{text:'Fill broth flask',hi:true},{text:'Caffeine dose',hi:true}],
