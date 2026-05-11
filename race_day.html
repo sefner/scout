@@ -247,28 +247,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .caff-log-btn:active{background:#2d3748;}
 .caff-dose-item{font-size:0.7rem;color:#b794f4;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:center;}
 .caff-dose-item:last-of-type{border-bottom:none;}
-/* ── Crew panel ── */
-.crew-panel{display:none;position:fixed;top:0;bottom:calc(52px + var(--safe-b));left:0;right:0;background:#0f1117;overflow-y:auto;z-index:110;}
-.crew-panel.show{display:block;}
-.crew-panel-hdr{background:#141820;border-bottom:2px solid #fc8181;padding:12px 14px;position:sticky;top:0;}
-.crew-panel-title{font-size:0.88rem;font-weight:800;color:#fc8181;}
-.crew-panel-sub{font-size:0.7rem;color:#718096;margin-top:2px;}
-.crew-eta-box{background:#141820;border-radius:10px;padding:14px;text-align:center;margin:12px 12px 8px;}
-.crew-eta-lbl{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#718096;margin-bottom:4px;}
-.crew-eta-time{font-size:1.8rem;font-weight:900;font-family:monospace;color:#f6ad55;line-height:1;}
-.crew-eta-sub{font-size:0.7rem;color:#718096;margin-top:4px;}
-.crew-card{background:#1a1f2e;border:1px solid #2d3748;border-radius:10px;padding:14px;margin:0 12px 10px;}
-.crew-card.red{border-color:rgba(252,129,129,0.35);}
-.crew-card-ttl{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px;}
-.crew-card.red .crew-card-ttl{color:#fc8181;}
-.crew-card.green .crew-card-ttl{color:#68d391;}
-.crew-card.orange .crew-card-ttl{color:#f6ad55;}
-.crew-list{list-style:none;padding:0;}
-.crew-list li{font-size:0.82rem;color:#a0aec0;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;gap:8px;line-height:1.35;}
-.crew-list li:last-child{border-bottom:none;}
-.crew-list li.hi{color:#e2e8f0;font-weight:600;}
-.crew-list .dot-hi{color:#fc8181;flex-shrink:0;font-size:0.7rem;margin-top:2px;}
-.crew-list .dot-lo{color:#4a5568;flex-shrink:0;font-size:0.7rem;margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -390,61 +369,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
   <div class="tp-days" id="tpDays"></div>
 </div>
 
-<!-- Crew packet panel -->
-<div class="crew-panel" id="crewPanel">
-  <div class="crew-panel-hdr">
-    <div class="crew-panel-title">West Fork Crew Packet</div>
-    <div class="crew-panel-sub">Mi 30.5 · ONLY crew access · ETA <span id="crewEtaSmall">—</span></div>
-  </div>
-  <div class="crew-eta-box">
-    <div class="crew-eta-lbl">Runner's estimated arrival at West Fork</div>
-    <div class="crew-eta-time" id="crewEtaTime">—</div>
-    <div class="crew-eta-sub" id="crewEtaSub">Based on current pace</div>
-  </div>
-  <div class="crew-card red">
-    <div class="crew-card-ttl">Have ready before runner arrives</div>
-    <ul class="crew-list">
-      <li class="hi"><span class="dot-hi">▶</span><span>Wind/puffy jacket out of bag and ready</span></li>
-      <li class="hi"><span class="dot-hi">▶</span><span>Gloves + hat/buff out of bag</span></li>
-      <li class="hi"><span class="dot-hi">▶</span><span>Fresh socks — last sock change before summit</span></li>
-      <li class="hi"><span class="dot-hi">▶</span><span>6–8 gels counted and ready to hand off</span></li>
-      <li><span class="dot-lo">·</span><span>Broth flask filled (warm if possible)</span></li>
-      <li><span class="dot-lo">·</span><span>Cold Coke (can) + electrolyte cap</span></li>
-      <li><span class="dot-lo">·</span><span>Body Glide for reapplication</span></li>
-      <li><span class="dot-lo">·</span><span>Blister kit accessible</span></li>
-    </ul>
-  </div>
-  <div class="crew-card green">
-    <div class="crew-card-ttl">Runner does at this stop (10–12 min)</div>
-    <ul class="crew-list">
-      <li class="hi"><span class="dot-hi">▶</span><span>Eat a full meal from station food</span></li>
-      <li class="hi"><span class="dot-hi">▶</span><span>Summit layers IN PACK now — not stuffed in pocket</span></li>
-      <li class="hi"><span class="dot-hi">▶</span><span>Take Zofran/anti-nausea PRE-EMPTIVELY</span></li>
-      <li><span class="dot-lo">·</span><span>Change socks if wet or blistered</span></li>
-      <li><span class="dot-lo">·</span><span>Fill broth flask to carry to summit</span></li>
-      <li><span class="dot-lo">·</span><span>Caffeine dose (Mi 28–30 range)</span></li>
-      <li><span class="dot-lo">·</span><span>Reapply anti-chafe</span></li>
-    </ul>
-  </div>
-  <div class="crew-card orange">
-    <div class="crew-card-ttl">Take from runner</div>
-    <ul class="crew-list">
-      <li><span class="dot-lo">·</span><span>Headlamp (daylight now — free up vest space)</span></li>
-      <li><span class="dot-lo">·</span><span>Any layer worn from start that's now too warm</span></li>
-      <li><span class="dot-lo">·</span><span>Trash / empty wrappers</span></li>
-    </ul>
-  </div>
-  <div class="crew-card red">
-    <div class="crew-card-ttl">After West Fork — no more crew access</div>
-    <ul class="crew-list">
-      <li class="hi"><span class="dot-hi">▶</span><span>Drive to Mink Creek Finish (Mi 53.9) now</span></li>
-      <li><span class="dot-lo">·</span><span>No crew at Scout Mtn AS, summit, or Big Fir AS</span></li>
-      <li><span class="dot-lo">·</span><span>Estimated finish: <strong id="crewFinishEta" style="color:#f6ad55;">—</strong></span></li>
-      <li><span class="dot-lo">·</span><span>Have dry clothes, warm puffy, sandals, food at finish</span></li>
-    </ul>
-  </div>
-  <div style="height:12px;"></div>
-</div>
 
 <!-- Bottom nav -->
 <div class="bottom-nav">
@@ -472,10 +396,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
     Plan
   </button>
-  <button class="nav-btn" id="btn-crew" onclick="showCrew()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    Crew
-  </button>
+
 </div>
 
 <script>
@@ -1078,7 +999,6 @@ function _hidePanel(id) { document.getElementById(id).classList.remove('show'); 
 function _hideAllPanels() {
   _hidePanel('giPanel'); _hidePanel('nutPanel'); _hidePanel('routePanel');
   document.getElementById('trainPanel').classList.remove('show');
-  document.getElementById('crewPanel').classList.remove('show');
 }
 
 function showStations() {
@@ -1594,40 +1514,6 @@ function renderCaffeineLog() {
   el.innerHTML = html;
 }
 
-// ─── CREW PACKET ──────────────────────────────────────────────────────────────
-function showCrew() {
-  _hideAllPanels();
-  document.getElementById('checkinBar').style.display = 'none';
-  document.getElementById('crewPanel').classList.add('show');
-  setNavActive('btn-crew');
-  refreshCrewPanel();
-}
-
-function refreshCrewPanel() {
-  const timeline = buildTimeline();
-  const wfIdx = STATIONS.findIndex(s => s.id === 'westfork');
-  const finIdx = STATIONS.length - 1;
-  const wfMin = timeline[wfIdx].min;
-  const finMin = timeline[finIdx].min;
-  const wfTimeStr = minToTime(wfMin);
-  const finTimeStr = minToTime(finMin);
-  document.getElementById('crewEtaTime').textContent = wfTimeStr;
-  document.getElementById('crewEtaSmall').textContent = wfTimeStr;
-  document.getElementById('crewFinishEta').textContent = finTimeStr;
-  const raceMin2 = getRaceMin();
-  if (raceMin2 !== null) {
-    const minToWF = wfMin - raceMin2;
-    if (checkinTime('westfork')) {
-      document.getElementById('crewEtaSub').textContent = 'West Fork already passed — drive to finish now';
-    } else if (minToWF > 0) {
-      document.getElementById('crewEtaSub').textContent = `~${formatDur(minToWF)} away at current pace`;
-    } else {
-      document.getElementById('crewEtaSub').textContent = 'Runner should be at or past West Fork';
-    }
-  } else {
-    document.getElementById('crewEtaSub').textContent = 'Pre-race estimate based on target pace';
-  }
-}
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 loadCheckins();
