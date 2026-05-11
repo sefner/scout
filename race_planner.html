@@ -40,7 +40,7 @@ body { font-family: system-ui,-apple-system,sans-serif; background:#0f1117; colo
 .pace-hint { color:#4a5568; font-size:0.75rem; margin-top:4px; }
 table { width:100%; border-collapse:collapse; font-size:0.82rem; }
 th { background:#141820; color:#718096; text-transform:uppercase; font-size:0.7rem; letter-spacing:0.5px; padding:9px 10px; text-align:left; border-bottom:1px solid #2d3748; white-space:nowrap; }
-td { padding:9px 10px; border-bottom:1px solid #1e2535; vertical-align:middle; }
+td { padding:9px 10px; border-bottom:1px solid #1e2535; vertical-align:middle; white-space:nowrap; }
 tr:hover td { background:rgba(255,255,255,0.025); }
 .badge { display:inline-block; padding:2px 7px; border-radius:10px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
 .badge-night { background:#1a1f4e; color:#7f9cf5; }
@@ -387,7 +387,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
                   <th>GI Risk</th>
                   <th>Light</th>
                   <th>Est. Arrival</th>
-                  <th>Official Cutoff</th>
+                  <th>Cutoff</th>
                   <th>Buffer</th>
                 </tr>
               </thead>
@@ -1391,7 +1391,7 @@ function updateTable(basePaceMin) {
 
     const difficulty = i === 0 ? '—' : (() => {
       if (s.seg_gain_ft > 1800 || s.seg_miles > 9) return '<span style="color:#fc8181;font-weight:600;">⬛⬛⬛ Hard</span>';
-      if (s.seg_gain_ft > 900 || s.seg_miles > 7) return '<span style="color:#f6ad55;font-weight:600;">⬛⬛ Moderate</span>';
+      if (s.seg_gain_ft > 900 || s.seg_miles > 7) return '<span style="color:#f6ad55;font-weight:600;">⬛⬛ Mod</span>';
       return '<span style="color:#68d391;font-weight:600;">⬛ Easy</span>';
     })();
 
@@ -1412,7 +1412,7 @@ function updateTable(basePaceMin) {
       <tr class="${isHard || isMissed ? 'seg-hard' : ''}">
         <td class="station-name">${s.name.replace(/^\d+:/, '')}</td>
         <td>${s.mile}</td>
-        <td>${s.elev_ft.toLocaleString()} ft</td>
+        <td>${s.elev_ft.toLocaleString()}</td>
         <td>${i === 0 ? '—' : s.seg_miles + ' mi'}</td>
         <td class="elev-gain">${i === 0 ? '—' : '+' + s.seg_gain_ft.toLocaleString() + ' ft'}</td>
         <td class="elev-loss">${i === 0 ? '—' : '−' + s.seg_loss_ft.toLocaleString() + ' ft'}</td>
