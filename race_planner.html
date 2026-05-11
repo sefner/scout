@@ -234,25 +234,22 @@ tr:hover td { background:rgba(255,255,255,0.025); }
   body { background:#fff !important; color:#000 !important; font-size:9pt; }
   .tabs, .tab-panel:not(#tab-overview) { display:none !important; }
   #tab-overview { display:block !important; }
+  .print-hide { display:none !important; }
+  .overview-grid { display:block !important; }
   .card { border:1px solid #ccc !important; background:#fff !important; break-inside:avoid; }
   .header { background:#fff !important; border-bottom:2px solid #000 !important; }
   .header h1 { color:#000 !important; }
   .header p { color:#333 !important; }
-  .stat { border:1px solid #ccc !important; }
-  .stat-val { color:#000 !important; }
-  .stat-label { color:#555 !important; }
-  .overview-grid { grid-template-columns:1fr !important; }
-  canvas { display:none !important; }
-  #mapDetails, #printBtn { display:none !important; }
+  #printBtn { display:none !important; }
   .time-cell { color:#000 !important; }
   .on-track { color:#006400 !important; }
   .cutoff-warning { color:#cc0000 !important; }
   .elev-gain { color:#006400 !important; }
   .elev-loss { color:#cc0000 !important; }
   th { color:#000 !important; background:#eee !important; }
-  td { color:#000 !important; }
+  td { color:#000 !important; white-space:nowrap !important; }
   .section-title { color:#000 !important; border-bottom:1px solid #aaa !important; }
-  a { color:#000 !important; }
+  table { font-size:8pt !important; }
 }
 .print-btn { padding:5px 14px; border-radius:8px; font-size:0.78rem; cursor:pointer; border:1px solid #2d3748; background:#141820; color:#718096; transition:all 0.15s; margin-left:auto; }
 .print-btn:hover { background:#2d3748; color:#e2e8f0; }
@@ -316,7 +313,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
   <div id="tab-overview" class="tab-panel active">
 
     <!-- PACE + PROJECTIONS -->
-    <div class="card section" style="padding:16px 20px;">
+    <div class="card section print-hide" style="padding:16px 20px;">
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;">
         <span style="font-size:0.78rem;color:#a0aec0;white-space:nowrap;font-weight:600;">Base pace</span>
         <input type="range" id="overviewPaceSlider" min="12" max="30" step="0.5" value="18" style="flex:1;min-width:160px;accent-color:#f6ad55;">
@@ -346,7 +343,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <!-- LEFT: Charts, splits, segments, map -->
       <div style="display:flex;flex-direction:column;gap:14px;">
 
-        <div class="card section">
+        <div class="card section print-hide">
           <div class="section-title">Elevation Profile</div>
           <div style="position:relative;height:250px;">
             <canvas id="elevationChart"></canvas>
@@ -397,7 +394,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         </div>
 
         <!-- COLLAPSIBLE: Course Segments + Warnings -->
-        <details class="card section" style="padding:0;">
+        <details class="card section print-hide" style="padding:0;">
           <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
             <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
               Course Segments &amp; Warnings
@@ -423,7 +420,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
         </details>
 
         <!-- COLLAPSIBLE: Course Map -->
-        <details class="card section" id="mapDetails" style="padding:0;">
+        <details class="card section print-hide" id="mapDetails" style="padding:0;">
           <summary style="cursor:pointer;list-style:none;-webkit-appearance:none;padding:16px 20px;">
             <div class="section-title" style="display:inline-flex;align-items:center;gap:10px;margin:0;border:none;padding:0;">
               Course Map
@@ -438,7 +435,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       </div>
 
       <!-- RIGHT: Arrivals + Key Miles + Temperature -->
-      <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="print-hide" style="display:flex;flex-direction:column;gap:14px;">
 
         <!-- Target Arrivals -->
         <div class="card" style="padding:14px 16px;">
