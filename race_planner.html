@@ -264,6 +264,17 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 @media(max-width:1000px){ .overview-grid { grid-template-columns:1fr; } }
 .arrival-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid #1e2535; }
 .arrival-row:last-child { border-bottom:none; }
+/* Packing tab */
+.pack-group { background:#141820; border:1px solid #2d3748; border-radius:8px; padding:14px; }
+.pack-group-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:10px; display:block; }
+.pack-checklist { list-style:none; padding:0; margin:0; }
+.pack-checklist li { display:flex; align-items:flex-start; gap:9px; padding:5px 0; border-bottom:1px solid #1e2535; font-size:0.8rem; color:#a0aec0; line-height:1.4; cursor:pointer; user-select:none; }
+.pack-checklist li:last-child { border-bottom:none; }
+.pack-checklist li input[type=checkbox] { margin-top:2px; accent-color:#68d391; width:14px; height:14px; flex-shrink:0; cursor:pointer; }
+.pack-checklist li.done span { color:#4a5568; text-decoration:line-through; }
+.pack-checklist li.hi span { color:#e2e8f0; font-weight:600; }
+.pack-checklist li.hi.done span { color:#4a5568; font-weight:400; text-decoration:line-through; }
+.pack-bag-warn { font-size:0.73rem; background:rgba(252,129,129,0.08); border-radius:6px; padding:6px 9px; margin-bottom:8px; line-height:1.5; }
 </style>
 </head>
 <body>
@@ -305,6 +316,7 @@ tr:hover td { background:rgba(255,255,255,0.025); }
   <div class="tabs">
     <div class="tab active" onclick="showTab('overview')">Overview</div>
     <div class="tab" onclick="showTab('dropbags')">Race Day</div>
+    <div class="tab" onclick="showTab('packing')">Packing</div>
     <div class="tab" onclick="showTab('supplements')">Supplements</div>
     <div class="tab" onclick="showTab('training')">Training & Prep</div>
   </div>
@@ -1054,6 +1066,210 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <div class="filter-btn" onclick="filterWeeks('altitude',this)">Altitude Weeks</div>
     </div>
     <div class="week-grid" id="weekGrid"></div>
+
+  </div>
+
+
+  <!-- PACKING TAB -->
+  <div id="tab-packing" class="tab-panel">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:0.95rem;font-weight:600;color:#e2e8f0;margin-bottom:3px;">Race Week Packing &amp; Shopping</div>
+        <div style="font-size:0.78rem;color:#718096;">Check off items as you buy and pack. Saves in your browser automatically.</div>
+      </div>
+      <button onclick="clearPackingChecks()" style="padding:6px 14px;border-radius:8px;font-size:0.78rem;cursor:pointer;border:1px solid #2d3748;background:#141820;color:#718096;transition:all 0.15s;" onmouseover="this.style.background='#2d3748';this.style.color='#e2e8f0'" onmouseout="this.style.background='#141820';this.style.color='#718096'">Reset all checks</button>
+    </div>
+
+    <!-- TO BUY -->
+    <div class="section">
+      <div class="section-title">To Buy</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#f6ad55;">The Feed — thefeed.com</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="f1" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 — 2–3 boxes of 12</span></li>
+            <li onclick="togglePack(this)" data-pid="f2" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 CAF 100 — 1 box of 12</span></li>
+            <li onclick="togglePack(this)" data-pid="f3"><input type="checkbox" tabindex="-1"><span>Amacx Beet Shot ×6 (500mg nitrate/shot) — start Wed Jun 3</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#63b3ed;">Amazon — Supplements</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="a1"><input type="checkbox" tabindex="-1"><span>Thorne FloraSport 20B (probiotic) ~$35 — NSF Certified</span></li>
+            <li onclick="togglePack(this)" data-pid="a2"><input type="checkbox" tabindex="-1"><span>NOW Foods Magnesium Glycinate 400mg ~$18</span></li>
+            <li onclick="togglePack(this)" data-pid="a3"><input type="checkbox" tabindex="-1"><span>NOW Foods Ultra Omega-3 ~$20</span></li>
+            <li onclick="togglePack(this)" data-pid="a4"><input type="checkbox" tabindex="-1"><span>Jarrow Formulas Tart Cherry ~$15 (120 caps)</span></li>
+            <li onclick="togglePack(this)" data-pid="a5" class="hi"><input type="checkbox" tabindex="-1"><span>Gin-Gins Double Strength (The Ginger People) ×3 packs</span></li>
+            <li onclick="togglePack(this)" data-pid="a6" class="hi"><input type="checkbox" tabindex="-1"><span>SaltStick Caps Plus (215mg sodium/cap)</span></li>
+            <li onclick="togglePack(this)" data-pid="a7"><input type="checkbox" tabindex="-1"><span>Body Glide Original (anti-chafe)</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#68d391;">Amazon — Drop Bags &amp; Misc</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="b1" class="hi"><input type="checkbox" tabindex="-1"><span>Cinch sack drawstring bags ×10-pack (~$15) — need 3 for drop bags + spares</span></li>
+            <li onclick="togglePack(this)" data-pid="b2"><input type="checkbox" tabindex="-1"><span>2-gallon Ziploc bags — weatherproof inner liner for each bag</span></li>
+            <li onclick="togglePack(this)" data-pid="b3" class="hi"><input type="checkbox" tabindex="-1"><span>Permanent marker — label bags: Name + Bib + Station</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#fc8181;">Pharmacy — OTC</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="p1" class="hi"><input type="checkbox" tabindex="-1"><span>Pepto-Bismol chewables</span></li>
+            <li onclick="togglePack(this)" data-pid="p2"><input type="checkbox" tabindex="-1"><span>Ibuprofen 200mg generic</span></li>
+            <li onclick="togglePack(this)" data-pid="p3" class="hi"><input type="checkbox" tabindex="-1"><span>Leukotape P — blister tape</span></li>
+            <li onclick="togglePack(this)" data-pid="p4"><input type="checkbox" tabindex="-1"><span>Alcohol wipe packets</span></li>
+            <li onclick="togglePack(this)" data-pid="p5"><input type="checkbox" tabindex="-1"><span>Tincture of benzoin swabs</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#b794f4;">Doctor — Prescription</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="rx1" class="hi"><input type="checkbox" tabindex="-1"><span>Ondansetron (Zofran) 4mg ODT ×10 — tell doctor: altitude ultra running</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DROP BAGS -->
+    <div class="section" style="margin-top:28px;">
+      <div class="section-title">Drop Bags — Pack Checklist</div>
+      <div style="font-size:0.75rem;color:#718096;margin-bottom:14px;">
+        Hand in at <strong style="color:#f6ad55;">Friday Jun 5, 6 PM</strong> at Mink Creek Campground. Label each bag: <strong style="color:#e2e8f0;">Name + Bib # + Station Name</strong>. Cinch sack with Ziploc liner = weatherproof.
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+
+        <div class="pack-group" style="border-color:rgba(99,179,237,0.35);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+            <span class="pack-group-label" style="color:#63b3ed;margin-bottom:0;">Bag 1 — City Creek AS</span>
+            <span style="font-size:0.72rem;color:#718096;">Mi 12.8 · ~4–5 hrs in</span>
+          </div>
+          <div style="font-size:0.72rem;color:#718096;margin-bottom:8px;">4,820 ft · pre-dawn, just before the big climb</div>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="cc1"><input type="checkbox" tabindex="-1"><span>Race socks — fresh pair in Ziploc</span></li>
+            <li onclick="togglePack(this)" data-pid="cc2" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 ×4–5</span></li>
+            <li onclick="togglePack(this)" data-pid="cc3"><input type="checkbox" tabindex="-1"><span>SaltStick Caps (top-off supply)</span></li>
+            <li onclick="togglePack(this)" data-pid="cc4"><input type="checkbox" tabindex="-1"><span>Sunglasses</span></li>
+            <li onclick="togglePack(this)" data-pid="cc5"><input type="checkbox" tabindex="-1"><span>Sunscreen</span></li>
+            <li onclick="togglePack(this)" data-pid="cc6"><input type="checkbox" tabindex="-1"><span>Pepto chewables ×2</span></li>
+            <li onclick="togglePack(this)" data-pid="cc7" class="hi"><input type="checkbox" tabindex="-1"><span>Bag labeled: Name + Bib + "City Creek"</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group" style="border-color:rgba(252,129,129,0.45);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+            <span class="pack-group-label" style="color:#fc8181;margin-bottom:0;">Bag 2 — West Fork AS ⚠ LAST BAG</span>
+            <span style="font-size:0.72rem;color:#718096;">Mi 30.5 · ~9–11 hrs in</span>
+          </div>
+          <div class="pack-bag-warn" style="color:#fc8181;">17.2 miles unsupported to Big Fir — load up here. Summit gear goes in this bag.</div>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="wf1"><input type="checkbox" tabindex="-1"><span>Race socks — fresh pair in Ziploc</span></li>
+            <li onclick="togglePack(this)" data-pid="wf2"><input type="checkbox" tabindex="-1"><span>Dry shirt (change)</span></li>
+            <li onclick="togglePack(this)" data-pid="wf3" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 ×6–8</span></li>
+            <li onclick="togglePack(this)" data-pid="wf4" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 CAF 100 ×2 — first caffeine dose here</span></li>
+            <li onclick="togglePack(this)" data-pid="wf5"><input type="checkbox" tabindex="-1"><span>SaltStick Caps (full tube)</span></li>
+            <li onclick="togglePack(this)" data-pid="wf6" class="hi"><input type="checkbox" tabindex="-1"><span>Charged battery pack (watch + phone)</span></li>
+            <li onclick="togglePack(this)" data-pid="wf7" class="hi"><input type="checkbox" tabindex="-1"><span>Warm layer / puffy — summit hits 8,694 ft</span></li>
+            <li onclick="togglePack(this)" data-pid="wf8"><input type="checkbox" tabindex="-1"><span>Extra gloves</span></li>
+            <li onclick="togglePack(this)" data-pid="wf9"><input type="checkbox" tabindex="-1"><span>Hat or buff</span></li>
+            <li onclick="togglePack(this)" data-pid="wf10"><input type="checkbox" tabindex="-1"><span>Gin-Gins backup pack</span></li>
+            <li onclick="togglePack(this)" data-pid="wf11"><input type="checkbox" tabindex="-1"><span>Body Glide</span></li>
+            <li onclick="togglePack(this)" data-pid="wf12"><input type="checkbox" tabindex="-1"><span>Ibuprofen ×2 (not before Mi 20+, kidney risk)</span></li>
+            <li onclick="togglePack(this)" data-pid="wf13"><input type="checkbox" tabindex="-1"><span>Pepto ×2 + Zofran ×2 (backup supply)</span></li>
+            <li onclick="togglePack(this)" data-pid="wf14"><input type="checkbox" tabindex="-1"><span>Trekking poles (if not starting with them)</span></li>
+            <li onclick="togglePack(this)" data-pid="wf15" class="hi"><input type="checkbox" tabindex="-1"><span>Bag labeled: Name + Bib + "West Fork"</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group" style="border-color:rgba(183,148,244,0.35);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+            <span class="pack-group-label" style="color:#b794f4;margin-bottom:0;">Bag 3 — Big Fir AS</span>
+            <span style="font-size:0.72rem;color:#718096;">Mi 47.7 · ~15–17 hrs in</span>
+          </div>
+          <div style="font-size:0.72rem;color:#718096;margin-bottom:8px;">5,797 ft · final push — 6.2 miles to finish</div>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="bf1"><input type="checkbox" tabindex="-1"><span>Race socks — fresh pair in Ziploc</span></li>
+            <li onclick="togglePack(this)" data-pid="bf2" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 ×3–4</span></li>
+            <li onclick="togglePack(this)" data-pid="bf3" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 CAF 100 ×2 — second caffeine dose</span></li>
+            <li onclick="togglePack(this)" data-pid="bf4" class="hi"><input type="checkbox" tabindex="-1"><span>Headlamp + fresh batteries (cutoff is 10 PM)</span></li>
+            <li onclick="togglePack(this)" data-pid="bf5"><input type="checkbox" tabindex="-1"><span>Light jacket (temp drops fast at finish)</span></li>
+            <li onclick="togglePack(this)" data-pid="bf6"><input type="checkbox" tabindex="-1"><span>Leukotape P + benzoin swabs (hot spot repair)</span></li>
+            <li onclick="togglePack(this)" data-pid="bf7" class="hi"><input type="checkbox" tabindex="-1"><span>Bag labeled: Name + Bib + "Big Fir"</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group" style="border-color:rgba(104,211,145,0.35);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+            <span class="pack-group-label" style="color:#68d391;margin-bottom:0;">Finish Bag — With Crew</span>
+            <span style="font-size:0.72rem;color:#718096;">Mi 53.9 · Mink Creek CG</span>
+          </div>
+          <div style="font-size:0.72rem;color:#68d391;background:rgba(104,211,145,0.07);border-radius:6px;padding:6px 9px;margin-bottom:8px;">Not a drop bag — crew brings this to the finish line.</div>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="fin1" class="hi"><input type="checkbox" tabindex="-1"><span>Dry clothes — full outfit</span></li>
+            <li onclick="togglePack(this)" data-pid="fin2" class="hi"><input type="checkbox" tabindex="-1"><span>Warm puffy jacket</span></li>
+            <li onclick="togglePack(this)" data-pid="fin3"><input type="checkbox" tabindex="-1"><span>Sandals or slides</span></li>
+            <li onclick="togglePack(this)" data-pid="fin4"><input type="checkbox" tabindex="-1"><span>Phone charger + battery pack</span></li>
+            <li onclick="togglePack(this)" data-pid="fin5"><input type="checkbox" tabindex="-1"><span>Recovery drink / protein shake</span></li>
+            <li onclick="togglePack(this)" data-pid="fin6"><input type="checkbox" tabindex="-1"><span>Food you've been craving all race</span></li>
+            <li onclick="togglePack(this)" data-pid="fin7"><input type="checkbox" tabindex="-1"><span>Wet wipes / basic hygiene</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- START LINE -->
+    <div class="section" style="margin-top:28px;">
+      <div class="section-title">Start Line — On Your Body at Midnight</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#7f9cf5;">Gear &amp; Electronics</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="sl1" class="hi"><input type="checkbox" tabindex="-1"><span>Race vest — loaded, all pockets checked</span></li>
+            <li onclick="togglePack(this)" data-pid="sl2"><input type="checkbox" tabindex="-1"><span>Soft flasks ×2 (500ml) filled</span></li>
+            <li onclick="togglePack(this)" data-pid="sl3" class="hi"><input type="checkbox" tabindex="-1"><span>GPS watch — fully charged, GPX loaded, tested</span></li>
+            <li onclick="togglePack(this)" data-pid="sl4"><input type="checkbox" tabindex="-1"><span>Phone — Gaia GPS + offline maps downloaded</span></li>
+            <li onclick="togglePack(this)" data-pid="sl5" class="hi"><input type="checkbox" tabindex="-1"><span>Primary headlamp — charged, fitted, tested</span></li>
+            <li onclick="togglePack(this)" data-pid="sl6" class="hi"><input type="checkbox" tabindex="-1"><span>Backup headlamp + spare batteries in vest</span></li>
+            <li onclick="togglePack(this)" data-pid="sl7"><input type="checkbox" tabindex="-1"><span>Trekking poles (or leave in West Fork bag)</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#68d391;">Clothing</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="sl8"><input type="checkbox" tabindex="-1"><span>Race shorts / tights</span></li>
+            <li onclick="togglePack(this)" data-pid="sl9"><input type="checkbox" tabindex="-1"><span>Race shirt</span></li>
+            <li onclick="togglePack(this)" data-pid="sl10"><input type="checkbox" tabindex="-1"><span>Light gloves — 42–48°F at midnight start</span></li>
+            <li onclick="togglePack(this)" data-pid="sl11"><input type="checkbox" tabindex="-1"><span>Light wind jacket or arm warmers</span></li>
+            <li onclick="togglePack(this)" data-pid="sl12" class="hi"><input type="checkbox" tabindex="-1"><span>Race shoes — broken in, gaiters on</span></li>
+            <li onclick="togglePack(this)" data-pid="sl13" class="hi"><input type="checkbox" tabindex="-1"><span>Bib attached</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#fc8181;">Vest Pockets — Pre-loaded</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="sl14" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 ×8–10 loaded in vest</span></li>
+            <li onclick="togglePack(this)" data-pid="sl15" class="hi"><input type="checkbox" tabindex="-1"><span>SaltStick Caps — first cap at Mi 3–4</span></li>
+            <li onclick="togglePack(this)" data-pid="sl16" class="hi"><input type="checkbox" tabindex="-1"><span>Gin-Gins ×5–6 pieces in hip/front pocket</span></li>
+            <li onclick="togglePack(this)" data-pid="sl17" class="hi"><input type="checkbox" tabindex="-1"><span>Zofran ×2 ODT in front pocket</span></li>
+            <li onclick="togglePack(this)" data-pid="sl18"><input type="checkbox" tabindex="-1"><span>Pepto ×2 chewables</span></li>
+            <li onclick="togglePack(this)" data-pid="sl19" class="hi"><input type="checkbox" tabindex="-1"><span>Body Glide applied: thighs, underarms, feet</span></li>
+            <li onclick="togglePack(this)" data-pid="sl20"><input type="checkbox" tabindex="-1"><span>Known hot spots pre-taped with Leukotape</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
 
   </div>
 
@@ -2359,6 +2575,33 @@ function initTraining() {
 }
 
 initTraining();
+
+// === PACKING CHECKLIST ===
+function loadPackingState() {
+  document.querySelectorAll('.pack-checklist li[data-pid]').forEach(li => {
+    if (localStorage.getItem('pack_' + li.dataset.pid) === '1') {
+      li.querySelector('input[type=checkbox]').checked = true;
+      li.classList.add('done');
+    }
+  });
+}
+
+function togglePack(li) {
+  const cb = li.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  li.classList.toggle('done', cb.checked);
+  localStorage.setItem('pack_' + li.dataset.pid, cb.checked ? '1' : '0');
+}
+
+function clearPackingChecks() {
+  document.querySelectorAll('.pack-checklist li[data-pid]').forEach(li => {
+    li.querySelector('input[type=checkbox]').checked = false;
+    li.classList.remove('done');
+    localStorage.removeItem('pack_' + li.dataset.pid);
+  });
+}
+
+loadPackingState();
 </script>
 </body>
 </html>
