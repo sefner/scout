@@ -1273,10 +1273,10 @@ tr:hover td { background:rgba(255,255,255,0.025); }
 
         <div class="pack-group" style="border-color:rgba(252,129,129,0.45);">
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
-            <span class="pack-group-label" style="color:#fc8181;margin-bottom:0;">Bag 2 — West Fork AS ⚠ LAST BAG</span>
+            <span class="pack-group-label" style="color:#fc8181;margin-bottom:0;">Bag 2 — West Fork AS ⚠ LOAD HEAVY</span>
             <span style="font-size:0.72rem;color:#718096;">Mi 30.5 · ~9–11 hrs in</span>
           </div>
-          <div class="pack-bag-warn" style="color:#fc8181;">17.2 miles unsupported to Big Fir — load up here. Summit gear goes in this bag.</div>
+          <div class="pack-bag-warn" style="color:#fc8181;">Scout Mtn AS (6.4 mi ahead) has no bag — 17.2 miles total before you reach Big Fir (Bag #3). Load summit gear here; Big Fir is after the summit descent at Mi 47.7.</div>
           <ul class="pack-checklist">
             <li onclick="togglePack(this)" data-pid="wf1"><input type="checkbox" tabindex="-1"><span>Race socks — fresh pair in Ziploc</span></li>
             <li onclick="togglePack(this)" data-pid="wf2"><input type="checkbox" tabindex="-1"><span>Dry shirt (change)</span></li>
@@ -2029,7 +2029,7 @@ const DB_STATIONS = [
       { text: 'Blister check — tape hot spots now, before they worsen' },
       { text: 'Ibuprofen if needed (not before mile 20+)' },
     ],
-    decision: 'No drop bag here — but excellent station food. Eat a full meal; this is your best GI window of miles 17–30. West Fork (5.7 mi) is your last bag before the summit — Big Fir (#3) comes after at Mi 47.7.'
+    decision: 'No drop bag here — but excellent station food. Eat a full meal; this is your best GI window of miles 17–30. West Fork (Bag #2, 5.7 mi) is your last bag before the summit. Big Fir (Bag #3) comes after the summit descent at Mi 47.7 — 17.2 miles from West Fork with no bag in between.'
   },
   {
     name: 'West Fork AS',
@@ -2046,7 +2046,7 @@ const DB_STATIONS = [
       { text: 'Reapply anti-chafe' },
     ],
     food: [
-      { text: 'EAT A FULL MEAL — last bag stop before the summit', crit: true },
+      { text: 'EAT A FULL MEAL — last bag before the summit (Big Fir #3 is after descent)', crit: true },
       { text: 'Station has: bacon, quesadillas, potatoes, PBJ, soup, broth, tortilla wraps, soda', crit: false },
       { text: 'Load vest: 6–8 gels (no bag for 17.2 miles)', crit: true },
       { text: 'Fill broth flask to carry', crit: true },
