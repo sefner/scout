@@ -1081,8 +1081,116 @@ tr:hover td { background:rgba(255,255,255,0.025); }
       <button onclick="clearPackingChecks()" style="padding:6px 14px;border-radius:8px;font-size:0.78rem;cursor:pointer;border:1px solid #2d3748;background:#141820;color:#718096;transition:all 0.15s;" onmouseover="this.style.background='#2d3748';this.style.color='#e2e8f0'" onmouseout="this.style.background='#141820';this.style.color='#718096'">Reset all checks</button>
     </div>
 
-    <!-- TO BUY -->
+    <!-- MASTER PACKING LIST -->
     <div class="section">
+      <div class="section-title">Master Packing List — Everything for the Trip</div>
+      <div style="font-size:0.75rem;color:#718096;margin-bottom:14px;">The complete inventory from Ventura to Pocatello. Pack this before distributing into drop bags and start-line vest.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#b794f4;">Travel &amp; Admin</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="ml-t1" class="hi"><input type="checkbox" tabindex="-1"><span>Driver's license / ID</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-t2"><input type="checkbox" tabindex="-1"><span>Credit card + $60 cash</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-t3" class="hi"><input type="checkbox" tabindex="-1"><span>Race confirmation + bib pickup info</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-t4"><input type="checkbox" tabindex="-1"><span>USATF membership card (check if required)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-t5"><input type="checkbox" tabindex="-1"><span>Accommodation confirmation — arrive Thu Jun 4</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-t6"><input type="checkbox" tabindex="-1"><span>Emergency contact card in vest pocket</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-t7" class="hi"><input type="checkbox" tabindex="-1"><span>Gaia GPS offline maps downloaded — Pocatello + Mink Creek</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#63b3ed;">Gear &amp; Electronics</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="ml-g1" class="hi"><input type="checkbox" tabindex="-1"><span>Trail running vest — tested, all buckles working</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g2"><input type="checkbox" tabindex="-1"><span>Trekking poles + rubber tips</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g3"><input type="checkbox" tabindex="-1"><span>Soft flasks ×2 (500ml)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g4" class="hi"><input type="checkbox" tabindex="-1"><span>GPS watch — GPX loaded, charger packed</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g5" class="hi"><input type="checkbox" tabindex="-1"><span>Primary headlamp — charged, tested</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g6" class="hi"><input type="checkbox" tabindex="-1"><span>Backup headlamp + spare batteries ×2 sets</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g7" class="hi"><input type="checkbox" tabindex="-1"><span>Portable battery pack — fully charged</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g8"><input type="checkbox" tabindex="-1"><span>Watch charger cable + phone charger</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g9" class="hi"><input type="checkbox" tabindex="-1"><span>Mylar emergency blanket (check mandatory gear list)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g10"><input type="checkbox" tabindex="-1"><span>Whistle (check mandatory gear list)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g11" class="hi"><input type="checkbox" tabindex="-1"><span>Cinch sack bags ×3 — labeled Name + Bib + Station</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g12"><input type="checkbox" tabindex="-1"><span>2-gallon Ziploc bags ×6 — bag liners + misc</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-g13"><input type="checkbox" tabindex="-1"><span>Permanent marker + safety pins ×4 (bib)</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#68d391;">Clothing</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="ml-c1" class="hi"><input type="checkbox" tabindex="-1"><span>Race shorts / tights — start outfit</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c2" class="hi"><input type="checkbox" tabindex="-1"><span>Race shirt — start outfit</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c3" class="hi"><input type="checkbox" tabindex="-1"><span>Race shoes — broken in, gaiters attached</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c4"><input type="checkbox" tabindex="-1"><span>Race socks ×4 — start + City Creek + West Fork + Big Fir</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c5"><input type="checkbox" tabindex="-1"><span>Light gloves (start — 42–48°F)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c6"><input type="checkbox" tabindex="-1"><span>Light wind jacket / arm warmers (start)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c7"><input type="checkbox" tabindex="-1"><span>Dry shirt → West Fork bag</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c8"><input type="checkbox" tabindex="-1"><span>Rain/wind shell → West Fork bag</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c9" class="hi"><input type="checkbox" tabindex="-1"><span>Puffy jacket → West Fork bag (summit hits 8,694 ft)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c10"><input type="checkbox" tabindex="-1"><span>Extra gloves + hat/buff → West Fork bag</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c11"><input type="checkbox" tabindex="-1"><span>Light jacket → Big Fir bag (temp drops at finish)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c12"><input type="checkbox" tabindex="-1"><span>Sunglasses → City Creek bag</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c13" class="hi"><input type="checkbox" tabindex="-1"><span>Dry finish outfit (shirt + pants) — leave in car</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c14"><input type="checkbox" tabindex="-1"><span>Sandals or slides — leave in car</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-c15"><input type="checkbox" tabindex="-1"><span>Casual clothes + socks for Thu–Fri in Pocatello</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#f6ad55;">Nutrition</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="ml-n1" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 ×30–36 — distribute vest + 3 bags</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n2" class="hi"><input type="checkbox" tabindex="-1"><span>Maurten Gel 100 CAF 100 ×6–8 — first dose at Mi 28–30</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n3" class="hi"><input type="checkbox" tabindex="-1"><span>SaltStick Caps Plus — 1–2 tubes</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n4"><input type="checkbox" tabindex="-1"><span>PH 1000 electrolyte sachets ×10–15</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n5" class="hi"><input type="checkbox" tabindex="-1"><span>Gin-Gins Double Strength ×3 packs — altitude GI defense</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n6"><input type="checkbox" tabindex="-1"><span>Amacx Beet Shots ×6 — 2/day days 3–4–5 before race (load starts today)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n7"><input type="checkbox" tabindex="-1"><span>Broth packets ×4 → West Fork bag</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n8"><input type="checkbox" tabindex="-1"><span>Coke ×3 cans → West Fork + Big Fir bags</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n9"><input type="checkbox" tabindex="-1"><span>Recovery protein shake ×2 — leave in car</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n10"><input type="checkbox" tabindex="-1"><span>Road snacks for the drive (familiar, not gassy)</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-n11" class="hi"><input type="checkbox" tabindex="-1"><span>Pre-race carb-load food — buy in Pocatello: pasta, rice, bread</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#fc8181;">Medical &amp; GI</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="ml-m1" class="hi"><input type="checkbox" tabindex="-1"><span>Ondansetron (Zofran) 4mg ODT ×10 — Rx</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m2" class="hi"><input type="checkbox" tabindex="-1"><span>Pepto-Bismol chewables — 1 pack</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m3"><input type="checkbox" tabindex="-1"><span>Ibuprofen 200mg — small bottle</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m4" class="hi"><input type="checkbox" tabindex="-1"><span>Body Glide ×2 sticks — apply at start, backup in West Fork</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m5"><input type="checkbox" tabindex="-1"><span>Vaseline / lube packet</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m6" class="hi"><input type="checkbox" tabindex="-1"><span>Leukotape P roll</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m7"><input type="checkbox" tabindex="-1"><span>Tincture of benzoin swabs ×10</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m8"><input type="checkbox" tabindex="-1"><span>Alcohol wipe packets ×10</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m9"><input type="checkbox" tabindex="-1"><span>Sterile blister needle</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m10"><input type="checkbox" tabindex="-1"><span>Nipple tape + Band-Aids</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m11" class="hi"><input type="checkbox" tabindex="-1"><span>Sunscreen SPF 50 stick → City Creek bag</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-m12"><input type="checkbox" tabindex="-1"><span>Bug spray (DEET — Idaho backcountry)</span></li>
+          </ul>
+        </div>
+
+        <div class="pack-group">
+          <span class="pack-group-label" style="color:#9decf9;">Supplements</span>
+          <ul class="pack-checklist">
+            <li onclick="togglePack(this)" data-pid="ml-s1" class="hi"><input type="checkbox" tabindex="-1"><span>Thorne FloraSport 20B — keep cool, refrigerate on arrival</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-s2"><input type="checkbox" tabindex="-1"><span>NOW Magnesium Glycinate — nightly through race night</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-s3"><input type="checkbox" tabindex="-1"><span>NOW Ultra Omega-3 — daily, stop day before race</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-s4"><input type="checkbox" tabindex="-1"><span>Jarrow Tart Cherry — AM + PM through race week</span></li>
+            <li onclick="togglePack(this)" data-pid="ml-s5"><input type="checkbox" tabindex="-1"><span>Vitamin D3/K2 (if taking)</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TO BUY -->
+    <div class="section" style="margin-top:28px;">
       <div class="section-title">To Buy</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
 
