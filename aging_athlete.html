@@ -133,9 +133,18 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .r-ex-name{flex:1;color:#e2e8f0;}
 .r-ex-sets{color:#f6ad55;font-weight:700;font-size:0.7rem;white-space:nowrap;}
 .r-note{font-size:0.7rem;color:#718096;font-style:italic;margin-top:6px;line-height:1.5;padding:6px 8px;background:#0f1117;border-radius:6px;}
+
+/* ── TOOLTIPS ──────────────────────────── */
+[data-tip]{cursor:help;}
+.tip-i{font-size:0.58rem;color:#4a5568;margin-left:4px;vertical-align:middle;user-select:none;}
+[data-tip]:hover .tip-i,[data-tip]:focus .tip-i{color:#7f9cf5;}
+#ttip{position:fixed;z-index:200;background:#1e2535;border:1px solid #4a5568;border-radius:8px;padding:9px 12px;font-size:0.74rem;color:#e2e8f0;line-height:1.5;max-width:270px;box-shadow:0 6px 16px rgba(0,0,0,0.5);pointer-events:none;display:none;transition:opacity 0.12s;}
+#ttip.show{display:block;}
 </style>
 </head>
 <body>
+
+<div id="ttip"></div>
 
 <div class="hdr">
   <div class="hdr-title">SWAP Aging Athlete Plan</div>
@@ -416,6 +425,47 @@ const NUTR = {
   },
 };
 
+// ─── Tooltips ────────────────────────────────────────────────
+const TIPS = {
+  // Activation
+  'Leg swings fwd/back':      'Stand near a wall. Swing one leg forward and back in a relaxed arc, letting momentum carry it. Loosens hip flexors and hamstrings before running.',
+  'Lateral leg swings':       'Stand sideways to a wall. Swing one leg across your body and back out in a wide arc. Warms up hip abductors and adductors.',
+  'Hip circles':              'Hands on hips, lift one knee and draw large circles with it — like stirring a pot. Both directions, each leg. Opens the hip joint.',
+  // Speed Legs
+  'SL Romanian deadlift':     'Stand on one foot with a soft knee bend. Hinge forward at the hip with a flat back, letting the free leg float behind you. Lower until you feel the hamstring stretch, then drive through the heel to stand. Keep shoulders square.',
+  'Single-leg Romanian deadlift': 'Stand on one foot with a soft knee bend. Hinge forward at the hip with a flat back, letting the free leg float behind you. Lower until you feel the hamstring stretch, then drive through the heel to stand.',
+  'SL calf raise':            'Stand on the edge of a step on one foot. Lower the heel below step level (full stretch), then rise to full toe (full contraction). Slow on the way down — 3 seconds. Crucial for Achilles resilience.',
+  'Single-leg calf raise':    'Stand on the edge of a step on one foot. Lower the heel below step level, then rise to full toe. 3-second lowering phase. Key exercise for Achilles resilience in trail runners.',
+  'Glute bridge':             'Lie on your back, feet flat on the floor hip-width apart. Press through your heels and drive hips to the ceiling, squeezing glutes hard at the top. Hold 1 second. Don\'t hyperextend the lower back.',
+  'Hip hike':                 'Stand on a step with one foot hanging off the edge. Let the hanging hip drop below level, then use the standing-side glute to raise it above level. Targets glute medius — critical for pelvis stability while running.',
+  'Lateral band walk':        'Band around ankles or just above the knees. Take a slight squat stance. Step sideways maintaining tension in the band throughout — don\'t let feet come fully together. Keep toes forward.',
+  'Back squats':              'Bar across upper back (not neck). Feet shoulder-width, toes slightly out. Squat until thighs are at least parallel, chest up, knees tracking over toes. Drive through heels to stand. Start very light — you\'re building a habit, not a max.',
+  // Mountain Legs
+  'Goblet squat':             'Hold a weight at chest height with both hands. Feet slightly wider than shoulder-width. Squat deep with elbows inside the knees and chest tall. Pause at the bottom — you should feel a hip flexor stretch.',
+  'Step-up (knee height)':    'Place one foot on a knee-height box or bench. Drive through the heel of that foot to stand — don\'t push off with the back foot. The back leg is just along for the ride. Step height builds quad and glute strength specifically for climbing.',
+  'Reverse lunge':            'Step one foot straight back and lower the back knee toward the floor. Keep the front shin vertical (don\'t let the knee travel past the toes). Drive through the front heel to return. Controls the quad eccentrically — key for descending.',
+  'Side lunge':               'Step wide to one side and bend that knee, keeping the other leg straight and foot flat. Weight stays in the heel of the bent leg. Great for hip abductors and inner thigh — muscles that stabilize lateral trail movement.',
+  'SL wall sit':              'Stand facing away from the wall, slide down until one knee is at 90°, extend the other leg out. Hold. Builds single-leg quad endurance specific to long descents.',
+  'Single-leg wall sit':      'Stand facing away from the wall, slide down until one knee is at 90°, extend the other leg out. Hold. Builds single-leg quad endurance specific to long descents.',
+  'Calf raise (double→single)':'Start with both feet on a step edge. Once comfortable, progress to one foot. Lower the heel 3 seconds, raise 1 second. The eccentric (lowering) phase is the key injury-prevention stimulus.',
+  'Calf raise (double then single)': 'Start with both feet on a step edge. Progress to one foot per set. Slow lowering (3 sec) is the most important part — eccentric loading is what protects the Achilles.',
+  // Core
+  'Plank':                    'Forearms on the floor, elbows under shoulders, body straight from head to heels. Don\'t let hips sag or pike. Breathe normally throughout. Progressing means increasing duration or adding instability, not speeding up.',
+  'Dead bug':                 'Lie on back, arms pointing straight to the ceiling, knees bent at 90°. Press your lower back firmly into the floor. Slowly lower one arm overhead and the opposite leg toward the floor — without losing the lower-back contact. Return. Alternate.',
+  'Bird dog':                 'Start on hands and knees with a flat back. Brace your core, then extend one arm forward and the opposite leg back simultaneously, keeping hips level. Hold 2 seconds, squeeze the extended glute. Don\'t rotate the torso.',
+  'Side plank':               'Forearm on the floor directly under the shoulder, body in a straight line from head to feet. Stack feet or stagger them for balance. Don\'t let the hip drop toward the floor.',
+  // Push/Pull
+  'Push-ups':                 'Hands slightly wider than shoulder-width. Lower chest to floor with a straight body line, then press up. If full push-ups are too hard, elevate hands on a bench. Avoid flaring elbows wide — keep them at ~45°.',
+  'Pull-ups or inverted rows':'Pull-ups: hang from a bar, pull until chin clears. Inverted rows: lie under a low bar or table, pull chest to it. Band-assisted pull-ups are great — loop a band over the bar and step into it.',
+};
+
+function exRow(name, sets) {
+  const tip = TIPS[name];
+  const ta = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : '';
+  const icon = tip ? `<span class="tip-i">ⓘ</span>` : '';
+  return `<div class="ex-row"${ta}><span class="ex-name">${name}${icon}</span><span class="ex-sets">${sets}</span></div>`;
+}
+
 // ─── State ────────────────────────────────────────────────────
 const KEY = 'swap_aging_v2';
 let viewDate = new Date();
@@ -483,25 +533,25 @@ function renderStrength(weekNum, dayIdx, items) {
 
   if (st==='speed') {
     const exs = weekNum>=2 ? SPEED_SQ : SPEED;
-    html += `<div class="td-sub">Speed Legs <small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">— after run · see Routines for cues</small></div>`;
-    html += exs.map(([n,s])=>`<div class="ex-row"><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></div>`).join('');
+    html += `<div class="td-sub">Speed Legs <small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">— after run · tap ⓘ for cues</small></div>`;
+    html += exs.map(([n,s])=>exRow(n,s)).join('');
   } else if (st==='mountain') {
     const label = weekNum===6&&dayIdx===1 ? 'Mountain Legs ONLY (no Speed Legs this week)' : 'Mountain Legs';
-    html += `<div class="td-sub">${label} <small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">— see Routines for cues</small></div>`;
-    html += MTN.map(([n,s])=>`<div class="ex-row"><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></div>`).join('');
+    html += `<div class="td-sub">${label} <small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">— tap ⓘ for cues</small></div>`;
+    html += MTN.map(([n,s])=>exRow(n,s)).join('');
   }
 
   if (hasCore) {
     if (st!=='core') html += '<div class="td-divider"></div>';
-    html += `<div class="td-sub">Core Snack × 2 &nbsp;<small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">morning + evening, ~5 min each</small></div>`;
-    html += CORE.map(([n,s])=>`<div class="ex-row"><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></div>`).join('');
+    html += `<div class="td-sub">Core Snack × 2 &nbsp;<small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">morning + evening, ~5 min · tap ⓘ for cues</small></div>`;
+    html += CORE.map(([n,s])=>exRow(n,s)).join('');
   }
 
   if (hasPush) {
     html += '<div class="td-divider"></div>';
     html += `<div class="td-sub">Push-ups &amp; Pull-ups</div>`;
-    html += `<div class="ex-row"><span class="ex-name">Push-ups</span><span class="ex-sets">2–3 × max</span></div>`;
-    html += `<div class="ex-row"><span class="ex-name">Pull-ups or inverted rows</span><span class="ex-sets">2–3 × max</span></div>`;
+    html += exRow('Push-ups','2–3 × max');
+    html += exRow('Pull-ups or inverted rows','2–3 × max');
   }
   return html;
 }
@@ -659,6 +709,66 @@ function toggleDay(h) { h.nextElementSibling.classList.toggle('open'); }
 function toggleChk(w,d,el) { const v=!el.classList.contains('done'); el.classList.toggle('done',v); setC(w,d,v); renderStats(); }
 function navWeek(dir) { wkView=Math.max(1,Math.min(TOTAL_WEEKS,wkView+dir)); renderWeek(wkView); }
 
+// ─── Tooltip engine ───────────────────────────────────────────
+const TT = document.getElementById('ttip');
+let ttLocked = false;
+
+function positionTT(el) {
+  const r = el.getBoundingClientRect();
+  const W = window.innerWidth, H = window.innerHeight;
+  const tw = Math.min(270, W - 16);
+  let left = Math.min(r.left, W - tw - 8);
+  let top = r.bottom + 8;
+  TT.style.maxWidth = tw + 'px';
+  TT.style.left = Math.max(8, left) + 'px';
+  TT.style.top = top + window.scrollY + 'px';
+  // flip above if clipped
+  if (r.bottom + 160 > H) {
+    TT.style.top = (r.top - 8 - 160 + window.scrollY) + 'px';
+  }
+}
+
+function showTT(el) {
+  TT.textContent = el.dataset.tip;
+  TT.classList.add('show');
+  positionTT(el);
+}
+function hideTT() { TT.classList.remove('show'); ttLocked = false; }
+
+// Tap: toggle lock on the element
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-tip]');
+  if (el) { e.stopPropagation(); ttLocked = true; showTT(el); }
+  else hideTT();
+}, true);
+
+// Hover: show/hide only when not tap-locked
+document.addEventListener('mouseover', e => {
+  if (ttLocked) return;
+  const el = e.target.closest('[data-tip]');
+  if (el) showTT(el);
+});
+document.addEventListener('mouseout', e => {
+  if (ttLocked) return;
+  if (!e.relatedTarget || !e.relatedTarget.closest('[data-tip]')) hideTT();
+});
+
+// Wire static Routines tab elements on first open
+function initTooltips() {
+  document.querySelectorAll('.r-ex').forEach(row => {
+    const nameEl = row.querySelector('.r-ex-name');
+    if (!nameEl) return;
+    const name = nameEl.textContent.trim();
+    const tip = TIPS[name];
+    if (tip) {
+      row.dataset.tip = tip;
+      if (!nameEl.querySelector('.tip-i')) {
+        nameEl.insertAdjacentHTML('beforeend', '<span class="tip-i">ⓘ</span>');
+      }
+    }
+  });
+}
+
 // ─── Routines ─────────────────────────────────────────────────
 function toggleR(id) { document.getElementById(id).classList.toggle('open'); }
 
@@ -676,6 +786,7 @@ wkView = Math.max(1, Math.min(TOTAL_WEEKS, planWeekNow()||1));
 renderStats();
 renderToday();
 renderWeek(wkView);
+initTooltips();
 </script>
 </body>
 </html>
