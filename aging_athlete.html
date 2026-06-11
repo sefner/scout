@@ -517,7 +517,7 @@ function renderEat(dayType) {
   html += `<div class="eat-strategy">${n.strategy}</div>`;
   n.sections.forEach(sec => {
     html += `<div class="eat-timing">${sec.label}</div>`;
-    sec.items.forEach(item => `<div class="eat-item">${item}</div>`).forEach(el => html += el);
+    sec.items.forEach(item => { html += `<div class="eat-item">${item}</div>`; });
   });
   return html;
 }
