@@ -13,91 +13,126 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 .hdr-title{font-size:0.9rem;font-weight:800;color:#f6ad55;}
 .hdr-sub{font-size:0.65rem;color:#718096;margin-top:2px;}
 
-.prog-wrap{padding:10px 14px;border-bottom:1px solid #1e2535;}
+.prog-wrap{padding:8px 14px;border-bottom:1px solid #1e2535;}
 .prog-bar{height:5px;background:#2d3748;border-radius:3px;overflow:hidden;margin-bottom:4px;}
 .prog-fill{height:100%;background:linear-gradient(90deg,#68d391,#f6ad55);border-radius:3px;transition:width 0.3s;}
 .prog-labels{display:flex;justify-content:space-between;font-size:0.58rem;color:#4a5568;}
 
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 14px;border-bottom:1px solid #1e2535;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 14px;border-bottom:1px solid #1e2535;}
 .stat{background:#141820;border-radius:8px;padding:8px 6px;text-align:center;}
-.stat-val{font-size:1.2rem;font-weight:800;color:#f6ad55;font-family:monospace;line-height:1.2;}
+.stat-val{font-size:1.1rem;font-weight:800;color:#f6ad55;font-family:monospace;line-height:1.2;}
 .stat-val.green{color:#68d391;}
 .stat-val.purple{color:#b794f4;}
 .stat-label{font-size:0.55rem;color:#718096;text-transform:uppercase;letter-spacing:0.4px;margin-top:2px;}
 
-.tabs{display:flex;border-bottom:1px solid #2d3748;background:#141820;}
-.tab{flex:1;padding:10px 0;text-align:center;font-size:0.78rem;font-weight:600;color:#718096;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.tabs{display:flex;border-bottom:1px solid #2d3748;background:#141820;position:sticky;top:47px;z-index:19;}
+.tab{flex:1;padding:9px 0;text-align:center;font-size:0.78rem;font-weight:600;color:#718096;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
 .tab.active{color:#f6ad55;border-bottom-color:#f6ad55;}
-
-.week-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;}
-.nav-btn{background:#141820;border:1px solid #2d3748;border-radius:8px;padding:10px 18px;color:#e2e8f0;font-size:1.1rem;font-weight:700;cursor:pointer;min-width:48px;}
-.nav-btn:disabled{opacity:0.3;cursor:default;}
-.week-info{text-align:center;flex:1;padding:0 8px;}
-.week-title{font-size:0.92rem;font-weight:800;color:#e2e8f0;}
-.week-sub{font-size:0.65rem;color:#718096;margin-top:2px;}
-
-.week-badge-wrap{padding:0 14px 6px;}
-.week-badge{display:inline-block;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:3px 10px;border-radius:6px;}
-.badge-build{background:#1a2e1f;color:#68d391;}
-.badge-threshold{background:#2d1f1a;color:#f6ad55;}
-.badge-steady{background:#1a1f4e;color:#7f9cf5;}
-
-.week-note{margin:0 14px 10px;background:#141820;border-left:3px solid #f6ad55;padding:8px 10px;border-radius:0 6px 6px 0;font-size:0.72rem;color:#a0aec0;line-height:1.5;}
-
-.days{padding:0 14px;}
-.day-card{background:#141820;border:1px solid #2d3748;border-radius:10px;margin-bottom:10px;overflow:hidden;}
-.day-header{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;}
-.day-badge{font-size:0.6rem;font-weight:800;text-transform:uppercase;padding:2px 7px;border-radius:5px;min-width:36px;text-align:center;}
-.day-rest .day-badge{background:#2d1a2e;color:#e9d8fd;}
-.day-workout .day-badge{background:#2d1f1a;color:#f6ad55;}
-.day-xtrain .day-badge{background:#1a1f4e;color:#7f9cf5;}
-.day-easy .day-badge{background:#1a2e1f;color:#68d391;}
-.day-long .day-badge{background:#2d200a;color:#fbd38d;}
-.day-flex .day-badge{background:#1f1a2e;color:#b794f4;}
-.day-label{font-size:0.82rem;font-weight:700;color:#e2e8f0;flex:1;}
-.day-check{width:20px;height:20px;border-radius:50%;border:2px solid #4a5568;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all 0.15s;}
-.day-check.done{background:#68d391;border-color:#68d391;}
-.day-check.done::after{content:'✓';font-size:11px;color:#0f1117;font-weight:800;}
-.day-body{padding:0 12px 10px;}
-.day-item{font-size:0.75rem;color:#a0aec0;padding:3px 0 3px 14px;position:relative;line-height:1.4;}
-.day-item::before{content:'·';position:absolute;left:3px;color:#4a5568;}
-.day-item.strength{color:#f6ad55;}
-.day-item.core{color:#b794f4;}
-.day-item.tip{color:#718096;font-style:italic;}
-
-.str-routines{padding:14px;}
-.str-card{background:#141820;border:1px solid #2d3748;border-radius:10px;margin-bottom:12px;overflow:hidden;}
-.str-header{padding:12px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
-.str-title{font-size:0.88rem;font-weight:800;color:#e2e8f0;}
-.str-meta{font-size:0.65rem;color:#718096;margin-top:2px;}
-.str-chevron{font-size:0.8rem;color:#4a5568;transition:transform 0.2s;}
-.str-card.open .str-chevron{transform:rotate(180deg);}
-.str-body{display:none;padding:0 14px 12px;}
-.str-card.open .str-body{display:block;}
-.str-section-title{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#718096;margin:8px 0 4px;}
-.str-ex{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid #1e2535;font-size:0.78rem;}
-.str-ex:last-child{border-bottom:none;}
-.str-ex-name{flex:1;color:#e2e8f0;}
-.str-ex-sets{color:#f6ad55;font-weight:700;font-size:0.7rem;white-space:nowrap;}
-.str-note{font-size:0.7rem;color:#718096;font-style:italic;margin-top:6px;line-height:1.5;padding:6px 8px;background:#0f1117;border-radius:6px;}
-
-.nutr{padding:14px;}
-.nutr-card{background:#141820;border:1px solid #2d3748;border-radius:10px;margin-bottom:12px;padding:12px 14px;}
-.nutr-title{font-size:0.85rem;font-weight:800;color:#e2e8f0;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.nutr-badge{font-size:0.58rem;font-weight:800;text-transform:uppercase;padding:2px 6px;border-radius:4px;}
-.nutr-sec-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#718096;margin:8px 0 3px;}
-.nutr-item{font-size:0.75rem;color:#a0aec0;padding:2px 0 2px 14px;position:relative;line-height:1.4;}
-.nutr-item::before{content:'·';position:absolute;left:3px;color:#4a5568;}
-.nutr-item.hl{color:#e2e8f0;}
-.nutr-item.imp{color:#f6ad55;}
-.nutr-divider{height:1px;background:#1e2535;margin:8px 0;}
-.nutr-target{display:flex;justify-content:space-between;align-items:center;padding:4px 0;}
-.nutr-target-label{font-size:0.72rem;color:#a0aec0;}
-.nutr-target-val{font-size:0.82rem;font-weight:700;color:#68d391;font-family:monospace;}
-.nutr-note{font-size:0.7rem;color:#718096;font-style:italic;margin-top:6px;line-height:1.5;}
 
 .panel{display:none;}
 .panel.active{display:block;}
+
+/* ── TODAY ─────────────────────────────── */
+.td-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;}
+.td-btn{background:#141820;border:1px solid #2d3748;border-radius:8px;padding:7px 14px;color:#e2e8f0;font-size:0.9rem;font-weight:700;cursor:pointer;}
+.td-btn:disabled{opacity:0.3;cursor:default;}
+.td-center{text-align:center;flex:1;}
+.td-week{font-size:0.62rem;color:#718096;text-transform:uppercase;letter-spacing:0.5px;}
+.td-date{font-size:0.92rem;font-weight:800;color:#e2e8f0;margin-top:2px;}
+.td-back{font-size:0.6rem;color:#f6ad55;cursor:pointer;margin-top:2px;display:block;}
+
+.td-body{padding:10px 14px;}
+.td-sec{margin-bottom:14px;}
+.td-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.td-sec-title{font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:#718096;}
+.td-sec-badge{font-size:0.6rem;font-weight:800;text-transform:uppercase;padding:2px 8px;border-radius:4px;}
+.td-card{background:#141820;border:1px solid #2d3748;border-radius:10px;padding:12px;}
+
+.td-item{font-size:0.78rem;padding:3px 0 3px 14px;position:relative;line-height:1.5;color:#e2e8f0;}
+.td-item::before{content:'·';position:absolute;left:3px;color:#4a5568;}
+.td-item.note{color:#718096;font-style:italic;}
+
+.td-sub{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#718096;margin:8px 0 4px;}
+.td-sub:first-child{margin-top:0;}
+.td-divider{height:1px;background:#1e2535;margin:8px 0;}
+
+.ex-row{display:flex;align-items:baseline;gap:6px;padding:3px 0;font-size:0.76rem;}
+.ex-name{flex:1;color:#e2e8f0;}
+.ex-sets{color:#f6ad55;font-weight:700;font-size:0.68rem;white-space:nowrap;}
+
+.eat-targets{display:flex;gap:0;margin-bottom:8px;}
+.eat-target{flex:1;text-align:center;padding:6px 4px;background:#0f1117;border-radius:6px;}
+.eat-target:first-child{border-radius:6px 0 0 6px;margin-right:2px;}
+.eat-target:last-child{border-radius:0 6px 6px 0;margin-left:2px;}
+.eat-target-val{font-size:1rem;font-weight:800;font-family:monospace;}
+.eat-target-val.orange{color:#f6ad55;}
+.eat-target-val.green{color:#68d391;}
+.eat-target-label{font-size:0.55rem;color:#718096;text-transform:uppercase;letter-spacing:0.4px;margin-top:1px;}
+.eat-strategy{font-size:0.72rem;color:#a0aec0;font-style:italic;margin-bottom:8px;line-height:1.4;}
+.eat-timing{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#7f9cf5;margin:6px 0 3px;}
+.eat-item{font-size:0.75rem;color:#a0aec0;padding:2px 0 2px 12px;position:relative;line-height:1.4;}
+.eat-item::before{content:'·';position:absolute;left:2px;color:#4a5568;}
+.eat-item strong{color:#e2e8f0;font-weight:600;}
+
+/* day type badge colors */
+.b-rest{background:#2d1a2e;color:#e9d8fd;}
+.b-workout{background:#2d1f1a;color:#f6ad55;}
+.b-xtrain{background:#1a1f4e;color:#7f9cf5;}
+.b-easy{background:#1a2e1f;color:#68d391;}
+.b-long{background:#2d200a;color:#fbd38d;}
+.b-flex{background:#1f1a2e;color:#b794f4;}
+
+/* ── WEEK ──────────────────────────────── */
+.wk-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;}
+.nav-btn{background:#141820;border:1px solid #2d3748;border-radius:8px;padding:10px 18px;color:#e2e8f0;font-size:1.1rem;font-weight:700;cursor:pointer;min-width:48px;}
+.nav-btn:disabled{opacity:0.3;cursor:default;}
+.wk-info{text-align:center;flex:1;padding:0 8px;}
+.wk-title{font-size:0.92rem;font-weight:800;color:#e2e8f0;}
+.wk-sub{font-size:0.65rem;color:#718096;margin-top:2px;}
+.wk-badge-wrap{padding:0 14px 6px;}
+.wk-badge{display:inline-block;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:3px 10px;border-radius:6px;}
+.b-build{background:#1a2e1f;color:#68d391;}
+.b-threshold{background:#2d1f1a;color:#f6ad55;}
+.b-steady{background:#1a1f4e;color:#7f9cf5;}
+.wk-note{margin:0 14px 10px;background:#141820;border-left:3px solid #f6ad55;padding:8px 10px;border-radius:0 6px 6px 0;font-size:0.72rem;color:#a0aec0;line-height:1.5;}
+
+.days{padding:0 14px;}
+.day-card{background:#141820;border:1px solid #2d3748;border-radius:10px;margin-bottom:8px;overflow:hidden;}
+.day-hdr{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;}
+.day-dot{font-size:0.6rem;font-weight:800;text-transform:uppercase;padding:2px 7px;border-radius:5px;min-width:36px;text-align:center;}
+.day-rest .day-dot{background:#2d1a2e;color:#e9d8fd;}
+.day-workout .day-dot{background:#2d1f1a;color:#f6ad55;}
+.day-xtrain .day-dot{background:#1a1f4e;color:#7f9cf5;}
+.day-easy .day-dot{background:#1a2e1f;color:#68d391;}
+.day-long .day-dot{background:#2d200a;color:#fbd38d;}
+.day-flex .day-dot{background:#1f1a2e;color:#b794f4;}
+.day-lbl{font-size:0.82rem;font-weight:700;color:#e2e8f0;flex:1;}
+.day-chk{width:20px;height:20px;border-radius:50%;border:2px solid #4a5568;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all 0.15s;}
+.day-chk.done{background:#68d391;border-color:#68d391;}
+.day-chk.done::after{content:'✓';font-size:11px;color:#0f1117;font-weight:800;}
+.day-body{display:none;padding:0 12px 10px;}
+.day-body.open{display:block;}
+.day-item{font-size:0.75rem;color:#a0aec0;padding:3px 0 3px 14px;position:relative;line-height:1.4;}
+.day-item::before{content:'·';position:absolute;left:3px;color:#4a5568;}
+.day-item.str{color:#f6ad55;}
+.day-item.cor{color:#b794f4;}
+
+/* ── ROUTINES ──────────────────────────── */
+.routines{padding:14px;}
+.r-card{background:#141820;border:1px solid #2d3748;border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.r-hdr{padding:12px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
+.r-title{font-size:0.88rem;font-weight:800;color:#e2e8f0;}
+.r-meta{font-size:0.65rem;color:#718096;margin-top:2px;}
+.r-chev{font-size:0.8rem;color:#4a5568;transition:transform 0.2s;}
+.r-card.open .r-chev{transform:rotate(180deg);}
+.r-body{display:none;padding:0 14px 12px;}
+.r-card.open .r-body{display:block;}
+.r-section-title{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#718096;margin:8px 0 4px;}
+.r-ex{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid #1e2535;font-size:0.78rem;}
+.r-ex:last-child{border-bottom:none;}
+.r-ex-name{flex:1;color:#e2e8f0;}
+.r-ex-sets{color:#f6ad55;font-weight:700;font-size:0.7rem;white-space:nowrap;}
+.r-note{font-size:0.7rem;color:#718096;font-style:italic;margin-top:6px;line-height:1.5;padding:6px 8px;background:#0f1117;border-radius:6px;}
 </style>
 </head>
 <body>
@@ -113,227 +148,142 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1117;color:#e2
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-val green" id="statWeek">—</div><div class="stat-label">Current Week</div></div>
-  <div class="stat"><div class="stat-val" id="statDone">—</div><div class="stat-label">Days Checked</div></div>
-  <div class="stat"><div class="stat-val purple" id="statLeft">—</div><div class="stat-label">Weeks Left</div></div>
+  <div class="stat"><div class="stat-val green" id="statWeek">—</div><div class="stat-label">Plan Week</div></div>
+  <div class="stat"><div class="stat-val" id="statCal">—</div><div class="stat-label">Cal Target</div></div>
+  <div class="stat"><div class="stat-val purple" id="statDone">0</div><div class="stat-label">Days Checked</div></div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('training')">Training</div>
-  <div class="tab" onclick="switchTab('strength')">Strength</div>
-  <div class="tab" onclick="switchTab('nutrition')">Nutrition</div>
+  <div class="tab active" onclick="switchTab('today')">Today</div>
+  <div class="tab" onclick="switchTab('week')">Week</div>
+  <div class="tab" onclick="switchTab('routines')">Routines</div>
 </div>
 
-<!-- TRAINING -->
-<div class="panel active" id="panel-training">
-  <div class="week-nav">
-    <button class="nav-btn" id="prevBtn" onclick="navWeek(-1)">‹</button>
-    <div class="week-info">
-      <div class="week-title" id="weekTitle">—</div>
-      <div class="week-sub" id="weekSub">—</div>
+<!-- ══ TODAY ════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-today">
+  <div class="td-nav">
+    <button class="td-btn" id="tdPrev" onclick="navDay(-1)">‹</button>
+    <div class="td-center">
+      <div class="td-week" id="tdWeekLabel">—</div>
+      <div class="td-date" id="tdDateLabel">—</div>
+      <span class="td-back" id="tdBack" onclick="jumpToday()" style="visibility:hidden">↩ back to today</span>
     </div>
-    <button class="nav-btn" id="nextBtn" onclick="navWeek(1)">›</button>
+    <button class="td-btn" id="tdNext" onclick="navDay(1)">›</button>
   </div>
-  <div class="week-badge-wrap" id="weekBadge"></div>
-  <div class="week-note" id="weekNote"></div>
+  <div class="td-body" id="tdBody"></div>
+</div>
+
+<!-- ══ WEEK ═════════════════════════════════════════════════ -->
+<div class="panel" id="panel-week">
+  <div class="wk-nav">
+    <button class="nav-btn" id="prevWk" onclick="navWeek(-1)">‹</button>
+    <div class="wk-info">
+      <div class="wk-title" id="wkTitle">—</div>
+      <div class="wk-sub" id="wkSub">—</div>
+    </div>
+    <button class="nav-btn" id="nextWk" onclick="navWeek(1)">›</button>
+  </div>
+  <div class="wk-badge-wrap" id="wkBadge"></div>
+  <div class="wk-note" id="wkNote"></div>
   <div class="days" id="daysContainer"></div>
 </div>
 
-<!-- STRENGTH -->
-<div class="panel" id="panel-strength">
-  <div class="str-routines">
+<!-- ══ ROUTINES ══════════════════════════════════════════════ -->
+<div class="panel" id="panel-routines">
+  <div class="routines">
 
-    <div class="str-card" id="sc-speed">
-      <div class="str-header" onclick="toggleStr('sc-speed')">
-        <div><div class="str-title">Speed Legs</div><div class="str-meta">Tuesdays + Saturdays · 15–20 min · Start bodyweight Week 1</div></div>
-        <div class="str-chevron">▼</div>
+    <div class="r-card" id="rc-speed">
+      <div class="r-hdr" onclick="toggleR('rc-speed')">
+        <div><div class="r-title">Speed Legs</div><div class="r-meta">Tuesdays + Saturdays · 15–20 min · Bodyweight Week 1, squats from Week 2</div></div>
+        <div class="r-chev">▼</div>
       </div>
-      <div class="str-body">
-        <div class="str-section-title">Activation</div>
-        <div class="str-ex"><span class="str-ex-name">Leg swings forward/back</span><span class="str-ex-sets">20 per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Lateral leg swings</span><span class="str-ex-sets">20 per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Hip circles</span><span class="str-ex-sets">15 per leg</span></div>
-        <div class="str-section-title">Main</div>
-        <div class="str-ex"><span class="str-ex-name">Single-leg Romanian deadlift</span><span class="str-ex-sets">3 × 10 per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Single-leg calf raise</span><span class="str-ex-sets">3 × 15 per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Glute bridge</span><span class="str-ex-sets">3 × 15</span></div>
-        <div class="str-ex"><span class="str-ex-name">Hip hike (step off curb/step)</span><span class="str-ex-sets">3 × 15 per side</span></div>
-        <div class="str-ex"><span class="str-ex-name">Lateral band walk (optional)</span><span class="str-ex-sets">20 steps each way</span></div>
-        <div class="str-section-title">Add Week 2+</div>
-        <div class="str-ex"><span class="str-ex-name">Back squats</span><span class="str-ex-sets">2 × 10 (light, add load gradually)</span></div>
-        <div class="str-note">Week 1: bodyweight only — expect 3–5 days of significant soreness. "Underwhelming and smooth" is the cue for all efforts. Week 6: skip Speed Legs entirely — Mountain Legs only that week.</div>
-      </div>
-    </div>
-
-    <div class="str-card" id="sc-mountain">
-      <div class="str-header" onclick="toggleStr('sc-mountain')">
-        <div><div class="str-title">Mountain Legs</div><div class="str-meta">Thursdays · 20–25 min · Strength &amp; stability focus</div></div>
-        <div class="str-chevron">▼</div>
-      </div>
-      <div class="str-body">
-        <div class="str-section-title">Main</div>
-        <div class="str-ex"><span class="str-ex-name">Goblet squat</span><span class="str-ex-sets">3 × 15</span></div>
-        <div class="str-ex"><span class="str-ex-name">Step-up (knee height)</span><span class="str-ex-sets">3 × 10 per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Reverse lunge</span><span class="str-ex-sets">3 × 10 per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Side lunge</span><span class="str-ex-sets">3 × 8 per side</span></div>
-        <div class="str-ex"><span class="str-ex-name">Single-leg wall sit</span><span class="str-ex-sets">3 × 30–45 sec per leg</span></div>
-        <div class="str-ex"><span class="str-ex-name">Calf raise (double then single)</span><span class="str-ex-sets">3 × 20 / 3 × 15</span></div>
-        <div class="str-note">Week 6 only: Mountain Legs replaces Speed Legs everywhere — dialing back strength stimulus mid-plan is intentional. Don't add load this week.</div>
+      <div class="r-body">
+        <div class="r-section-title">Activation</div>
+        <div class="r-ex"><span class="r-ex-name">Leg swings forward/back</span><span class="r-ex-sets">20 per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Lateral leg swings</span><span class="r-ex-sets">20 per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Hip circles</span><span class="r-ex-sets">15 per leg</span></div>
+        <div class="r-section-title">Main</div>
+        <div class="r-ex"><span class="r-ex-name">Single-leg Romanian deadlift</span><span class="r-ex-sets">3 × 10 per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Single-leg calf raise</span><span class="r-ex-sets">3 × 15 per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Glute bridge</span><span class="r-ex-sets">3 × 15</span></div>
+        <div class="r-ex"><span class="r-ex-name">Hip hike (step off curb)</span><span class="r-ex-sets">3 × 15 per side</span></div>
+        <div class="r-ex"><span class="r-ex-name">Lateral band walk (optional)</span><span class="r-ex-sets">20 steps each way</span></div>
+        <div class="r-section-title">Add Week 2+</div>
+        <div class="r-ex"><span class="r-ex-name">Back squats</span><span class="r-ex-sets">2 × 10 (light, add load gradually)</span></div>
+        <div class="r-note">Week 1 bodyweight only — expect 3–5 days of significant soreness. Week 6: skip entirely, Mountain Legs only that week.</div>
       </div>
     </div>
 
-    <div class="str-card" id="sc-core">
-      <div class="str-header" onclick="toggleStr('sc-core')">
-        <div><div class="str-title">Core Snack</div><div class="str-meta">2× daily · 5–7 min each · Every day it's listed</div></div>
-        <div class="str-chevron">▼</div>
+    <div class="r-card" id="rc-mtn">
+      <div class="r-hdr" onclick="toggleR('rc-mtn')">
+        <div><div class="r-title">Mountain Legs</div><div class="r-meta">Thursdays · 20–25 min · Strength &amp; stability</div></div>
+        <div class="r-chev">▼</div>
       </div>
-      <div class="str-body">
-        <div class="str-section-title">Circuit (x2 per session)</div>
-        <div class="str-ex"><span class="str-ex-name">Plank</span><span class="str-ex-sets">30–45 sec</span></div>
-        <div class="str-ex"><span class="str-ex-name">Dead bug</span><span class="str-ex-sets">10 per side</span></div>
-        <div class="str-ex"><span class="str-ex-name">Bird dog</span><span class="str-ex-sets">10 per side</span></div>
-        <div class="str-ex"><span class="str-ex-name">Glute bridge</span><span class="str-ex-sets">15 reps</span></div>
-        <div class="str-ex"><span class="str-ex-name">Side plank</span><span class="str-ex-sets">20–30 sec per side</span></div>
-        <div class="str-note">Morning and evening. ~5–7 min each time. Non-negotiable for all 8 weeks — it adds up to real posterior chain strength.</div>
-      </div>
-    </div>
-
-    <div class="str-card" id="sc-push">
-      <div class="str-header" onclick="toggleStr('sc-push')">
-        <div><div class="str-title">Push-ups &amp; Pull-ups</div><div class="str-meta">Daily · Upper body — listed on almost every day</div></div>
-        <div class="str-chevron">▼</div>
-      </div>
-      <div class="str-body">
-        <div class="str-section-title">Daily target</div>
-        <div class="str-ex"><span class="str-ex-name">Push-ups</span><span class="str-ex-sets">2–3 sets × max (or 3 × 15–20)</span></div>
-        <div class="str-ex"><span class="str-ex-name">Pull-ups or inverted rows</span><span class="str-ex-sets">2–3 sets × max (or 3 × 5–10)</span></div>
-        <div class="str-note">Band-assisted pull-ups or inverted rows under a table are fine. Progress naturally — by Week 8 you'll notice real gains.</div>
+      <div class="r-body">
+        <div class="r-section-title">Main</div>
+        <div class="r-ex"><span class="r-ex-name">Goblet squat</span><span class="r-ex-sets">3 × 15</span></div>
+        <div class="r-ex"><span class="r-ex-name">Step-up (knee height)</span><span class="r-ex-sets">3 × 10 per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Reverse lunge</span><span class="r-ex-sets">3 × 10 per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Side lunge</span><span class="r-ex-sets">3 × 8 per side</span></div>
+        <div class="r-ex"><span class="r-ex-name">Single-leg wall sit</span><span class="r-ex-sets">3 × 30–45 sec per leg</span></div>
+        <div class="r-ex"><span class="r-ex-name">Calf raises (double → single)</span><span class="r-ex-sets">3 × 20 / 3 × 15</span></div>
+        <div class="r-note">Week 6: Mountain Legs replaces Speed Legs everywhere — no added load this week, that's intentional.</div>
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- NUTRITION -->
-<div class="panel" id="panel-nutrition">
-  <div class="nutr">
-
-    <div class="nutr-card">
-      <div class="nutr-title">Daily Targets <span class="nutr-badge" style="background:#1a2e1f;color:#68d391;">Aging Athlete</span></div>
-      <div class="nutr-target"><span class="nutr-target-label">Protein (1.8g/kg × ~75kg)</span><span class="nutr-target-val">~135g/day</span></div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-target"><span class="nutr-target-label">Vitamin D (supplement)</span><span class="nutr-target-val">2,000–4,000 IU</span></div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-target"><span class="nutr-target-label">Creatine monohydrate</span><span class="nutr-target-val">3–5g/day</span></div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-target"><span class="nutr-target-label">Water (hard training day)</span><span class="nutr-target-val">3–4 L</span></div>
-      <div class="nutr-note">Protein is key for power in aging athletes — Roche calls this out specifically. Spread across 4–5 meals (max ~40g absorbed per sitting). Creatine has strong evidence for muscle mass and cognitive function in 40+ athletes.</div>
+    <div class="r-card" id="rc-core">
+      <div class="r-hdr" onclick="toggleR('rc-core')">
+        <div><div class="r-title">Core Snack</div><div class="r-meta">2× daily · ~5 min each · Every day it's listed</div></div>
+        <div class="r-chev">▼</div>
+      </div>
+      <div class="r-body">
+        <div class="r-section-title">Circuit (do twice per session)</div>
+        <div class="r-ex"><span class="r-ex-name">Plank</span><span class="r-ex-sets">30–45 sec</span></div>
+        <div class="r-ex"><span class="r-ex-name">Dead bug</span><span class="r-ex-sets">10 per side</span></div>
+        <div class="r-ex"><span class="r-ex-name">Bird dog</span><span class="r-ex-sets">10 per side</span></div>
+        <div class="r-ex"><span class="r-ex-name">Glute bridge</span><span class="r-ex-sets">15 reps</span></div>
+        <div class="r-ex"><span class="r-ex-name">Side plank</span><span class="r-ex-sets">20–30 sec per side</span></div>
+        <div class="r-note">Morning and evening. ~5 min each. Non-negotiable for all 8 weeks.</div>
+      </div>
     </div>
 
-    <div class="nutr-card">
-      <div class="nutr-title">Workout Day <span class="nutr-badge" style="background:#2d1f1a;color:#f6ad55;">Tue &amp; Sat</span></div>
-      <div class="nutr-sec-label">1–2 hrs before</div>
-      <div class="nutr-item hl">Oatmeal (½ cup dry) + banana + drizzle of honey</div>
-      <div class="nutr-item">Or: toast + jam + small nut butter (light fat)</div>
-      <div class="nutr-item">Or: rice + banana (GI-friendly backup)</div>
-      <div class="nutr-item imp">Keep fat and fiber low close to the workout</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">During (hills &gt; 45 min)</div>
-      <div class="nutr-item hl">30–60g carbs/hr: dates, banana, gels</div>
-      <div class="nutr-item">2–3 medjool dates = ~45g carbs — real food works great</div>
-      <div class="nutr-item">Electrolytes every 30–45 min, especially sodium</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">Within 30–45 min after</div>
-      <div class="nutr-item hl">20–40g protein + 40–60g carbs</div>
-      <div class="nutr-item">Greek yogurt (1 cup) + fruit + granola</div>
-      <div class="nutr-item">2–3 eggs + toast + fruit</div>
-      <div class="nutr-item">Chocolate milk + banana (simple, effective)</div>
-    </div>
-
-    <div class="nutr-card">
-      <div class="nutr-title">Long Run Day <span class="nutr-badge" style="background:#2d200a;color:#fbd38d;">Saturday</span></div>
-      <div class="nutr-sec-label">2 hrs before</div>
-      <div class="nutr-item hl">Oatmeal + banana + 2 eggs</div>
-      <div class="nutr-item">Or: rice bowl + egg + light protein</div>
-      <div class="nutr-item imp">Practice race-day nutrition habits on long runs</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">During (from ~30 min in)</div>
-      <div class="nutr-item hl">60g carbs/hr: dates, banana, boiled potato + salt</div>
-      <div class="nutr-item">Drink to thirst, electrolytes every 45–60 min</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">Recovery meal (1–2 hrs after)</div>
-      <div class="nutr-item hl">Salmon or chicken + rice + cooked vegetables</div>
-      <div class="nutr-item">Sweet potato is excellent — easy to digest, anti-inflammatory</div>
-      <div class="nutr-item">Tart cherry juice reduces muscle damage and soreness</div>
-    </div>
-
-    <div class="nutr-card">
-      <div class="nutr-title">Easy &amp; Rest Days <span class="nutr-badge" style="background:#2d1a2e;color:#e9d8fd;">Mon / Wed / Fri</span></div>
-      <div class="nutr-sec-label">Approach</div>
-      <div class="nutr-item hl">Don't under-eat on rest days — protein target stays the same</div>
-      <div class="nutr-item">Slightly fewer carbs, more healthy fats and vegetables</div>
-      <div class="nutr-item">Focus on anti-inflammatory whole foods</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">Best choices</div>
-      <div class="nutr-item">Salmon or sardines (omega-3s for inflammation + recovery)</div>
-      <div class="nutr-item">Leafy greens: spinach, kale, arugula</div>
-      <div class="nutr-item">Berries: blueberries, tart cherries (antioxidants)</div>
-      <div class="nutr-item">Avocado, olive oil, walnuts</div>
-      <div class="nutr-item">Eggs: 3 at breakfast + Greek yogurt or cottage cheese</div>
-    </div>
-
-    <div class="nutr-card">
-      <div class="nutr-title">Whole Food Protein Sources</div>
-      <div class="nutr-sec-label">Target 135g/day across 4–5 meals</div>
-      <div class="nutr-item">Greek yogurt — 17g per cup</div>
-      <div class="nutr-item">Cottage cheese — 25g per cup</div>
-      <div class="nutr-item">Eggs — 6g each (3 eggs at breakfast = 18g)</div>
-      <div class="nutr-item">Chicken breast — 30g per 4oz</div>
-      <div class="nutr-item">Salmon or tuna — 25g per 4oz</div>
-      <div class="nutr-item">Lentils (cooked) — 18g per cup</div>
-      <div class="nutr-item">Edamame — 17g per cup</div>
-      <div class="nutr-item">Black beans (cooked) — 15g per cup</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">GI-friendly rules (your history)</div>
-      <div class="nutr-item imp">Rice over bread/pasta during training weeks</div>
-      <div class="nutr-item">Cook vegetables rather than eating raw before runs</div>
-      <div class="nutr-item">Minimize fiber in the 2 hrs before any hard session</div>
-      <div class="nutr-item">Banana + cooked oats are safest pre-run options</div>
-    </div>
-
-    <div class="nutr-card">
-      <div class="nutr-title">Monday Heat Protocol <span class="nutr-badge" style="background:#2d1f1a;color:#f6ad55;">Every Monday</span></div>
-      <div class="nutr-sec-label">Why it matters</div>
-      <div class="nutr-item hl">Sauna or hot tub improves blood volume — real aerobic adaptation</div>
-      <div class="nutr-item">15–20 min at ~170°F sauna or hot tub is sufficient</div>
-      <div class="nutr-item">2–3 sessions per week provides meaningful adaptation</div>
-      <div class="nutr-divider"></div>
-      <div class="nutr-sec-label">Hydration around heat</div>
-      <div class="nutr-item">Drink 16–24 oz water or electrolyte drink before</div>
-      <div class="nutr-item">Replace at least equal volume after</div>
-      <div class="nutr-item">Pinch of salt in water if sweating heavily</div>
+    <div class="r-card" id="rc-push">
+      <div class="r-hdr" onclick="toggleR('rc-push')">
+        <div><div class="r-title">Push-ups &amp; Pull-ups</div><div class="r-meta">Daily · Upper body</div></div>
+        <div class="r-chev">▼</div>
+      </div>
+      <div class="r-body">
+        <div class="r-section-title">Daily</div>
+        <div class="r-ex"><span class="r-ex-name">Push-ups</span><span class="r-ex-sets">2–3 sets × max</span></div>
+        <div class="r-ex"><span class="r-ex-name">Pull-ups or inverted rows</span><span class="r-ex-sets">2–3 sets × max</span></div>
+        <div class="r-note">Band-assisted or inverted rows under a table are fine. Progress naturally over 8 weeks.</div>
+      </div>
     </div>
 
   </div>
 </div>
 
 <script>
+// ─── Data ────────────────────────────────────────────────────
 const PLAN_START = new Date('2026-06-15');
+const PLAN_END   = new Date('2026-08-09');
 const TOTAL_WEEKS = 8;
+const WT_KG = 91.4; // 201.5 lbs
+const PROTEIN = 185; // g/day — 2.0g/kg
 
 const THEMES = [
-  {label:'Build', badge:'build', note:'Start Speed Legs without added weight — expect 3–5 days of significant soreness! Relax into every hill effort. The cue for all intervals: "underwhelming and smooth."'},
-  {label:'Build + Squats', badge:'build', note:'Add 2×10 back squats to Speed Legs this week. The 3-minute hills are always a journey — trust the effort and push a bit more as you go.'},
-  {label:'Threshold Intro', badge:'threshold', note:'First uphill treadmill threshold session at 8% grade. No treadmill? Do half the duration (2.5 min hills with run-down recovery). Build into intervals relaxed — massive aerobic bang for your buck.'},
-  {label:'Power to Steady', badge:'threshold', note:'Hill intervals into a steady running segment starts to tie it all together. Focus on smooth transitions between efforts — "power into purposeful running."'},
-  {label:'Volume Peak', badge:'threshold', note:'Biggest threshold volume week. Fuel and hydrate aggressively, especially on Tuesday. The 20-min tempo on Saturday will feel tough by the end — that\'s the point.'},
-  {label:'Steady State', badge:'steady', note:'Intentional week — Mountain Legs only, no Speed Legs, no extra load. Running "steady" (not hard) to raise Z2 output. Finish the long run feeling like a million bucks.'},
-  {label:'Power Return', badge:'build', note:'Back to hard hill work — you should feel significantly more economical now. The 30-min mod/hard on Saturday is the key session of the week. Don\'t start the tempo too hard.'},
-  {label:'Capstone', badge:'threshold', note:'Longest intervals of the plan (10-min repeats). By Saturday you should feel major Z2 progress. Option to race around this time — just dial back Wednesday through Friday if you do.'},
+  {label:'Build',           badge:'b-build',     note:'Start Speed Legs without added weight — expect 3–5 days of serious soreness. Cue for all intervals: "underwhelming and smooth."'},
+  {label:'Build + Squats',  badge:'b-build',     note:'Add 2×10 back squats to Speed Legs this week. The 3-min hills are always a journey — push a bit more as you go.'},
+  {label:'Threshold Intro', badge:'b-threshold', note:'First uphill treadmill threshold session at 8% grade. No treadmill? Do half the duration (2.5-min hills). Build into each interval relaxed.'},
+  {label:'Power to Steady', badge:'b-threshold', note:'Hill intervals into steady running starts to tie it together. Focus on smooth transitions — "power into purposeful."'},
+  {label:'Volume Peak',     badge:'b-threshold', note:'Biggest threshold volume week. Fuel and hydrate aggressively. Saturday tempo will feel very tough by the end — that\'s the point.'},
+  {label:'Steady State',    badge:'b-steady',    note:'Mountain Legs only — no Speed Legs, no extra load this week. Running "steady" to raise Z2 output. Finish the long run like a million bucks.'},
+  {label:'Power Return',    badge:'b-build',     note:'Back to hard hills — you should feel significantly more economical now. Saturday\'s 30-min mod/hard is the key session. Don\'t start too fast.'},
+  {label:'Capstone',        badge:'b-threshold', note:'Longest intervals of the plan (10-min repeats). By Saturday you should feel major Z2 progress. Can race around now — dial back Wed–Fri if so.'},
 ];
 
-const DAY_TYPES = ['rest','workout','xtrain','easy','xtrain','long','flex'];
-const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAY_TYPES  = ['rest','workout','xtrain','easy','xtrain','long','flex'];
+const DAY_NAMES  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_LABELS = [
   ['Rest + Heat','Hill Intervals','X-Train Quality','Easy Run','Easy X-Train','Long Run','Flex Day'],
   ['Rest + Heat','Mixed Hills','X-Train Quality','Easy Run','Easy X-Train','Long Run','Flex Day'],
@@ -345,186 +295,387 @@ const DAY_LABELS = [
   ['Rest + Heat','Long Intervals','X-Train Quality','Easy Run','Easy X-Train','Capstone Long Run','Flex Day'],
 ];
 
-const WEEK_DAYS = [
+// Items with ^ prefix are strength — split in Today view, shown together in Week view
+const W = [
   [ // W1
-    ['Full rest from running','Sauna or hot tub (improves blood volume!)','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['2–4 miles easy warm-up','6–10 × 1 min hills fast (5k effort) with jog-down recovery','2–4 miles easy cool-down','^Cue: "underwhelming and smooth" — avoid muscle strains','^Speed Legs (bodyweight only — no weight Week 1)','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min (improves blood volume!)','^Push-ups / pull-ups','^Core Snack × 2 (morning + evening)'],
+    ['2–4 mi easy warm-up','6–10 × 1 min hills fast (5k effort) with jog-down recovery','2–4 mi easy cool-down','Cue: "underwhelming and smooth" — avoid muscle strains','^Speed Legs (bodyweight only — no weight Week 1)','^Push-ups / pull-ups','^Core Snack × 2'],
     ['60–90 min x-train (bike, elliptical, or similar)','10 × 30 sec fast / 2 min easy','Can extend to 2 hrs if biking outside'],
-    ['6–10 miles easy','Optional easy x-train double 30–45 min','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['40–90 min easy x-train','Nice and easy — prepare for the weekend'],
-    ['8–14 miles easy/mod','5 × 30 sec hills near the end (3k–mile effort)','Ease into every hill — avoid muscle strains!','^Speed Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–90 min at 10% grade (Z2 — don\'t overdo intensity)','Option B: 6–10 miles easy','Option C: Longer x-train or hike','If beat up from long run → default to x-train or hike','^Push-ups and/or pull-ups'],
+    ['6–10 mi easy','Optional easy x-train double 30–45 min','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['40–90 min easy x-train'],
+    ['8–14 mi easy/mod','5 × 30 sec hills near the end (3k–mile effort)','Ease into every hill','^Speed Legs','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–90 min at 10% grade (Z2 — don\'t overdo intensity)','Option B: 6–10 mi easy','Option C: Longer x-train or hike','If beat up from long run → x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W2
-    ['Full rest from running','Sauna or hot tub','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['2–3 miles easy warm-up','3–5 × 3 min hills mod/hard (10k effort, push more as you go)','3–5 × 45 sec hills (5k effort)','2–3 miles easy cool-down','^Speed Legs Strength + 2×10 back squats (add squats this week!)','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['60–105 min x-train','2–4 × (4 × 1 min fast / 1 min easy) with 2 min easy between sets','Higher gear on bike for power on the fast pushes!'],
-    ['6–10 miles easy','Optional easy x-train double 30–45 min','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['2–3 mi easy warm-up','3–5 × 3 min hills mod/hard (10k effort, push more as you go)','3–5 × 45 sec hills (5k effort)','2–3 mi easy cool-down','^Speed Legs + 2×10 squats (add squats this week)','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['60–105 min x-train','2–4 × (4 × 1 min fast / 1 min easy) with 2 min easy between sets','Higher gear on bike for power on the fast pushes'],
+    ['6–10 mi easy','Optional easy x-train double 30–45 min','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['8–14 miles easy','5 × 30 sec hills near the end','Aim to finish this one feeling good!','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–105 min at 10% grade','Option B: 6–10 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['8–14 mi easy','5 × 30 sec hills near the end','Aim to finish feeling good','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–105 min at 10% grade','Option B: 6–10 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W3
-    ['Full rest from running','Sauna or hot tub','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['Uphill treadmill at 8% grade: 60–90 min total','4–8 × 5 min moderate / 2 min easy','No treadmill? → 4–8 × 2.5 min hills with run-down recovery','Build into each interval relaxed — massive aerobic return','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['60–120 min easy x-train','Can split into multiple activities or a long bike outside'],
-    ['6–10 miles easy','4–6 × 20 sec hills fast (hill strides — building power!)','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Uphill treadmill at 8% grade — 60–90 min total','4–8 × 5 min moderate / 2 min easy','No treadmill → 4–8 × 2.5 min hills with run-down recovery','Build into each interval relaxed','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['60–120 min easy x-train','Can split into multiple activities'],
+    ['6–10 mi easy','4–6 × 20 sec hills fast (hill strides)','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['10–16 miles easy/mod over hills','Work the uphills, think high Z2 / low Z3','Practice big fueling on this one!','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–10 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['10–16 mi easy/mod over hills','Work the uphills, think high Z2 / low Z3','Practice big fueling on this one','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–10 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W4
-    ['Full rest from running','Sauna or hot tub','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['2–3 miles easy warm-up','5–8 × 2 min hills mod/hard (10k to 5k effort) with run-down recovery','1–2 miles steady (purposeful, but not hard)','1–2 miles slow cool-down','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['60–120 min x-train','3–5 × (90 / 60 / 30 sec fast) with 1 min easy after each, 2 min between sets','Smooth and strong — bonus power stimulus'],
-    ['6–10 miles easy','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['2–3 mi easy warm-up','5–8 × 2 min hills mod/hard (10k to 5k effort) with run-down recovery','1–2 mi steady (purposeful, not hard)','1–2 mi slow cool-down','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['60–120 min x-train','3–5 × (90 / 60 / 30 sec fast) with 1 min easy, 2 min between sets'],
+    ['6–10 mi easy','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['10–16 miles easy','4–6 × 30 sec hills near the end','Nice aerobic building long run — aim to finish feeling good!','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['10–16 mi easy','4–6 × 30 sec hills near the end','Finish feeling good','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W5
-    ['Full rest from running','Sauna or hot tub','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['Uphill treadmill threshold: 75–105 min total','6–10 × 5 min moderate / 2 min easy','Increasing volume — fuel and hydrate aggressively!','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['60–120 min easy x-train','Pure aerobic time — keep it easy!'],
-    ['6–10 miles easy','4–6 × 20 sec hills fast','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Uphill treadmill threshold — 75–105 min total','6–10 × 5 min moderate / 2 min easy','Biggest volume week — fuel and hydrate aggressively','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['60–120 min easy x-train'],
+    ['6–10 mi easy','4–6 × 20 sec hills fast','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['10–16 miles easy/mod','20 min mod/hard around 1-hour mark on net uphill grade','First longer tempo — translating power to aerobic economy','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['10–16 mi easy/mod','20 min mod/hard around 1-hour mark on net uphill grade','First longer tempo — power translating to aerobic economy','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W6
-    ['Full rest from running','Sauna or hot tub'],
-    ['6–10 miles steady (intentional running, not hard)','4 × 30 sec hills at the end','Optional 30–45 min easy x-train double','^Mountain Legs ONLY — no Speed Legs this week (dialing back!)','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min'],
+    ['6–10 mi steady (intentional, not hard)','4 × 30 sec hills at the end','Optional 30–45 min easy x-train double','^Mountain Legs ONLY — no Speed Legs this week','^Push-ups / pull-ups','^Core Snack × 2'],
     ['60–120 min easy x-train'],
-    ['6–10 miles steady','4 × 30 sec hills at the end','Optional 30–45 min easy x-train','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['6–10 mi steady','4 × 30 sec hills at the end','Optional 30–45 min easy x-train','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['10–16 miles easy','4 × 30 sec hills at the end','Keep it relaxed — finish like a million bucks!','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['10–16 mi easy','4 × 30 sec hills at the end','Keep it relaxed — finish like a million bucks','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W7
-    ['Full rest from running','Sauna or hot tub','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['2–3 miles easy warm-up','3–5 × 3 min hills mod/hard (10k to 5k effort) with run-down recovery','1.5–3 miles steady','1–2 miles slow cool-down','You should feel way more economical now!','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['2–3 mi easy warm-up','3–5 × 3 min hills mod/hard (10k to 5k effort) with run-down recovery','1.5–3 mi steady','1–2 mi slow cool-down','You should feel way more economical now!','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
     ['60–120 min easy x-train'],
-    ['6–10 miles easy','4–6 × 20 sec hills fast','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['6–10 mi easy','4–6 × 20 sec hills fast','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['10–16 miles easy/mod','30 min mod/hard around 1-hour mark on net uphill grade','These are grindy — don\'t go too hard at the start','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['10–16 mi easy/mod','30 min mod/hard around 1-hour mark on net uphill grade','Don\'t start the tempo too fast — it\'s a grind','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
   [ // W8
-    ['Full rest from running','Sauna or hot tub','Push-ups and/or pull-ups','Core Snack × 2'],
-    ['Uphill treadmill threshold: 75–105 min total','3–5 × 10 min moderate / 3 min easy','Longer intervals will feel cleansing!','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['60–120 min easy x-train','6–10 × 30 sec fast / 2 min easy','Some quality mixed into the easy day!'],
-    ['6–10 miles easy','Optional easy x-train double 30–45 min','^Mountain Legs Strength','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['Full rest from running','Sauna or hot tub 15–20 min','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Uphill treadmill threshold — 75–105 min total','3–5 × 10 min moderate / 3 min easy','Longer intervals will feel cleansing!','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['60–120 min easy x-train','6–10 × 30 sec fast / 2 min easy'],
+    ['6–10 mi easy','Optional easy x-train double 30–45 min','^Mountain Legs','^Push-ups / pull-ups','^Core Snack × 2'],
     ['40–90 min easy x-train'],
-    ['10–16 miles easy/mod over hills, working the uphills','You should feel major Z2 progress — feel like a new athlete!','Option to race around now — dial back Wed–Fri if so','^Speed Legs Strength + squats','^Push-ups and/or pull-ups','^Core Snack × 2'],
-    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 miles easy','Option C: Longer x-train or hike','^Push-ups and/or pull-ups','^Core Snack × 2'],
+    ['10–16 mi easy/mod over hills, working the uphills','You should feel major Z2 progress — like a new athlete!','Can race around this time — dial back Wed–Fri if so','^Speed Legs + squats','^Push-ups / pull-ups','^Core Snack × 2'],
+    ['Option A: Uphill treadmill 60–120 min at 10% grade','Option B: 6–12 mi easy','Option C: Longer x-train or hike','^Push-ups / pull-ups','^Core Snack × 2'],
   ],
 ];
 
-const STORAGE_KEY = 'swap_aging_v1';
-let currentWeek = 1;
+// Compact exercise lists for Today strength section
+const SPEED = [['Leg swings fwd/back','20/leg'],['Lateral leg swings','20/leg'],['SL Romanian deadlift','3×10/leg'],['SL calf raise','3×15/leg'],['Glute bridge','3×15'],['Hip hike','3×15/side']];
+const SPEED_SQ = [...SPEED, ['Back squats','2×10 light']];
+const MTN = [['Goblet squat','3×15'],['Step-up (knee height)','3×10/leg'],['Reverse lunge','3×10/leg'],['Side lunge','3×8/side'],['SL wall sit','3×30–45s/leg'],['Calf raise (double→single)','3×20 / 3×15']];
+const CORE = [['Plank','30–45 sec'],['Dead bug','10/side'],['Bird dog','10/side'],['Glute bridge','15 reps'],['Side plank','20–30 sec/side']];
 
-function getChecks() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
-}
-function setCheck(w, d, val) {
-  const c = getChecks(); if (!c[w]) c[w] = {};
-  c[w][d] = val; localStorage.setItem(STORAGE_KEY, JSON.stringify(c));
-}
-function isChecked(w, d) { const c = getChecks(); return !!(c[w] && c[w][d]); }
-function countDone() {
-  const c = getChecks(); let n = 0;
-  for (const w of Object.values(c)) for (const v of Object.values(w)) if (v) n++;
-  return n;
+// Nutrition by mode
+const NUTR = {
+  rest: {
+    cal: '1,800', calNote: 'deficit day',
+    strategy: 'This is where the weight loss happens. Don\'t earn extra food through rest — maintain protein and keep carbs low.',
+    sections: [
+      {label:'All day', items:['<strong>Maintain 185g protein</strong> — muscle loss happens if you under-eat on rest days','Spread across 5 meals (~37g each)','Fewer carbs, more protein + fat + vegetables']},
+      {label:'Good choices', items:['Breakfast: 3 eggs + egg whites + spinach (~30g P)','Snack: Greek yogurt plain 1 cup (17g P)','Lunch: big salad + 5 oz chicken or canned tuna (45g P)','Snack: cottage cheese 1 cup (25g P)','Dinner: salmon 5 oz + roasted veg + light starch (35g P)']},
+      {label:'Heat protocol', items:['Sauna or hot tub 15–20 min — real aerobic adaptation','Drink 16–24 oz electrolytes before, equal volume after']},
+    ]
+  },
+  hard: {
+    cal: '2,900', calNote: 'workout day',
+    strategy: 'Eat to perform. Don\'t create a deficit today — the weight loss comes from rest days.',
+    sections: [
+      {label:'1–2 hrs before', items:['<strong>Oatmeal ½ cup + banana + honey</strong> (~60g carbs)','Or: rice + banana (GI-friendly backup)','Keep fat and fiber low before the workout']},
+      {label:'During (if > 45 min)', items:['<strong>30–60g carbs/hr</strong> from ~30 min in','2–3 medjool dates = ~45g carbs (whole food option)','Electrolytes every 30–45 min, especially sodium']},
+      {label:'Within 30–45 min after', items:['<strong>20–40g protein + 40–60g carbs</strong> — don\'t skip this window','Greek yogurt + banana, or eggs + toast, or chocolate milk']},
+    ]
+  },
+  long: {
+    cal: '3,100', calNote: 'long run day',
+    strategy: 'Biggest eating day. Eat to perform and recover. Practice race-day nutrition habits.',
+    sections: [
+      {label:'2 hrs before', items:['<strong>Oatmeal + banana + 2 eggs</strong>','Or: rice bowl + egg + light protein']},
+      {label:'During (from ~30 min in)', items:['<strong>60g carbs/hr:</strong> dates, banana, boiled potato + salt','Drink to thirst, electrolytes every 45–60 min']},
+      {label:'Recovery meal (1–2 hrs after)', items:['<strong>Salmon or chicken + rice + vegetables</strong>','Sweet potato — easy to digest, anti-inflammatory','Tart cherry juice — reduces muscle damage and soreness']},
+    ]
+  },
+  moderate: {
+    cal: '2,300', calNote: 'moderate day',
+    strategy: 'Slight deficit. Fuel the training without over-eating. Emphasis on whole foods.',
+    sections: [
+      {label:'All day', items:['<strong>185g protein</strong> — same every day','Moderate carbs around training, more fat + veg otherwise','Anti-inflammatory: salmon, berries, leafy greens, olive oil']},
+      {label:'Around training', items:['Light pre: banana or toast + nut butter','Post (within 30–45 min): protein + carb meal or snack']},
+    ]
+  },
+};
+
+// ─── State ────────────────────────────────────────────────────
+const KEY = 'swap_aging_v2';
+let viewDate = new Date();
+let wkView = 1;
+
+function getC() { try { return JSON.parse(localStorage.getItem(KEY)||'{}'); } catch { return {}; } }
+function setC(w,d,v) { const c=getC(); if(!c[w])c[w]={}; c[w][d]=v; localStorage.setItem(KEY,JSON.stringify(c)); }
+function isC(w,d) { const c=getC(); return !!(c[w]&&c[w][d]); }
+function countC() { const c=getC(); let n=0; for(const w of Object.values(c)) for(const v of Object.values(w)) if(v) n++; return n; }
+
+// ─── Helpers ──────────────────────────────────────────────────
+function wkStart(w) { const d=new Date(PLAN_START); d.setDate(d.getDate()+(w-1)*7); return d; }
+function fmtShort(d) { return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtFull(d) { return d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}); }
+function isToday(d) { const t=new Date(); return d.toDateString()===t.toDateString(); }
+
+function dateToWD(d) {
+  const diff = Math.floor((d-PLAN_START)/86400000);
+  if (diff<0||diff>=TOTAL_WEEKS*7) return null;
+  return {week:Math.floor(diff/7)+1, day:diff%7};
 }
 
-function planWeekNum() {
-  const diff = Math.floor((Date.now() - PLAN_START) / (7*24*3600*1000));
-  return Math.max(1, Math.min(TOTAL_WEEKS, diff + 1));
+function planWeekNow() {
+  const wd = dateToWD(new Date());
+  return wd ? wd.week : (new Date()<PLAN_START ? 0 : TOTAL_WEEKS+1);
 }
-function weekStart(w) {
-  const d = new Date(PLAN_START); d.setDate(d.getDate() + (w-1)*7); return d;
-}
-function fmtDate(d) { return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
 
+function nutriMode(dayType) {
+  return ({rest:'rest',workout:'hard',long:'long',easy:'moderate',xtrain:'moderate',flex:'moderate'})[dayType]||'moderate';
+}
+
+function calTarget(dayType) {
+  return ({rest:'1,800',workout:'2,900',long:'3,100',easy:'2,300',xtrain:'2,300',flex:'2,400'})[dayType]||'2,300';
+}
+
+function strType(weekNum, dayIdx) {
+  if (weekNum===6) return [1,5].includes(dayIdx)?'mountain':dayIdx===3?'mountain':'core';
+  return [1,5].includes(dayIdx)?'speed':dayIdx===3?'mountain':'core';
+}
+
+// ─── Stats ────────────────────────────────────────────────────
 function renderStats() {
-  const w = planWeekNum();
-  document.getElementById('statWeek').textContent = Date.now() >= PLAN_START ? (w <= TOTAL_WEEKS ? w : '✓') : '—';
-  document.getElementById('statDone').textContent = countDone();
-  const left = Math.max(0, TOTAL_WEEKS - (Date.now() >= PLAN_START ? w - 1 : 0));
-  document.getElementById('statLeft').textContent = left;
-  const total = TOTAL_WEEKS * 7 * 24 * 3600 * 1000;
-  const elapsed = Date.now() - PLAN_START;
-  const pct = Math.min(100, Math.max(0, (elapsed / total) * 100));
-  document.getElementById('progFill').style.width = pct + '%';
-  const remDays = Math.ceil((PLAN_START + total - Date.now()) / (24*3600*1000));
-  document.getElementById('progLabel').textContent = remDays > 0 ? remDays + ' days left' : 'Plan complete!';
+  const now = new Date();
+  const w = planWeekNow();
+  document.getElementById('statWeek').textContent = now<PLAN_START?'Pre':(w>TOTAL_WEEKS?'✓':w);
+  document.getElementById('statDone').textContent = countC();
+
+  const wd = dateToWD(now);
+  const dayType = wd ? DAY_TYPES[wd.day] : null;
+  document.getElementById('statCal').textContent = dayType ? calTarget(dayType) : '—';
+
+  const totalMs = TOTAL_WEEKS*7*86400000;
+  const pct = Math.min(100,Math.max(0,(now-PLAN_START)/totalMs*100));
+  document.getElementById('progFill').style.width = pct+'%';
+  const remDays = Math.ceil((PLAN_START.getTime()+totalMs-now)/86400000);
+  document.getElementById('progLabel').textContent = now<PLAN_START?'starts '+fmtShort(PLAN_START):(remDays>0?remDays+' days left':'Plan complete!');
 }
 
+// ─── TODAY ────────────────────────────────────────────────────
+function renderStrength(weekNum, dayIdx, items) {
+  const hasCore = items.some(i=>i.includes('Core Snack'));
+  const hasPush = items.some(i=>i.includes('push-up')||i.includes('pull-up'));
+  const st = strType(weekNum, dayIdx);
+  let html = '';
+
+  if (st==='speed') {
+    const exs = weekNum>=2 ? SPEED_SQ : SPEED;
+    html += `<div class="td-sub">Speed Legs <small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">— after run · see Routines for cues</small></div>`;
+    html += exs.map(([n,s])=>`<div class="ex-row"><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></div>`).join('');
+  } else if (st==='mountain') {
+    const label = weekNum===6&&dayIdx===1 ? 'Mountain Legs ONLY (no Speed Legs this week)' : 'Mountain Legs';
+    html += `<div class="td-sub">${label} <small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">— see Routines for cues</small></div>`;
+    html += MTN.map(([n,s])=>`<div class="ex-row"><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></div>`).join('');
+  }
+
+  if (hasCore) {
+    if (st!=='core') html += '<div class="td-divider"></div>';
+    html += `<div class="td-sub">Core Snack × 2 &nbsp;<small style="color:#4a5568;font-size:0.6rem;text-transform:none;font-weight:400">morning + evening, ~5 min each</small></div>`;
+    html += CORE.map(([n,s])=>`<div class="ex-row"><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></div>`).join('');
+  }
+
+  if (hasPush) {
+    html += '<div class="td-divider"></div>';
+    html += `<div class="td-sub">Push-ups &amp; Pull-ups</div>`;
+    html += `<div class="ex-row"><span class="ex-name">Push-ups</span><span class="ex-sets">2–3 × max</span></div>`;
+    html += `<div class="ex-row"><span class="ex-name">Pull-ups or inverted rows</span><span class="ex-sets">2–3 × max</span></div>`;
+  }
+  return html;
+}
+
+function renderEat(dayType) {
+  const mode = nutriMode(dayType);
+  const n = NUTR[mode];
+  let html = '';
+  html += `<div class="eat-targets">
+    <div class="eat-target"><div class="eat-target-val orange">${n.cal}</div><div class="eat-target-label">${n.calNote}</div></div>
+    <div class="eat-target"><div class="eat-target-val green">${PROTEIN}g</div><div class="eat-target-label">protein</div></div>
+  </div>`;
+  html += `<div class="eat-strategy">${n.strategy}</div>`;
+  n.sections.forEach(sec => {
+    html += `<div class="eat-timing">${sec.label}</div>`;
+    sec.items.forEach(item => `<div class="eat-item">${item}</div>`).forEach(el => html += el);
+  });
+  return html;
+}
+
+function renderToday() {
+  const now = new Date();
+  const onToday = isToday(viewDate);
+  const minDate = new Date(now < PLAN_START ? now : PLAN_START);
+  document.getElementById('tdPrev').disabled = viewDate <= minDate;
+  document.getElementById('tdNext').disabled = viewDate >= PLAN_END;
+  document.getElementById('tdBack').style.visibility = onToday ? 'hidden' : 'visible';
+
+  const wd = dateToWD(viewDate);
+
+  // Pre-plan
+  if (viewDate < PLAN_START) {
+    const days = Math.ceil((PLAN_START-viewDate)/86400000);
+    document.getElementById('tdWeekLabel').textContent = 'Recovery Week';
+    document.getElementById('tdDateLabel').textContent = fmtFull(viewDate) + (onToday?' · Today':'');
+    document.getElementById('tdBody').innerHTML = `
+      <div class="td-sec">
+        <div class="td-sec-hdr"><div class="td-sec-title">Status</div><div class="td-sec-badge b-rest">Pre-Plan</div></div>
+        <div class="td-card">
+          <div class="td-item">Plan starts in <strong>${days} day${days!==1?'s':''}</strong> — Week 1 begins Monday, Jun 15</div>
+          <div class="td-item">Easy recovery only: walks, gentle movement, swimming</div>
+          <div class="td-item">Sauna or hot tub if available — building blood volume now counts</div>
+          <div class="td-item note">No hard efforts until Jun 15</div>
+        </div>
+      </div>
+      <div class="td-sec">
+        <div class="td-sec-hdr"><div class="td-sec-title">Eat Today</div></div>
+        <div class="td-card">${renderEat('rest')}</div>
+      </div>`;
+    return;
+  }
+
+  // Post-plan
+  if (viewDate > PLAN_END) {
+    document.getElementById('tdWeekLabel').textContent = 'Plan Complete';
+    document.getElementById('tdDateLabel').textContent = fmtFull(viewDate);
+    document.getElementById('tdBody').innerHTML = `<div class="td-sec"><div class="td-card"><div class="td-item">8 weeks done. You are AMAZING! — David &amp; Megan Roche</div></div></div>`;
+    return;
+  }
+
+  const {week, day} = wd;
+  const theme = THEMES[week-1];
+  const dayType = DAY_TYPES[day];
+  const dayLabel = DAY_LABELS[week-1][day];
+  const allItems = W[week-1][day];
+  const workoutItems = allItems.filter(i=>!i.startsWith('^'));
+  const hasStrength = allItems.some(i=>i.startsWith('^'));
+  const dayBadge = {rest:'b-rest',workout:'b-workout',xtrain:'b-xtrain',easy:'b-easy',long:'b-long',flex:'b-flex'}[dayType];
+
+  document.getElementById('tdWeekLabel').textContent = `Week ${week} — ${theme.label}`;
+  document.getElementById('tdDateLabel').textContent = fmtFull(viewDate) + (onToday?' · Today':'');
+
+  let html = '';
+
+  // Training section
+  html += `<div class="td-sec">
+    <div class="td-sec-hdr">
+      <div class="td-sec-title">Training</div>
+      <div class="td-sec-badge ${dayBadge}">${dayLabel}</div>
+    </div>
+    <div class="td-card">
+      ${workoutItems.map(item=>{
+        const isNote = /^(Option|Cue:|If |Can |No treadmill)/.test(item);
+        return `<div class="td-item${isNote?' note':''}">${item}</div>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  // Strength section (only if the day has strength items)
+  if (hasStrength) {
+    html += `<div class="td-sec">
+      <div class="td-sec-hdr">
+        <div class="td-sec-title">Strength</div>
+        <div style="font-size:0.58rem;color:#4a5568">full exercise details → Routines tab</div>
+      </div>
+      <div class="td-card">${renderStrength(week, day, allItems)}</div>
+    </div>`;
+  }
+
+  // Nutrition section
+  html += `<div class="td-sec">
+    <div class="td-sec-hdr">
+      <div class="td-sec-title">Eat Today</div>
+      <div class="td-sec-badge" style="background:#1a2e2e;color:#76e4f7">~8 lb goal</div>
+    </div>
+    <div class="td-card">${renderEat(dayType)}</div>
+  </div>`;
+
+  document.getElementById('tdBody').innerHTML = html;
+}
+
+function navDay(dir) { viewDate=new Date(viewDate); viewDate.setDate(viewDate.getDate()+dir); renderToday(); }
+function jumpToday() { viewDate=new Date(); renderToday(); }
+
+// ─── WEEK ─────────────────────────────────────────────────────
 function renderWeek(w) {
   const t = THEMES[w-1];
-  const start = weekStart(w);
+  const start = wkStart(w);
   const end = new Date(start); end.setDate(end.getDate()+6);
-  document.getElementById('weekTitle').textContent = `Week ${w} — ${t.label}`;
-  document.getElementById('weekSub').textContent = `${fmtDate(start)} – ${fmtDate(end)}`;
-  const badgeColors = {build:'badge-build',threshold:'badge-threshold',steady:'badge-steady'};
-  document.getElementById('weekBadge').innerHTML = `<span class="week-badge ${badgeColors[t.badge]}">${t.label}</span>`;
-  document.getElementById('weekNote').textContent = t.note;
-  document.getElementById('prevBtn').disabled = w <= 1;
-  document.getElementById('nextBtn').disabled = w >= TOTAL_WEEKS;
+  document.getElementById('wkTitle').textContent = `Week ${w} — ${t.label}`;
+  document.getElementById('wkSub').textContent = `${fmtShort(start)} – ${fmtShort(end)}`;
+  document.getElementById('wkBadge').innerHTML = `<span class="wk-badge ${t.badge}">${t.label}</span>`;
+  document.getElementById('wkNote').textContent = t.note;
+  document.getElementById('prevWk').disabled = w<=1;
+  document.getElementById('nextWk').disabled = w>=TOTAL_WEEKS;
 
-  const container = document.getElementById('daysContainer');
-  container.innerHTML = '';
-  const days = WEEK_DAYS[w-1];
-  days.forEach((items, i) => {
-    const checked = isChecked(w, i);
-    const card = document.createElement('div');
-    card.className = `day-card day-${DAY_TYPES[i]}`;
-    const itemsHtml = items.map(item => {
-      const isTip = item.startsWith('^');
-      const text = isTip ? item.slice(1) : item;
-      let cls = '';
+  const c = document.getElementById('daysContainer');
+  c.innerHTML = '';
+  W[w-1].forEach((items, d) => {
+    const type = DAY_TYPES[d];
+    const label = DAY_LABELS[w-1][d];
+    const checked = isC(w,d);
+    const el = document.createElement('div');
+    el.className = `day-card day-${type}`;
+    const ihtml = items.map(item=>{
+      const isSt = item.startsWith('^');
+      const text = isSt ? item.slice(1) : item;
       const lower = text.toLowerCase();
-      if (isTip) {
-        if (lower.includes('core snack') || lower.includes('push-up') || lower.includes('pull-up')) cls = 'core';
-        else cls = 'strength';
-      }
+      let cls = '';
+      if(isSt) cls = (lower.includes('core')||lower.includes('push-up')||lower.includes('pull-up'))?'cor':'str';
       return `<div class="day-item ${cls}">${text}</div>`;
     }).join('');
-    card.innerHTML = `
-      <div class="day-header" onclick="toggleDay(this)">
-        <div class="day-badge">${DAY_NAMES[i]}</div>
-        <div class="day-label">${DAY_LABELS[w-1][i]}</div>
-        <div class="day-check ${checked?'done':''}" onclick="event.stopPropagation();toggleCheck(${w},${i},this)"></div>
+    el.innerHTML = `
+      <div class="day-hdr" onclick="toggleDay(this)">
+        <div class="day-dot">${DAY_NAMES[d]}</div>
+        <div class="day-lbl">${label}</div>
+        <div class="day-chk ${checked?'done':''}" onclick="event.stopPropagation();toggleChk(${w},${d},this)"></div>
       </div>
-      <div class="day-body" style="display:none">${itemsHtml}</div>`;
-    container.appendChild(card);
+      <div class="day-body">${ihtml}</div>`;
+    c.appendChild(el);
   });
 }
 
-function toggleDay(h) {
-  const b = h.nextElementSibling;
-  b.style.display = b.style.display === 'none' ? 'block' : 'none';
-}
-function toggleCheck(w, d, el) {
-  const now = !el.classList.contains('done');
-  el.classList.toggle('done', now);
-  setCheck(w, d, now);
-  renderStats();
-}
-function navWeek(dir) {
-  currentWeek = Math.max(1, Math.min(TOTAL_WEEKS, currentWeek + dir));
-  renderWeek(currentWeek);
-}
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['training','strength','nutrition'][i] === name));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-}
-function toggleStr(id) { document.getElementById(id).classList.toggle('open'); }
+function toggleDay(h) { h.nextElementSibling.classList.toggle('open'); }
+function toggleChk(w,d,el) { const v=!el.classList.contains('done'); el.classList.toggle('done',v); setC(w,d,v); renderStats(); }
+function navWeek(dir) { wkView=Math.max(1,Math.min(TOTAL_WEEKS,wkView+dir)); renderWeek(wkView); }
 
-currentWeek = Date.now() >= PLAN_START ? planWeekNum() : 1;
+// ─── Routines ─────────────────────────────────────────────────
+function toggleR(id) { document.getElementById(id).classList.toggle('open'); }
+
+// ─── Tabs ─────────────────────────────────────────────────────
+function switchTab(name) {
+  ['today','week','routines'].forEach((n,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',n===name);
+    document.getElementById('panel-'+n).classList.toggle('active',n===name);
+  });
+}
+
+// ─── Init ─────────────────────────────────────────────────────
+viewDate = new Date();
+wkView = Math.max(1, Math.min(TOTAL_WEEKS, planWeekNow()||1));
 renderStats();
-renderWeek(currentWeek);
+renderToday();
+renderWeek(wkView);
 </script>
 </body>
 </html>
